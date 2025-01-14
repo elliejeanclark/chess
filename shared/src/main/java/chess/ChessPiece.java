@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -10,7 +11,12 @@ import java.util.Collection;
  */
 public class ChessPiece {
 
+    private final ChessGame.TeamColor pieceColor;
+    private final ChessPiece.PieceType type;
+
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        this.pieceColor = pieceColor;
+        this.type = type;
     }
 
     /**
@@ -29,14 +35,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return pieceColor;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
 
     /**
@@ -47,6 +53,62 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        if (type == PieceType.BISHOP) {
+            return bishopMovement(board, myPosition);
+        }
+        else if (type == PieceType.KING) {
+            return kingMovement(board, myPosition);
+        }
+        else if (type == PieceType.KNIGHT) {
+            return knightMovement(board, myPosition);
+        }
+        else if (type == PieceType.PAWN) {
+            return pawnMovement(board, myPosition);
+        }
+        else if (type == PieceType.QUEEN) {
+            return queenMovement(board, myPosition);
+        }
+        else if (type == PieceType.ROOK) {
+            return rookMovement(board, myPosition);
+        }
+        else {
+            throw new RuntimeException("I am not a valid chess piece. Now how did that happen?");
+        }
+    }
+
+    public Collection<ChessMove> bishopMovement(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        //calculate bishop movement here.
+        return validMoves;
+    }
+
+    public Collection<ChessMove> kingMovement(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        //calculate king movement here.
+        return validMoves;
+    }
+
+    public Collection<ChessMove> knightMovement(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        //calculate knight movement here.
+        return validMoves;
+    }
+
+    public Collection<ChessMove> pawnMovement(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        //calculate pawn movement here.
+        return validMoves;
+    }
+
+    public Collection<ChessMove> queenMovement(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        //calculate queen movement here.
+        return validMoves;
+    }
+
+    public Collection<ChessMove> rookMovement(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        //calculate rook movement here.
+        return validMoves;
     }
 }
