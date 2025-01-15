@@ -98,20 +98,17 @@ public class ChessPiece {
             boolean downRightClear = true;
             boolean downLeftClear = true;
             ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
-            ChessPosition currentPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
 
             while (upRightClear) {
                 if (board.getPiece(nextPosition) == null) {
-                    validMoves.add(new ChessMove(currentPosition, nextPosition, null));
-                    currentPosition = nextPosition;
+                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
                     nextPosition = new ChessPosition(nextPosition.getRow() + 1, nextPosition.getColumn() + 1);
-                    if (nextPosition.getRow() >= 8 || nextPosition.getColumn() >= 8) {
+                    if (nextPosition.getRow() == 8 || nextPosition.getColumn() == 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
                         upRightClear = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(currentPosition, nextPosition, null));
-                    currentPosition = myPosition;
+                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
                     upRightClear = false;
                 }
             }
@@ -119,16 +116,14 @@ public class ChessPiece {
             nextPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
             while (upLeftClear) {
                 if (board.getPiece(nextPosition) == null) {
-                    validMoves.add(new ChessMove(currentPosition, nextPosition, null));
-                    currentPosition = nextPosition;
+                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
                     nextPosition = new ChessPosition(nextPosition.getRow() + 1, nextPosition.getColumn() - 1);
-                    if (nextPosition.getRow() >= 8 || nextPosition.getColumn() >= 8) {
+                    if (nextPosition.getRow() == 8 || nextPosition.getColumn() == 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
                         upLeftClear = false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(currentPosition, nextPosition, null));
-                    currentPosition = myPosition;
+                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
                     upLeftClear = false;
                 }
             }
@@ -136,16 +131,14 @@ public class ChessPiece {
             nextPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
             while (downRightClear) {
                 if (board.getPiece(nextPosition) == null) {
-                    validMoves.add(new ChessMove(currentPosition, nextPosition, null));
-                    currentPosition = nextPosition;
+                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
                     nextPosition = new ChessPosition(nextPosition.getRow() - 1, nextPosition.getColumn() + 1);
-                    if (nextPosition.getRow() >= 8 || nextPosition.getColumn() >= 8) {
+                    if (nextPosition.getRow() == 8 || nextPosition.getColumn() == 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
                         downRightClear= false;
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(currentPosition, nextPosition, null));
-                    currentPosition = myPosition;
+                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
                     downRightClear = false;
                 }
             }
@@ -153,16 +146,14 @@ public class ChessPiece {
         nextPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1);
         while (downLeftClear) {
             if (board.getPiece(nextPosition) == null) {
-                validMoves.add(new ChessMove(currentPosition, nextPosition, null));
-                currentPosition = nextPosition;
+                validMoves.add(new ChessMove(myPosition, nextPosition, null));
                 nextPosition = new ChessPosition(nextPosition.getRow() - 1, nextPosition.getColumn() - 1);
-                if (nextPosition.getRow() >= 8 || nextPosition.getColumn() >= 8 || nextPosition.getRow() < 0 || nextPosition.getColumn() < 0) {
+                if (nextPosition.getRow() == 8 || nextPosition.getColumn() == 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
                     downLeftClear= false;
                 }
             }
             else {
-                validMoves.add(new ChessMove(currentPosition, nextPosition, null));
-                currentPosition = myPosition;
+                validMoves.add(new ChessMove(myPosition, nextPosition, null));
                 downLeftClear = false;
             }
         }
