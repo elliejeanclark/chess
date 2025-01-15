@@ -24,6 +24,13 @@ public class ChessPosition {
         return Objects.hash(row, col);
     }
 
+    @Override
+    public String toString() {
+        return "{" + row +
+                ", " + col +
+                '}';
+    }
+
     private final int row;
     private final int col;
 
