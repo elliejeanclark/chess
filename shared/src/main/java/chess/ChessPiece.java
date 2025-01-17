@@ -209,13 +209,24 @@ public class ChessPiece {
 
     private Collection<ChessMove> queenMovement(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> validMoves = new ArrayList<>();
-        //calculate queen movement here.
+        Collection<ChessMove> bishopMoves = bishopMovement(board, myPosition);
+        Collection<ChessMove> rookMoves = rookMovement(board, myPosition);
+        validMoves.addAll(bishopMoves);
+        validMoves.addAll(rookMoves);
         return validMoves;
     }
 
     private Collection<ChessMove> rookMovement(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> validMoves = new ArrayList<>();
-        //calculate rook movement here.
+        Collection<ChessMove> upMoves = oneDirectionMovement(board, myPosition, 1, 0);
+        Collection<ChessMove> downMoves = oneDirectionMovement(board, myPosition, -1, 0);
+        Collection<ChessMove> rightMoves = oneDirectionMovement(board, myPosition, 0, 1);
+        Collection<ChessMove> leftMoves = oneDirectionMovement(board, myPosition, 0, -1);
+        validMoves.addAll(upMoves);
+        validMoves.addAll(downMoves);
+        validMoves.addAll(rightMoves);
+        validMoves.addAll(leftMoves);
+
         return validMoves;
     }
 }
