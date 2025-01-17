@@ -123,7 +123,9 @@ public class ChessPiece {
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                    if(pieceColor != board.getPiece(nextPosition).pieceColor) {
+                        validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                    }
                     upRightClear = false;
                 }
             }
@@ -141,7 +143,9 @@ public class ChessPiece {
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                    if(pieceColor != board.getPiece(nextPosition).pieceColor) {
+                        validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                    }
                     upLeftClear = false;
                 }
             }
@@ -159,7 +163,9 @@ public class ChessPiece {
                     }
                 }
                 else {
-                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                    if(pieceColor != board.getPiece(nextPosition).pieceColor) {
+                        validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                    }
                     downRightClear = false;
                 }
             }
@@ -177,7 +183,9 @@ public class ChessPiece {
                 }
             }
             else {
-                validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                if(pieceColor != board.getPiece(nextPosition).pieceColor) {
+                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                }
                 downLeftClear = false;
             }
         }
