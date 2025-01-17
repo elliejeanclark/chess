@@ -132,12 +132,14 @@ public class ChessPiece {
 
     private ChessMove singleSquareMovement(ChessBoard board, ChessPosition myPosition, int rowMovement, int colMovement) {
         ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + rowMovement, myPosition.getColumn() + colMovement);
-        if (board.getPiece(nextPosition) == null) {
-            return new ChessMove(myPosition, nextPosition, null);
-        }
-        else {
-            if (pieceColor != board.getPiece(nextPosition).pieceColor) {
+        if(inBounds(nextPosition)) {
+            if (board.getPiece(nextPosition) == null) {
                 return new ChessMove(myPosition, nextPosition, null);
+            }
+            else {
+                if (pieceColor != board.getPiece(nextPosition).pieceColor) {
+                    return new ChessMove(myPosition, nextPosition, null);
+                }
             }
         }
         return null;
