@@ -91,19 +91,29 @@ public class ChessPiece {
         }
     }
 
-    public Collection<ChessMove> bishopMovement(ChessBoard board, ChessPosition myPosition){
+    private boolean inBounds(ChessPosition position) {
+        if (position.getRow() > 8 || position.getColumn() > 8 || position.getRow() < 1 || position.getColumn() < 1) {
+            return false;
+        }
+        return true;
+    }
+
+    private Collection<ChessMove> bishopMovement(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> validMoves = new ArrayList<>();
             boolean upRightClear = true;
             boolean upLeftClear = true;
             boolean downRightClear = true;
             boolean downLeftClear = true;
             ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
+            if (!inBounds(nextPosition)) {
+                upRightClear = false;
+            }
 
             while (upRightClear) {
                 if (board.getPiece(nextPosition) == null) {
                     validMoves.add(new ChessMove(myPosition, nextPosition, null));
                     nextPosition = new ChessPosition(nextPosition.getRow() + 1, nextPosition.getColumn() + 1);
-                    if (nextPosition.getRow() == 8 || nextPosition.getColumn() == 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
+                    if (!inBounds(nextPosition)) {
                         upRightClear = false;
                     }
                 }
@@ -114,11 +124,14 @@ public class ChessPiece {
             }
 
             nextPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
+            if (!inBounds(nextPosition)) {
+                upLeftClear = false;
+            }
             while (upLeftClear) {
                 if (board.getPiece(nextPosition) == null) {
                     validMoves.add(new ChessMove(myPosition, nextPosition, null));
                     nextPosition = new ChessPosition(nextPosition.getRow() + 1, nextPosition.getColumn() - 1);
-                    if (nextPosition.getRow() == 8 || nextPosition.getColumn() == 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
+                    if (!inBounds(nextPosition)) {
                         upLeftClear = false;
                     }
                 }
@@ -129,12 +142,15 @@ public class ChessPiece {
             }
 
             nextPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
+            if (!inBounds(nextPosition)) {
+                downRightClear = false;
+            }
             while (downRightClear) {
                 if (board.getPiece(nextPosition) == null) {
                     validMoves.add(new ChessMove(myPosition, nextPosition, null));
                     nextPosition = new ChessPosition(nextPosition.getRow() - 1, nextPosition.getColumn() + 1);
-                    if (nextPosition.getRow() == 8 || nextPosition.getColumn() == 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
-                        downRightClear= false;
+                    if (!inBounds(nextPosition)) {
+                        downRightClear = false;
                     }
                 }
                 else {
@@ -144,12 +160,15 @@ public class ChessPiece {
             }
 
         nextPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1);
+        if (!inBounds(nextPosition)) {
+            downLeftClear = false;
+        }
         while (downLeftClear) {
             if (board.getPiece(nextPosition) == null) {
                 validMoves.add(new ChessMove(myPosition, nextPosition, null));
                 nextPosition = new ChessPosition(nextPosition.getRow() - 1, nextPosition.getColumn() - 1);
-                if (nextPosition.getRow() == 8 || nextPosition.getColumn() == 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
-                    downLeftClear= false;
+                if (!inBounds(nextPosition)) {
+                    downLeftClear = false;
                 }
             }
             else {
