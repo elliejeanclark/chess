@@ -130,6 +130,19 @@ public class ChessPiece {
         return validMoves;
     }
 
+    private ChessMove singleSquareMovement(ChessBoard board, ChessPosition myPosition, int rowMovement, int colMovement) {
+        ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + rowMovement, myPosition.getColumn() + colMovement);
+        if (board.getPiece(nextPosition) == null) {
+            return new ChessMove(myPosition, nextPosition, null);
+        }
+        else {
+            if (pieceColor != board.getPiece(nextPosition).pieceColor) {
+                return new ChessMove(myPosition, nextPosition, null);
+            }
+        }
+        return null;
+    }
+
     private Collection<ChessMove> bishopMovement(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> validMoves = new ArrayList<>();
 
@@ -144,31 +157,46 @@ public class ChessPiece {
         return validMoves;
     }
 
-    public Collection<ChessMove> kingMovement(ChessBoard board, ChessPosition myPosition){
+    private Collection<ChessMove> kingMovement(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> validMoves = new ArrayList<>();
-        //calculate king movement here.
+        ArrayList<ChessMove> potentialMoves = new ArrayList<>();
+        potentialMoves.add(singleSquareMovement(board, myPosition, 1, 0));
+        potentialMoves.add(singleSquareMovement(board, myPosition, 1, 1));
+        potentialMoves.add(singleSquareMovement(board, myPosition, 1, -1));
+        potentialMoves.add(singleSquareMovement(board, myPosition, 0, 1));
+        potentialMoves.add(singleSquareMovement(board, myPosition, 0, -1));
+        potentialMoves.add(singleSquareMovement(board, myPosition, -1, 1));
+        potentialMoves.add(singleSquareMovement(board, myPosition, -1, -1));
+        potentialMoves.add(singleSquareMovement(board, myPosition, -1, 0));
+
+        for (ChessMove move : potentialMoves) {
+            if (move != null) {
+                validMoves.add(move);
+            }
+        }
+
         return validMoves;
     }
 
-    public Collection<ChessMove> knightMovement(ChessBoard board, ChessPosition myPosition){
+    private Collection<ChessMove> knightMovement(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> validMoves = new ArrayList<>();
         //calculate knight movement here.
         return validMoves;
     }
 
-    public Collection<ChessMove> pawnMovement(ChessBoard board, ChessPosition myPosition){
+    private Collection<ChessMove> pawnMovement(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> validMoves = new ArrayList<>();
         //calculate pawn movement here.
         return validMoves;
     }
 
-    public Collection<ChessMove> queenMovement(ChessBoard board, ChessPosition myPosition){
+    private Collection<ChessMove> queenMovement(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> validMoves = new ArrayList<>();
         //calculate queen movement here.
         return validMoves;
     }
 
-    public Collection<ChessMove> rookMovement(ChessBoard board, ChessPosition myPosition){
+    private Collection<ChessMove> rookMovement(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> validMoves = new ArrayList<>();
         //calculate rook movement here.
         return validMoves;
