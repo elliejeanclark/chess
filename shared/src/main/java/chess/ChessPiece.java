@@ -103,92 +103,44 @@ public class ChessPiece {
         return true;
     }
 
-    private Collection<ChessMove> bishopMovement(ChessBoard board, ChessPosition myPosition){
+    private Collection<ChessMove> oneDirectionMovement(ChessBoard board, ChessPosition myPosition, int rowMovement, int colMovement) {
         ArrayList<ChessMove> validMoves = new ArrayList<>();
-            boolean upRightClear = true;
-            boolean upLeftClear = true;
-            boolean downRightClear = true;
-            boolean downLeftClear = true;
-            ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
-            if (!inBounds(nextPosition)) {
-                upRightClear = false;
-            }
-
-            while (upRightClear) {
-                if (board.getPiece(nextPosition) == null) {
-                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
-                    nextPosition = new ChessPosition(nextPosition.getRow() + 1, nextPosition.getColumn() + 1);
-                    if (!inBounds(nextPosition)) {
-                        upRightClear = false;
-                    }
-                }
-                else {
-                    if(pieceColor != board.getPiece(nextPosition).pieceColor) {
-                        validMoves.add(new ChessMove(myPosition, nextPosition, null));
-                    }
-                    upRightClear = false;
-                }
-            }
-
-            nextPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
-            if (!inBounds(nextPosition)) {
-                upLeftClear = false;
-            }
-            while (upLeftClear) {
-                if (board.getPiece(nextPosition) == null) {
-                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
-                    nextPosition = new ChessPosition(nextPosition.getRow() + 1, nextPosition.getColumn() - 1);
-                    if (!inBounds(nextPosition)) {
-                        upLeftClear = false;
-                    }
-                }
-                else {
-                    if(pieceColor != board.getPiece(nextPosition).pieceColor) {
-                        validMoves.add(new ChessMove(myPosition, nextPosition, null));
-                    }
-                    upLeftClear = false;
-                }
-            }
-
-            nextPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
-            if (!inBounds(nextPosition)) {
-                downRightClear = false;
-            }
-            while (downRightClear) {
-                if (board.getPiece(nextPosition) == null) {
-                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
-                    nextPosition = new ChessPosition(nextPosition.getRow() - 1, nextPosition.getColumn() + 1);
-                    if (!inBounds(nextPosition)) {
-                        downRightClear = false;
-                    }
-                }
-                else {
-                    if(pieceColor != board.getPiece(nextPosition).pieceColor) {
-                        validMoves.add(new ChessMove(myPosition, nextPosition, null));
-                    }
-                    downRightClear = false;
-                }
-            }
-
-        nextPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1);
-        if (!inBounds(nextPosition)) {
-            downLeftClear = false;
+        boolean clear = true;
+        ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + rowMovement, myPosition.getColumn() + colMovement);
+        if (!inBounds(nextPosition)){
+            clear = false;
         }
-        while (downLeftClear) {
+
+        while (clear) {
             if (board.getPiece(nextPosition) == null) {
                 validMoves.add(new ChessMove(myPosition, nextPosition, null));
-                nextPosition = new ChessPosition(nextPosition.getRow() - 1, nextPosition.getColumn() - 1);
+                nextPosition = new ChessPosition(nextPosition.getRow() + rowMovement, nextPosition.getColumn() + colMovement);
                 if (!inBounds(nextPosition)) {
-                    downLeftClear = false;
+                    clear = false;
                 }
             }
             else {
                 if(pieceColor != board.getPiece(nextPosition).pieceColor) {
                     validMoves.add(new ChessMove(myPosition, nextPosition, null));
                 }
-                downLeftClear = false;
+                clear = false;
             }
         }
+
+        return validMoves;
+    }
+
+    private Collection<ChessMove> bishopMovement(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+
+        Collection<ChessMove> upRightMoves = oneDirectionMovement(board, myPosition, 1, 1);
+        Collection<ChessMove> upLeftMoves = oneDirectionMovement(board, myPosition, -1, 1);
+        Collection<ChessMove> downRightMoves = oneDirectionMovement(board, myPosition, 1, -1);
+        Collection<ChessMove> downLeftMoves = oneDirectionMovement(board, myPosition, -1, -1);
+        validMoves.addAll(upRightMoves);
+        validMoves.addAll(upLeftMoves);
+        validMoves.addAll(downRightMoves);
+        validMoves.addAll(downLeftMoves);
         return validMoves;
     }
 
