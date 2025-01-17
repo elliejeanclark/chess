@@ -182,7 +182,22 @@ public class ChessPiece {
 
     private Collection<ChessMove> knightMovement(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> validMoves = new ArrayList<>();
-        //calculate knight movement here.
+        ArrayList<ChessMove> potentialMoves = new ArrayList<>();
+        potentialMoves.add(singleSquareMovement(board, myPosition, 2, 1));
+        potentialMoves.add(singleSquareMovement(board, myPosition, 1, 2));
+        potentialMoves.add(singleSquareMovement(board, myPosition, -2, 1));
+        potentialMoves.add(singleSquareMovement(board, myPosition, -1, 2));
+        potentialMoves.add(singleSquareMovement(board, myPosition, 2, -1));
+        potentialMoves.add(singleSquareMovement(board, myPosition, 1, -2));
+        potentialMoves.add(singleSquareMovement(board, myPosition, -2, -1));
+        potentialMoves.add(singleSquareMovement(board, myPosition, -1, -2));
+
+        for (ChessMove move : potentialMoves) {
+            if (move != null) {
+                validMoves.add(move);
+            }
+        }
+
         return validMoves;
     }
 
