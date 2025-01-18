@@ -145,6 +145,105 @@ public class ChessPiece {
         return null;
     }
 
+    private Collection<ChessMove> pawnMoveCalculator(ChessBoard board, ChessPosition myPosition, int rowMovement, int colMovement) {
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + rowMovement, myPosition.getColumn() + colMovement);
+        if (colMovement == 0) {
+            if (inBounds(nextPosition)) {
+                if (rowMovement == 2) {
+                    ChessPosition checkIfBlocked = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
+                    if (board.getPiece(checkIfBlocked) != null) {
+                        return validMoves;
+                    }
+                }
+                if (rowMovement == -2) {
+                    ChessPosition checkIfBlocked = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn());
+                    if (board.getPiece(checkIfBlocked) != null) {
+                        return validMoves;
+                    }
+                }
+                if (board.getPiece(nextPosition) == null) {
+                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                        if (nextPosition.getRow() == 8) {
+                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.ROOK));
+                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.BISHOP));
+                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.KNIGHT));
+                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.QUEEN));
+                        }
+                        else {
+                            validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                        }
+                    }
+                    else {
+                        if (nextPosition.getRow() == 1) {
+                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.ROOK));
+                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.BISHOP));
+                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.KNIGHT));
+                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.QUEEN));
+                        }
+                        else {
+                            validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            if (inBounds(nextPosition)) {
+                if(board.getPiece(nextPosition) != null) {
+                    if (pieceColor == ChessGame.TeamColor.WHITE && nextPosition.getRow() == 8) {
+                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.ROOK));
+                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.BISHOP));
+                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.KNIGHT));
+                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.QUEEN));
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.BLACK && nextPosition.getRow() == 1) {
+                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.ROOK));
+                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.BISHOP));
+                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.KNIGHT));
+                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.QUEEN));
+                    }
+                    else if (pieceColor != board.getPiece(nextPosition).pieceColor){
+                        validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                    }
+                }
+            }
+        }
+        return validMoves;
+    }
+
+    private Collection<ChessMove> pawnMovement(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        if (pieceColor == ChessGame.TeamColor.WHITE) {
+            if (myPosition.getRow() == 2) {
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, 2, 0));
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, 1, 0));
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, 1, 1));
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, 1, -1));
+            }
+            else {
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, 1, 0));
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, 1, 1));
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, 1, -1));
+            }
+        }
+        else {
+            if (myPosition.getRow() == 7) {
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, -2, 0));
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, -1, 0));
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, -1, 1));
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, -1, -1));
+            }
+            else {
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, -1, 0));
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, -1, 1));
+                validMoves.addAll(pawnMoveCalculator(board, myPosition, -1, -1));
+            }
+        }
+
+        return validMoves;
+    }
+
     private Collection<ChessMove> bishopMovement(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> validMoves = new ArrayList<>();
 
@@ -198,12 +297,6 @@ public class ChessPiece {
             }
         }
 
-        return validMoves;
-    }
-
-    private Collection<ChessMove> pawnMovement(ChessBoard board, ChessPosition myPosition){
-        ArrayList<ChessMove> validMoves = new ArrayList<>();
-        //calculate pawn movement here.
         return validMoves;
     }
 
