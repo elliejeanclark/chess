@@ -178,12 +178,15 @@ public class ChessGame {
                     col += 1;
                 }
                 else if (currPiece.getTeamColor() != color) {
-                    col +=1;
+                    col += 1;
                 }
                 else {
                     allPositions.add(currPosition);
+                    col += 1;
                 }
             }
+            col = 1;
+            row += 1;
         }
 
         return allPositions;
