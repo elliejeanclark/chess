@@ -133,4 +133,96 @@ When you move a class inside a method so that you don't need to pass in addition
 instance of a that inner class.
 
 ### Anonymous Inner Classes
-An inner class doesn't have a name 
+An inner class doesn't have a name and does not require a new call because it has a new keyword attached to it.
+
+## Collections
+Essentially the library of data structures that are included in the Java Library. A collection is a set of values.
+There are things like lists and sets and queues, and subsets of those like sortedsets and deque etc.
+
+### Data Structures
+These collections have methods that you can use that are in the collection interface. Each collection interface
+then inherits from the collection interface and add their own required methods to each data type. 
+
+Most of these collections have iterator methods that you can use to iterate through the library.
+
+These collections can **only** store objects, and not primitive data types. 
+
+### List
+They have an order to them. A first element, second, and so on. 
+They are accessed by an index. 
+
+Array list uses an array internally to store the list
+
+Linked list uses a doubly-linked list implementation
+
+### Set
+A collection that contains no duplicates. It has add, contains, and remove methods.
+
+#### Hash Set
+Hash table implementation.
+Unordered. You need good hash methods or these will be slow. 
+
+#### Tree Set
+Comes out in sorted order. You need to implement comparable on objects if you are going to use a tree set. 
+
+#### Linked Hash Set
+Uses the hash table and something else that I missed.
+
+### Queue
+A collection designed for holding elements prior to processing. Has add method, peek(look at 
+next value before remove), and remove. 
+
+- Array Deque
+  - FIFO, resizable array implementation.
+- LinkedList
+  - FIFO, linked list implementation.
+- PriorityQueue
+  - Priority queue, binary heap implementation. 
+
+### Deque
+A queue that supports efficient insertion and removal at both ends. 
+addFirst, addLast, peekFirst, peekLast, removeFirst, removeLast
+
+- ArrayDeque
+  - resizable array implementation
+- LinkedList
+  - linked list implementation
+
+### Stack
+Java's stack class is deprecated. It has been phased out because there is a new and improved way to do something.
+Use Deque instead.
+
+### Map
+A collection that maps keys to values. Called dictionaries in other languages. Keys must be unique. There is no
+uniqueness guarantee on the map.
+put, get, contains, remove, keySet, values, entrySet.
+
+- HashMap
+  - Hash table implementation
+- TreeMap
+  - bst implementation
+- LinkedHashMap
+  - Hash table and linked list implementation
+
+### Iterable Interface
+All collections, but not maps, implement the iterable interface
+
+### Hash, Equals, Comparison
+You have to think about what kind of objects you are putting in the collection, and what kind of equality you want
+to implement for the class. There is value equality and identity equality. 
+
+#### Hashing-Based Collections
+If you are using any of the collections implemented with hash tables, you may need to override the hashCode method.
+By default, the Object.hashCode method simply returns the object's address. If you want a hash function to be based
+on value rather than identity, override the hashCode method.
+
+**RULE**: If equals is based on identity, so should hashCode be. If equals is based on a value, so should hashCode be,
+and equals and hashCode should use hte same fields in their equality and hashCode calculations.
+
+#### Sorted Collections
+AKA TreeSet(BST), TreeMap (BST), PriorityQueue(binary heap)
+
+The elements of a sorted collection must be sortable. This means that we must be able to compare any two objects and
+determine their relationship. 
+
+Comparable and Comparator for tree-based collections. 

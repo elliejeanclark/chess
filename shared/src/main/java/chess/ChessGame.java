@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -10,15 +11,20 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    public ChessGame() {
+    TeamColor activeTeam;
+    ChessBoard board;
 
+    public ChessGame() {
+        this.activeTeam = TeamColor.WHITE;
+        this.board = new ChessBoard();
+        board.resetBoard();
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return activeTeam;
     }
 
     /**
@@ -27,7 +33,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        activeTeam = team;
     }
 
     /**
@@ -46,7 +52,16 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        Collection<ChessMove> potentialMoves = new ArrayList<>();
+        ChessPiece currPiece = board.getPiece(startPosition);
+        if (currPiece == null) {
+            return null;
+        } else {
+            potentialMoves.addAll(currPiece.pieceMoves(board, startPosition));
+        }
+
+        return validMoves;
     }
 
     /**
@@ -96,7 +111,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -105,6 +120,25 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
+    }
+
+    private ChessPosition getKing(ChessBoard board) {
+        int row = 1;
+        int col = 1;
+        ChessPosition currPosition = new ChessPosition(row, col);
+        while(row < 9) {
+            while (col < 9) {
+                if (board.getPiece(currPosition).getPieceType() != ChessPiece.PieceType.KING) {
+                    col += 1;
+                }
+                else {
+                    return currPosition;
+                }
+            }
+            col = 1;
+            row += 1;
+        }
+        return currPosition;
     }
 }
