@@ -91,6 +91,16 @@ public class ChessGame {
             otherTeamColor = TeamColor.WHITE;
         }
 
+        Collection<ChessPosition> otherTeamPositions = getTeamPositions(board, otherTeamColor);
+        for (ChessPosition position : otherTeamPositions) {
+            Collection<ChessMove> opposingPieceMoves = validMoves(position);
+            for (ChessMove oppMove : opposingPieceMoves) {
+                if (oppMove.getEndPosition() == kingPosition) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
