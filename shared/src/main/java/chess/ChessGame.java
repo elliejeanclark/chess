@@ -53,15 +53,10 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ArrayList<ChessMove> validMoves = new ArrayList<>();
-        Collection<ChessMove> potentialMoves = new ArrayList<>();
         ChessPiece currPiece = board.getPiece(startPosition);
-        ChessPosition kingPosition = getKing(board, currPiece.getTeamColor());
-        if (currPiece == null) {
-            return null;
-        } else {
-            potentialMoves.addAll(currPiece.pieceMoves(board, startPosition));
+        if (currPiece != null) {
+            validMoves.addAll(currPiece.pieceMoves(board, startPosition));
         }
-
         return validMoves;
     }
 
@@ -93,9 +88,13 @@ public class ChessGame {
 
         Collection<ChessPosition> otherTeamPositions = getTeamPositions(board, otherTeamColor);
         for (ChessPosition position : otherTeamPositions) {
-            Collection<ChessMove> opposingPieceMoves = validMoves(position);
-            for (ChessMove oppMove : opposingPieceMoves) {
-                if (oppMove.getEndPosition() == kingPosition) {
+            ArrayList<ChessMove> oppValidMoves = new ArrayList<>();
+            ChessPiece currPiece = board.getPiece(position);
+            if (currPiece != null) {
+                oppValidMoves.addAll(currPiece.pieceMoves(board, position));
+            }
+            for (ChessMove oppMove : oppValidMoves) {
+                if (oppMove.getEndPosition().equals(kingPosition)) {
                     return true;
                 }
             }
@@ -146,33 +145,35 @@ public class ChessGame {
     private ChessPosition getKing(ChessBoard board, TeamColor color) {
         int row = 1;
         int col = 1;
-        ChessPosition currPosition = new ChessPosition(row, col);
+        ChessPosition kingPosition = new ChessPosition(row, col);
         while(row < 9) {
             while (col < 9) {
+                ChessPosition currPosition = new ChessPosition(row, col);
                 ChessPiece currPiece = board.getPiece(currPosition);
-                if (currPiece != null) {
+                if (currPiece == null) {
                     col += 1;
                 }
                 else if (currPiece.getPieceType() != ChessPiece.PieceType.KING && currPiece.getTeamColor() != color) {
                     col += 1;
                 }
                 else {
-                    return currPosition;
+                    kingPosition = currPosition;
+                    return kingPosition;
                 }
             }
             col = 1;
             row += 1;
         }
-        return currPosition;
+        return kingPosition;
     }
 
     private Collection<ChessPosition> getTeamPositions (ChessBoard board, TeamColor color) {
         ArrayList<ChessPosition> allPositions = new ArrayList<>();
         int row = 1;
         int col = 1;
-        ChessPosition currPosition = new ChessPosition(row, col);
         while(row < 9) {
             while (col < 9) {
+                ChessPosition currPosition = new ChessPosition(row, col);
                 ChessPiece currPiece = board.getPiece(currPosition);
                 if (currPiece == null) {
                     col += 1;
