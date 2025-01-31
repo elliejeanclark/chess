@@ -228,9 +228,15 @@ public class ChessGame {
     private ChessBoard updateBoard(ChessBoard oldBoard, ChessMove move) {
         ChessPiece currPiece = oldBoard.getPiece(move.getStartPosition());
         ChessBoard updatedBoard = new ChessBoard(oldBoard);
-        updatedBoard.addPiece(move.getEndPosition(), currPiece);
-        updatedBoard.addPiece(move.getStartPosition(), null);
-
+        ChessPiece promotionPiece = new ChessPiece(currPiece.getTeamColor(), move.getPromotionPiece());
+        if (move.getPromotionPiece() == null){
+            updatedBoard.addPiece(move.getEndPosition(), currPiece);
+            updatedBoard.addPiece(move.getStartPosition(), null);
+        }
+        else {
+            updatedBoard.addPiece(move.getEndPosition(), promotionPiece);
+            updatedBoard.addPiece(move.getStartPosition(), null);
+        }
         return updatedBoard;
     }
 
