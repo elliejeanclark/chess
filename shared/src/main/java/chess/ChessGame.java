@@ -1,5 +1,6 @@
 package chess;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -89,8 +90,39 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        ChessBoard updatedBoard = updateBoard(board, move);
-        setBoard(updatedBoard);
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPiece currPiece = board.getPiece(startPosition);
+        if (currPiece == null){
+            throw new InvalidMoveException("there is not a piece there");
+        }
+        else if (currPiece.getTeamColor() != activeTeam){
+            throw new InvalidMoveException("It is not your turn");
+        }
+        else {
+            ArrayList<ChessMove> potentialMoves = new ArrayList<>();
+            potentialMoves.addAll(validMoves(startPosition));
+            boolean validMove = false;
+            for (ChessMove pMove : potentialMoves) {
+                if (pMove.equals(move)){
+                    validMove = true;
+                    break;
+                }
+            }
+
+            if (validMove) {
+                ChessBoard updatedBoard = updateBoard(board, move);
+                setBoard(updatedBoard);
+                if (activeTeam == TeamColor.WHITE){
+                    activeTeam = TeamColor.BLACK;
+                }
+                else {
+                    activeTeam = TeamColor.WHITE;
+                }
+            }
+            else {
+                throw new InvalidMoveException("That is not a valid move.");
+            }
+        }
     }
 
     /**
