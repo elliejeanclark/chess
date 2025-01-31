@@ -53,9 +53,10 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ArrayList<ChessMove> validMoves = new ArrayList<>();
+        ArrayList<ChessMove> potentialMoves = new ArrayList<>();
         ChessPiece currPiece = board.getPiece(startPosition);
         if (currPiece != null) {
-            validMoves.addAll(currPiece.pieceMoves(board, startPosition));
+            potentialMoves.addAll(currPiece.pieceMoves(board, startPosition));
         }
         return validMoves;
     }
@@ -67,7 +68,8 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessBoard updatedBoard = updateBoard(board, move);
+        setBoard(updatedBoard);
     }
 
     /**
@@ -191,5 +193,13 @@ public class ChessGame {
         }
 
         return allPositions;
+    }
+
+    private ChessBoard updateBoard(ChessBoard board, ChessMove move) {
+        ChessPiece currPiece = board.getPiece(move.getStartPosition());
+        board.addPiece(move.getEndPosition(), currPiece);
+        board.addPiece(move.getStartPosition(), null);
+
+        return board;
     }
 }
