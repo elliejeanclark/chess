@@ -27,13 +27,82 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-        return "ChessBoard{" +
-                "Row 8 Col 1" + getPiece(new ChessPosition(8, 1)) + "\n";
+        return "|" + getPiece(new ChessPosition(8, 1)) +
+                "|" + getPiece(new ChessPosition(8, 2)) +
+                "|" + getPiece(new ChessPosition(8, 3)) +
+                "|" + getPiece(new ChessPosition(8, 4)) +
+                "|" + getPiece(new ChessPosition(8, 5)) +
+                "|" + getPiece(new ChessPosition(8, 6)) +
+                "|" + getPiece(new ChessPosition(8, 7)) +
+                "|" + getPiece(new ChessPosition(8, 8)) + "\n" +
+                "|" + getPiece(new ChessPosition(7, 1)) +
+                "|" + getPiece(new ChessPosition(7, 2)) +
+                "|" + getPiece(new ChessPosition(7, 3)) +
+                "|" + getPiece(new ChessPosition(7, 4)) +
+                "|" + getPiece(new ChessPosition(7, 5)) +
+                "|" + getPiece(new ChessPosition(7, 6)) +
+                "|" + getPiece(new ChessPosition(7, 7)) +
+                "|" + getPiece(new ChessPosition(7, 8)) + "\n" +
+                "|" + getPiece(new ChessPosition(6, 1)) +
+                "|" + getPiece(new ChessPosition(6, 2)) +
+                "|" + getPiece(new ChessPosition(6, 3)) +
+                "|" + getPiece(new ChessPosition(6, 4)) +
+                "|" + getPiece(new ChessPosition(6, 5)) +
+                "|" + getPiece(new ChessPosition(6, 6)) +
+                "|" + getPiece(new ChessPosition(6, 7)) +
+                "|" + getPiece(new ChessPosition(6, 8)) + "\n" +
+                "|" + getPiece(new ChessPosition(5, 1)) +
+                "|" + getPiece(new ChessPosition(5, 2)) +
+                "|" + getPiece(new ChessPosition(5, 3)) +
+                "|" + getPiece(new ChessPosition(5, 4)) +
+                "|" + getPiece(new ChessPosition(5, 5)) +
+                "|" + getPiece(new ChessPosition(5, 6)) +
+                "|" + getPiece(new ChessPosition(5, 7)) +
+                "|" + getPiece(new ChessPosition(5, 8)) + "\n" +
+                "|" + getPiece(new ChessPosition(4, 1)) +
+                "|" + getPiece(new ChessPosition(4, 2)) +
+                "|" + getPiece(new ChessPosition(4, 3)) +
+                "|" + getPiece(new ChessPosition(4, 4)) +
+                "|" + getPiece(new ChessPosition(4, 5)) +
+                "|" + getPiece(new ChessPosition(4, 6)) +
+                "|" + getPiece(new ChessPosition(4, 7)) +
+                "|" + getPiece(new ChessPosition(4, 8)) + "\n" +
+                "|" + getPiece(new ChessPosition(3, 1)) +
+                "|" + getPiece(new ChessPosition(3, 2)) +
+                "|" + getPiece(new ChessPosition(3, 3)) +
+                "|" + getPiece(new ChessPosition(3, 4)) +
+                "|" + getPiece(new ChessPosition(3, 5)) +
+                "|" + getPiece(new ChessPosition(3, 6)) +
+                "|" + getPiece(new ChessPosition(3, 7)) +
+                "|" + getPiece(new ChessPosition(3, 8)) + "\n" +
+                "|" + getPiece(new ChessPosition(2, 1)) +
+                "|" + getPiece(new ChessPosition(2, 2)) +
+                "|" + getPiece(new ChessPosition(2, 3)) +
+                "|" + getPiece(new ChessPosition(2, 4)) +
+                "|" + getPiece(new ChessPosition(2, 5)) +
+                "|" + getPiece(new ChessPosition(2, 6)) +
+                "|" + getPiece(new ChessPosition(2, 7)) +
+                "|" + getPiece(new ChessPosition(2, 8)) + "\n" +
+                "|" + getPiece(new ChessPosition(1, 1)) +
+                "|" + getPiece(new ChessPosition(1, 2)) +
+                "|" + getPiece(new ChessPosition(1, 3)) +
+                "|" + getPiece(new ChessPosition(1, 4)) +
+                "|" + getPiece(new ChessPosition(1, 5)) +
+                "|" + getPiece(new ChessPosition(1, 6)) +
+                "|" + getPiece(new ChessPosition(1, 7)) +
+                "|" + getPiece(new ChessPosition(1, 8)) + "\n";
     }
 
     private ChessPiece[][] squares = new ChessPiece[8][8];
 
     public ChessBoard() {
+    }
+
+    public ChessBoard(ChessBoard copy) {
+        squares = Arrays.copyOf(copy.squares, copy.squares.length);
+        for (int i = 0; i < 8; i++) {
+            squares[i] = Arrays.copyOf(copy.squares[i], copy.squares[i].length);
+        }
     }
 
     /**
