@@ -55,7 +55,7 @@ public class ChessGame {
         ArrayList<ChessMove> validMoves = new ArrayList<>();
         Collection<ChessMove> potentialMoves = new ArrayList<>();
         ChessPiece currPiece = board.getPiece(startPosition);
-        ChessPosition kingPosition = getPiece(board, currPiece.getTeamColor(), currPiece.getPieceType());
+        ChessPosition kingPosition = getKing(board, currPiece.getTeamColor());
         if (currPiece == null) {
             return null;
         } else {
@@ -82,7 +82,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ChessPosition kingPosition = getPiece(board, teamColor, ChessPiece.PieceType.KING);
+        ChessPosition kingPosition = getKing(board, teamColor);
         TeamColor otherTeamColor;
         if (teamColor == TeamColor.WHITE) {
             otherTeamColor = TeamColor.BLACK;
@@ -133,14 +133,17 @@ public class ChessGame {
         return board;
     }
 
-    private ChessPosition getPiece(ChessBoard board, TeamColor color, ChessPiece.PieceType type) {
+    private ChessPosition getKing(ChessBoard board, TeamColor color) {
         int row = 1;
         int col = 1;
         ChessPosition currPosition = new ChessPosition(row, col);
         while(row < 9) {
             while (col < 9) {
                 ChessPiece currPiece = board.getPiece(currPosition);
-                if (currPiece.getPieceType() != type && currPiece.getTeamColor() != color) {
+                if (currPiece != null) {
+                    col += 1;
+                }
+                else if (currPiece.getPieceType() != ChessPiece.PieceType.KING && currPiece.getTeamColor() != color) {
                     col += 1;
                 }
                 else {
@@ -155,6 +158,23 @@ public class ChessGame {
 
     private Collection<ChessPosition> getTeamPositions (ChessBoard board, TeamColor color) {
         ArrayList<ChessPosition> allPositions = new ArrayList<>();
+        int row = 1;
+        int col = 1;
+        ChessPosition currPosition = new ChessPosition(row, col);
+        while(row < 9) {
+            while (col < 9) {
+                ChessPiece currPiece = board.getPiece(currPosition);
+                if (currPiece == null) {
+                    col += 1;
+                }
+                else if (currPiece.getTeamColor() != color) {
+                    col +=1;
+                }
+                else {
+                    allPositions.add(currPosition);
+                }
+            }
+        }
 
         return allPositions;
     }
