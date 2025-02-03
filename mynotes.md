@@ -226,3 +226,96 @@ The elements of a sorted collection must be sortable. This means that we must be
 determine their relationship. 
 
 Comparable and Comparator for tree-based collections. 
+
+## Generics
+Generic classes have their own parameters that are passed into the pair when a new instance of that class is created. 
+
+You can now use var syntax to instantiate a generic class 
+
+### Inheriting from a generic class
+Specify types in the extends clause. It then fills in the type parameters from its super class. You can also pass in 
+generic types from a generic subclass. 
+
+### Generic Interfaces
+Example:
+```java
+public interface Function<T, R> {
+    R apply(T param);
+}
+```
+
+### Generic Type Wildcards
+Wildcards with special syntax can be used to expand the acceptable types. 
+ie
+```java
+public class GenericClassExample<T> {
+    public void method1(List<? super T> param) {}
+    public T method2() {return null;}
+}
+```
+In this example, method1 accepts a list of whatever T is, or any of T's super classes. Replacing super with extends
+results in the method accepting a list of T's or any of T's subclasses
+
+## Lambdas
+A lambda is an anonymous function, AKA a function that is not bound to a name. This enables you to pass functions around
+as pieces of data. For example you could create a queue of functions that you want to call at a specific point in your 
+code. Lambdas are all about deferred initiation. 
+
+Example: 
+```java
+
+public static void main(String[] args) {
+    String [] values = {"this", "is", "a", "test", "but", "only", "a", "test"};
+    Arrays.sort(values, new StringLengthComperator());
+    //#2 Anonymous inner class
+    Arrays.sort(values, new Comperator<String>() {
+        @Override
+        public int compare(String first, String second) {
+            return first.length() - second.length();
+        }
+    });
+  
+    //#3 with lambda
+    Arrays.sort(values, (String first, String Second) -> { return first.length() - second.length(); });
+    
+    //#4 with concise lambda
+    Arrays.sort(values, (first, second) -> first.length() - second.length());
+}
+
+private static class StringLengthComperator implements Coomperator<String> {
+    @Override
+    public int compare(String first, String second) {
+        return first.length() - second.length();
+    }
+}
+```
+
+### Method References
+Simplified syntax for lambda expressions is that simply call an existing method.
+
+The lambda expression simply calls an existing method, passing it's parameter to the method so that it can be 
+replaced with a method reference.
+
+A double colon indicates a method reference, instead of a method call. A parameter list is not needed or allowed for a 
+method reference and there is no -> operator. 
+
+Method references can be used for static method, instance method, and constructor invocations. 
+
+## IO
+At the lowest level, Java represents I/O with a data abstraction known as a stream. A stream derives its meaning from 
+a stream of liquid where you are either consuming the fluid from the outlet of the stream, or you are channeling liquid
+into the stream for later consumption. Streams can flow forever or dry up. 
+
+The two base classes for dealing with streams in Java are InputStream, and OutputStream. You read data from an InputStream
+and you write data to an OutputStream. Both of these classes are abstract and require some subclasses in order to use their
+functionality. For example, you can use a FileInputStream to read bytes of data from a file. Likewise you can use a
+FileOutputStream to write data to a file. 
+
+### Reader and Writer
+Working with streams is fine for bytes, but for higher level object you need Reader and Writer classes. 
+
+### Scanner
+Scanner classes take the low level one byte/character at a time advantage of streams and readers and writers and then
+can parse into different words as defined by a regular expression. By default, it parses based on any whitespace. 
+Scanners can read lots of different data types like ints, bytes, booleans, and all out of a text scanner and do the
+heavy lifting there for you.
