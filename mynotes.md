@@ -319,3 +319,114 @@ Scanner classes take the low level one byte/character at a time advantage of str
 can parse into different words as defined by a regular expression. By default, it parses based on any whitespace. 
 Scanners can read lots of different data types like ints, bytes, booleans, and all out of a text scanner and do the
 heavy lifting there for you.
+
+## JSON & Serialization
+A standardized format for sharing data. They contain start and end tags that have key value pairs to represent data.
+"JavaScript Object Notation"
+
+### xml
+You can add attributes to the start tags, as well as nest attributes inside of the tags. Usually nested elements are more
+complex objects. 
+
+### JSON Data Types
+- Strings
+- Number
+- Boolean
+- Array
+  - Can be mixed types
+- Object
+- Null
+
+Objects have a bunch of key value pairs inside of curly braces. By nesting arrays inside arrays, and objects inside of objects,
+you can build up a representation of pretty much whatever you want. You can think of JSON as essentially a tree.
+
+### Parsing
+
+#### DOM Parsers
+Convert JSON text to an in-memory tree data structure. The tree is called the DOM or the "document object model"
+after running the parser to create a DOM, traverse the DOM to extract the data you want.
+Not great for huge data files because it will run out of memory after taking a really long time. 
+
+#### Stream Parsers
+Tokenizers that return one token at a time from the Json data file.
+Last option that you would go to. It is low level. This is better for those reaaaaaly big files so that you can start and stop 
+and process data a little at a time. Streaming parsing is also good if you are looking for one very specific and small thing
+out of a file. 
+
+#### Serializers/Deserializers
+Use a library to convert from JSON to Java Objects (and vise versa)
+Gson and Jackson are both popular libraries. 
+
+### Serializing
+Turning data into an array of characters and bytes so that it can be passed or taken from a database.
+Essentially making the big json object into a big string.
+Pretty printing makes the data that is returned really human-readable and indented and so on and so forth. 
+Serialization converts each object recursively into a json string.
+
+### Deserialize
+This is just the opposite of serialization, it takes a json string, and expands it into a full Json object so that it 
+can be read by a human and more operations can be done with the JSON. 
+
+## Design Principles
+The bigger a program becomes, the more important it is to organize it well. You will want to find ways to identify 
+actors, objects, and interactions necessary to represent the application's domain. 
+
+Focus on the following high level goals:
+- It does what the customer wants it to do
+- It is easy to understand, debug, and maintain
+- It is extensible to required changes. 
+
+### Design is inherently iterative
+- design, implement, test, design, implement, test...
+- Feedback loop from the implementation back into design provides valuable knowledge.
+- Designing everything before beginning implementation doesn't work. 
+- Beginning implementation without doing any design also doesn't work.
+- The appropriate balance is achieved by interleaving design and implementation activities in relatively short iterations. 
+
+### Abstraction
+- Each class ha sa carefully designed public interface that defines how the rest of the system interacts with it. 
+- A client can invoke operations on an object without understanding how it works internally.
+- This is a powerful technique for reducing the cognitive burden of building complex systems. 
+
+#### Building abstract classes
+- Classes often model complex, real-world objects.
+- You can't fully represent the thing you are abstracting, so you make domain appropriate decisions 
+about what to represent in methods and variables. 
+  - Would you use a heart-rate or fingerprint in a person class?
+  - Probably not, but what if you are building a system for a heart surgeon or for the FBI?
+
+### Naming
+- Selecting good names for things is critical.
+- Clearly relay function or purpose.
+- Class and variable names are usually nouns.
+- Method names are usually verbs. They could also be named the thing that they are returning in some cases.
+
+### Single-Responsibility Principle
+Each class/method/function should have one well-defined concept. All features on that class should be highly related 
+to that concept.
+
+### Decomposition
+Divide large problems in to smaller sub-problems. Process of discovering the abstraction part.
+Levels of decomposition
+- System
+- Subsystem
+- Packages
+- Classes
+- Methods
+
+### Good Algorithm & Data Structure Selection
+Pick the right algorithm and data structure for the problem. No amount of decomposition or abstraction will hide
+a fundamentally flawed selection of algorithm or data structure.
+
+### Low Coupling
+The less the classes know about each other the better. Minimize the number of other classes a class interacts 
+with or knows about. Low coupling reduces ripple effects when a class changes.
+Classes should hide or "encapsulate" information and methods that other classes do not need to know about. 
+
+### Avoid Code Duplication
+- So many copies to maintain.
+- Bugs are duplicated. 
+- Makes program longer, decreasing maintainability.
+Solutions
+- Factor Common code into a separate method or class
+- Shared code might be placed in a common superclass.
