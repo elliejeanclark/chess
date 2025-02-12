@@ -430,3 +430,5 @@ Classes should hide or "encapsulate" information and methods that other classes 
 Solutions
 - Factor Common code into a separate method or class
 - Shared code might be placed in a common superclass.
+
+## HTTP
