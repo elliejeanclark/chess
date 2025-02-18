@@ -432,3 +432,29 @@ Solutions
 - Shared code might be placed in a common superclass.
 
 ## HTTP
+
+### Client Connecting to Server:
+In order to connect, both the client machine and the server machine must have IP addresses. 
+The client program must know the server's IP address in order to connect. 
+IP addresses are hard to work with and remember, so we normally specify a server's ip address using a "domain name"
+The client uses the "domain name service" DNS to connect. 
+
+Because the server machine will probably be running multiple programs, you need more than just an IP address to connect. 
+Each server program communicates on a particular "port" number. A port number is an unsigned integer (1-65535)
+The client can then connect to the machine with the IP address, and then the program with the port number. 
+
+### URL
+URL references many things: protocol, domain name, port number, and path. 
+
+### Requests
+Requests have a method (i.e. request type), the url path, and an optional http version.
+Headers have information that is passed to the server which gives more details about the request you are making.
+You can specify what to accept, what compressed data you can accept, what kind of browser can make this request, and more.
+
+### Responses
+Responses have the http version, a status code (what type of response you are getting) and a reason phrase.
+The headers specify information about the content. Such as type, length, date info, and more. 
+After an empty line, we then have the response body which is what is returned from your request. 
+
+## cURL
+Client for URLs. A tool you can use for debugging http requests. It is a command line tool. 
