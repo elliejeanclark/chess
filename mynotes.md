@@ -458,3 +458,172 @@ After an empty line, we then have the response body which is what is returned fr
 
 ## cURL
 Client for URLs. A tool you can use for debugging http requests. It is a command line tool. 
+
+# Servers - Phase 3
+
+## Creating a server
+
+### Using Lambda Expressions
+```java
+import spark.Spark;
+
+public class SimpleHelloBYUServer {
+    public static void main(String[] args) {
+        Spark.get("/hello", (req, res) -> "Hello BYU!");
+    }
+}
+```
+The lambda function has a request, and a response. 
+
+### Method Reference
+```java
+import spark.Spark;
+import spark.Request;
+import spark.Resonse;
+
+public class SimpleHelloBYUServer {
+    public static void main(String[] args) {
+        Spark.get("/hello", SimpleHelloBYUServer::handleHello);
+    }
+    
+    private static Object handleHello(Request req, Response res) {
+        return "Hello BYU!";
+    }
+}
+```
+
+### Route Class
+```java
+import spark.Spark;
+import spark.Request;
+import spark.Resonse;
+import spark.Route;
+
+public class SimpleHelloBYUServer {
+    public static void main(String[] args) {
+        Spark.get("/hello", new HelloHandler());
+    }
+}
+
+class HelloHandler implements Route {
+    
+    public Object handle(Request req, Response res) {
+        return "Hello BYU!";
+    }
+}
+```
+
+## Specifying port
+args[0] is the first argument given not the name as in other c-based languages. 
+```java
+import spark.Spark;
+
+public class HelloBYUServer {
+    public static void main(String[] args) {
+        try {
+            int port = Integer.parseInt(args[0]);
+            Spark.port(port);
+
+            createRoutes();
+
+            Spark.awaitInitialization();
+            System.out.println("Listening on port " + port);
+        } catch(ArrayIndexOutOfBoundsException | NumberFormatException ex) {
+            System.err.println("Specify the port number as a command line parameter");
+        }
+    }
+
+    private static void createRoutes() {
+        Spark.get("/hello", (req, res) -> "Hello BYU!");
+    }
+}
+```
+
+## Spark Routes
+Routes are matched in the order they are defined. The first route that matches the request is invoked. There are 
+get, post, put and delete routes.
+
+### Named Parameters
+Users can pass in parameters in the url. For example:
+
+```spark
+get("/hello/:name", (request, response) -> { 
+  return "Hello: " + request.params(":name"); 
+});
+```
+
+### Splat Parameters
+You can also get wildcard parameters in a url, it will return an array of the parameters passed in. 
+
+### Request and Response methods
+
+#### Request
+- body() - retrieve the request body
+- headers() - retrieve all headers as a set of strings
+- header("...") - retrieve the specified header
+
+#### Response
+- body(“…”) – set the response body (i.e. “Hello” sets the response body to “Hello”)
+- status(404) – sets the status code to 404 (not found)
+
+## Response example
+```java
+import spark.Spark;
+
+public class HelloBYUServer {
+    public static void main(String[] args) {
+        try {
+            //...
+            createRoutes();
+            //...
+        } catch(ArrayIndexOutOfBoundsException | NumberFormatException ex) {
+            System.err.println("Specify the port number as a command line parameter");
+        }
+    }
+    private static void createRoutes() {
+        Spark.get("/hello", (req, res) -> {
+            res.status(200);
+            res.type("text/plain");
+            res.header("CS240", "Awesome!");
+            res.body("Hello BYU!");
+            return res.body();
+        });
+    }
+}
+```
+
+## Serving Static Files
+You tell spark where your website is. ```Spark.staticFiles.location("/public");```
+
+## Overriding the default not found page
+```Spark.notFound("<html><body>My custom 404 page</body></html>");```
+
+## Filters
+A filter is just a http handler that you can put in front of the other ones to have it essentially restrict
+which handlers can run.
+```Spark
+before((request, response) -> { 
+  boolean authenticated; 
+
+  // ... check if authenticated 
+
+  if (!authenticated) { 
+    halt(401, "You are not welcome here"); 
+  } 
+});
+```
+Optionally, you can pass in a pattern to restrict the routes to which they are applied. 
+There are also after filters. You can have multiple before and/or after filters, which are executed in the order presented.
+
+# Handlers
+What do web api handlers do?
+Some steps:
+- If a web api requires an auth token, the handler can validate the auth token
+- Deserialize JSON request body to Java request object
+- Call service class to perform the requested function, passing it the java request object
+- Receive Java response object from service
+- Serialize Java response object to JSON
+- Send HTTP response back to client with appropriate status code and response body.
+
+# Data Access Classes
+Methods will be CRUD methods. (Create, Read, Update, Delete). 
