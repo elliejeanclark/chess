@@ -1,3 +1,5 @@
 package reqAndRes;
 
-public record LoginResult(LoginRequest loginRequest) {}
+import model.*;
+
+public record LoginResult(AuthData authData) {}

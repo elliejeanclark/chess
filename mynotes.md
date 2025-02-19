@@ -627,3 +627,69 @@ Some steps:
 
 # Data Access Classes
 Methods will be CRUD methods. (Create, Read, Update, Delete). 
+
+# Unit Testing
+Individual parts should be verified before being integrated with other parts. Whenever you add a new class or
+function test to make sure they do the right thing. 
+We always want to automate test cases so that we can run the test cases over and over again when we edit and rewrite code.
+Just because something works now doesn't mean it will work in the future.
+
+## The testing Pyramid
+Unit tests lead to integration tests, lead to end-to-end tests.
+
+## What unit tests do
+- Create objects, call methods, and verify that the returned results are correct. 
+- Actual results vs. Expected results. 
+- Unit tests should be automated to run multiple times. 
+- Notifies you when changes have introduced bugs, and helps to avoid destabilizing the system.
+
+## Test Driver Program
+- The tests are run by a "test driver", which is a program that just runs all the unit test cases. 
+- It must be easy to add new tests to the test driver
+- After running the test cases, the test driver either tells you that everything worked, or gives you a list of tests
+that failed.
+
+## Rules of thumb
+- Fast, we want to run them often. 
+- Cohesive, each should test one specific thing and have a good name that describes what it tests.
+- Independent, they shouldn't have side effects that impact the execution of other test cases. 
+- Unique, each unit test should test something different.
+
+## The JUnit Testing Framework
+For every class in your program, you have a corresponding test class. 
+To make a test for a class, you right-click on the class name, click go to, and then click the test. If you have one already
+it will pop up, otherwise you will have an option to create a new one.
+Stating ```Assertions.assertEquals(thing one, thing two)``` is how you check if something is equal, aka what your code returns is
+what you actually wanted it to return. 
+
+### imports
+You will need to create a dependency for JUnit for the project. 
+```java
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+```
+
+### Tags
+Adding the @Test tag to a method will tell JUnit that this method is a test. 
+@BeforeEach - before every single test case
+@BeforeAll - once before all the test cases you told to run
+@AfterAll
+@AfterEach
+@Timeout(5) -- fails if the code takes longer than (5) seconds to run. 
+
+### Setup
+Most test cases have similar set up, so you can add the @BeforeEach methods which will run before any test that you run.
+This is often how you initialize the values that you are expecting. 
+
+## Code Coverage
+How do you know if your tests are doing a good job of completely testing your code. 
+- Line coverage: lines executed by tests/total lines
+- Statement coverage: same as line coverage if every statement is on it's own line. 
+- Branch coverage: Statement coverage + a measure of how many unique code branches were executed. 
+  - If an if statement with no else, do tests exercise the cases where the if statement is both true and false?
+  - Statement coverage wouldn't detect whether the false case is covered.
+- Function coverage: covering each function. 
+
+If you "run all tests with coverage" in intellij, it will measure how completely your test cases measure your code.
+If after this there are lines in yellow or red, then the lines haven't been tested. 
