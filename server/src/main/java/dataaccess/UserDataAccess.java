@@ -3,9 +3,9 @@ package dataaccess;
 import model.UserData;
 
 public interface UserDataAccess {
-    void createUser(String username, String password, String email);
+    void createUser(UserData user);
 
-    void removeUser(String username);
+    void removeUser(String username) throws DataAccessException;
 
-    UserData getUser(String username);
+    UserData getUser(String username) throws DataAccessException;
 }
