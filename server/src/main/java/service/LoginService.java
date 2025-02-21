@@ -21,24 +21,26 @@ public class LoginService {
             return user;
         }
         catch (DataAccessException e) {
-            return new UserData("bad", "user", "data");
+            throw e;
         }
     }
 
-    public AuthData getAuth() throws DataAccessException {
+    public LoginResult getAuth() throws DataAccessException {
         UserData user = getUser();
         try {
             if (user != null) {
                 String username = req.username();
                 String authToken = "an auth token";
-                return new AuthData(authToken, username);
+                AuthData auth = new AuthData(authToken, username);
+                this.res = new LoginResult(auth);
+                return res;
             }
             else {
                 throw new DataAccessException("user does not exist");
             }
         }
         catch (DataAccessException exception) {
-            return new AuthData("NoUser", "No User");
+            throw(exception);
         }
     }
 }

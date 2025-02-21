@@ -1,7 +1,6 @@
 package dataaccess;
 
 import model.*;
-import dataaccess.DataAccessException;
 
 import java.util.HashMap;
 

@@ -693,3 +693,6 @@ How do you know if your tests are doing a good job of completely testing your co
 
 If you "run all tests with coverage" in intellij, it will measure how completely your test cases measure your code.
 If after this there are lines in yellow or red, then the lines haven't been tested. 
+
+# Spark Headers
+req.headers("authorization"); -- gives back the auth token if it is in there. 
