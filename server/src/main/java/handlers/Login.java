@@ -11,11 +11,7 @@ public class Login implements Route {
         String body = req.body();
         LoginRequest request = new Gson().fromJson(body, LoginRequest.class);
         LoginService service = new LoginService(request);
-        try {
-            LoginResult result = service.getAuth();
-            return new Gson().toJson(result);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        LoginResult result = service.getAuth();
+        return new Gson().toJson(result);
     }
 }

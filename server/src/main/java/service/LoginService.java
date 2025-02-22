@@ -4,6 +4,7 @@ import dataaccess.DataAccessException;
 import dataaccess.MemoryUserAccess;
 import reqAndRes.*;
 import model.*;
+import java.util.UUID;
 
 public class LoginService {
     private final LoginRequest req;
@@ -15,7 +16,12 @@ public class LoginService {
         userAccess = new MemoryUserAccess();
     }
 
-    public UserData getUser() throws DataAccessException{
+    public void createTestUser(String username, String password, String email) {
+        UserData testUser = new UserData(username, password, email);
+        userAccess.createUser(testUser);
+    }
+
+    private UserData getUser() throws DataAccessException{
         try {
             UserData user = userAccess.getUser(req.username());
             return user;
@@ -25,22 +31,34 @@ public class LoginService {
         }
     }
 
-    public LoginResult getAuth() throws DataAccessException {
-        UserData user = getUser();
+    private static String generateToken() {
+        return UUID.randomUUID().toString();
+    }
+
+    public LoginResult getAuth() {
         try {
-            if (user != null) {
-                String username = req.username();
-                String authToken = "an auth token";
-                AuthData auth = new AuthData(authToken, username);
-                this.res = new LoginResult(auth);
-                return res;
+            UserData user = getUser();
+            if (!user.password().equals(req.password())) {
+                throw new DataAccessException("wrong password");
             }
             else {
-                throw new DataAccessException("user does not exist");
+                String username = req.username();
+                String authToken = generateToken();
+                AuthData auth = new AuthData(authToken, username);
+                this.res = new LoginResult(auth, 200);
+                return res;
             }
         }
         catch (DataAccessException exception) {
-            throw(exception);
+            if (exception.getMessage() == "User does not exist") {
+                AuthData badAuth = new AuthData(exception.getMessage(), "error");
+                this.res = new LoginResult(badAuth, 500);
+            }
+            else {
+                AuthData badAuth = new AuthData(exception.getMessage(), "error");
+                this.res = new LoginResult(badAuth, 401);
+            }
+            return res;
         }
     }
 }

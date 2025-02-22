@@ -40,7 +40,6 @@ class MemoryUserAccessTest {
         access.removeUser(testUser.username());
         int expectedSize = 0;
         Assertions.assertEquals(expectedSize, access.getUsers().size());
-//        Assertions.assertThrows(DataAccessException.class, () -> {access.getUser(testUser.username());});
     }
 
     @Test
