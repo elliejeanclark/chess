@@ -22,6 +22,7 @@ public class Server {
 
     private static void createRoutes() {
         Spark.get("/login", new Login());
+        Spark.get("/logout", new Logout());
     }
 
     public void stop() {
