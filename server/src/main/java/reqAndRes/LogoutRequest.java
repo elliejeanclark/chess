@@ -1,4 +1,3 @@
 package reqAndRes;
 
-public class LogoutRequest {
-}
+public record LogoutRequest(String authToken) {}

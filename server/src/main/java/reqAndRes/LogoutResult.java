@@ -1,4 +1,4 @@
 package reqAndRes;
 
-public class LogoutResult {
+public record LogoutResult(int statusCode) {
 }

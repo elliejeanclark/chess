@@ -1,19 +1,18 @@
 package dataaccess;
 
 import model.*;
-
 import java.util.HashMap;
 
 public class MemoryUserAccess implements UserDataAccess {
 
     private final HashMap<String, UserData> users;
 
-    public HashMap<String, UserData> getUsers() {
-        return users;
-    }
-
     public MemoryUserAccess() {
         users = new HashMap<>();
+    }
+
+    public HashMap<String, UserData> getUsers() {
+        return users;
     }
 
     public void createUser(UserData user) {
