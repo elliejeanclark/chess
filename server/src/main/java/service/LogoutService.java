@@ -23,4 +23,13 @@ public class LogoutService {
             throw e;
         }
     }
+
+    public LogoutResult getResult() {
+        try {
+            removeAuthorization();
+            return new LogoutResult(200);
+        } catch (DataAccessException e) {
+            return new LogoutResult(401);
+        }
+    }
 }
