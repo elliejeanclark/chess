@@ -2,7 +2,6 @@ package dataaccesstests;
 
 import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthAccess;
-import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

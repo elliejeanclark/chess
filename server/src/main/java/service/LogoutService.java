@@ -1,31 +1,26 @@
 package service;
 
 import dataaccess.DataAccessException;
-import dataaccess.MemoryUserAccess;
+import dataaccess.MemoryAuthAccess;
 import reqAndRes.*;
 import model.*;
 
 public class LogoutService {
     private final LogoutRequest req;
     private LoginResult res;
-    private final MemoryUserAccess userAccess;
+    private final MemoryAuthAccess authAccess;
 
     public LogoutService(LogoutRequest req) {
         this.req = req;
-        this.userAccess = new MemoryUserAccess();
+        this.authAccess = new MemoryAuthAccess();
     }
 
-    public void createTestUser(String username, String password, String email) {
-        UserData testUser = new UserData(username, password, email);
-        userAccess.createUser(testUser);
+    private void removeAuthorization() throws DataAccessException {
+        try {
+            authAccess.removeAuth(req.authToken());
+        }
+        catch (DataAccessException e) {
+            throw e;
+        }
     }
-
-//    private void removeUser() throws DataAccessException {
-//        try {
-//            removeUser(req.authToken());
-//        }
-//        catch (DataAccessException e) {
-//            throw e;
-//        }
-//    }
 }

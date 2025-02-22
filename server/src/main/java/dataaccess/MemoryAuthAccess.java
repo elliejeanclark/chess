@@ -30,7 +30,7 @@ public class MemoryAuthAccess {
                 verifiedUsers.remove(authToken);
             }
             else {
-                throw new DataAccessException("Unauthorized Log Out");
+                throw new DataAccessException("Unauthorized");
             }
         }
         catch (DataAccessException e) {

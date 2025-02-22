@@ -38,7 +38,7 @@ public class LoginService {
         return UUID.randomUUID().toString();
     }
 
-    public LoginResult getAuth() {
+    public LoginResult getResult() {
         try {
             UserData user = getUser();
             if (!user.password().equals(req.password())) {
