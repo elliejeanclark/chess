@@ -10,7 +10,7 @@ public class Login implements Route {
         String body = req.body();
         LoginRequest request = new Gson().fromJson(body, LoginRequest.class);
         LoginService service = new LoginService(request);
-        LoginResult result = service.getResult();
+        LoginResult result = service.login();
         return new Gson().toJson(result);
     }
 }

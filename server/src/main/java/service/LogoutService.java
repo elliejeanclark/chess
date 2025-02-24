@@ -2,7 +2,6 @@ package service;
 
 import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthAccess;
-import model.UserData;
 import model.AuthData;
 import reqandres.*;
 

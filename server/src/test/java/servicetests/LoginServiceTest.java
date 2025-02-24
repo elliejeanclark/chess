@@ -20,7 +20,7 @@ class LoginServiceTest {
     void getGoodAuth() {
         service.createTestUser("bob", "bob", "bob");
         int expectedStatus = 200;
-        int actualStatus = service.getResult().statusCode();
+        int actualStatus = service.login().statusCode();
         Assertions.assertEquals(expectedStatus, actualStatus);
     }
 
@@ -28,7 +28,7 @@ class LoginServiceTest {
     void getUnauthorized() {
         service.createTestUser("bob", "wrong password", "bob");
         int expectedStatus = 401;
-        int actualStatus = service.getResult().statusCode();
+        int actualStatus = service.login().statusCode();
         Assertions.assertEquals(expectedStatus, actualStatus);
     }
 
@@ -36,7 +36,7 @@ class LoginServiceTest {
     void getNoUser() {
         service.createTestUser("bob's hacker david", "bob", "bob");
         int expectedStatus = 500;
-        int actualStatus = service.getResult().statusCode();
+        int actualStatus = service.login().statusCode();
         Assertions.assertEquals(expectedStatus, actualStatus);
     }
 }

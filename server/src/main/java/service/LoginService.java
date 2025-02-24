@@ -38,7 +38,7 @@ public class LoginService {
         return UUID.randomUUID().toString();
     }
 
-    public LoginResult getResult() {
+    public LoginResult login() {
         try {
             UserData user = getUser();
             if (!user.password().equals(req.password())) {
@@ -55,12 +55,10 @@ public class LoginService {
         }
         catch (DataAccessException exception) {
             if (exception.getMessage() == "User does not exist") {
-                AuthData badAuth = new AuthData(exception.getMessage(), "error");
-                this.res = new LoginResult(badAuth, 500);
+                this.res = new LoginResult(null, 500);
             }
             else {
-                AuthData badAuth = new AuthData(exception.getMessage(), "error");
-                this.res = new LoginResult(badAuth, 401);
+                this.res = new LoginResult(null, 401);
             }
             return res;
         }
