@@ -1,3 +1,3 @@
-package reqAndRes;
+package reqandres;
 
 public record LogoutRequest(String authToken) {}

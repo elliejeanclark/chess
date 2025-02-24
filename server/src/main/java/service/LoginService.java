@@ -3,7 +3,7 @@ package service;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryUserAccess;
 import dataaccess.MemoryAuthAccess;
-import reqAndRes.*;
+import reqandres.*;
 import model.*;
 import java.util.UUID;
 

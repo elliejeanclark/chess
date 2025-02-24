@@ -7,10 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import model.AuthData;
 
-import javax.xml.crypto.Data;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class MemoryAuthAccessTest {
 
     private MemoryAuthAccess verUsers;

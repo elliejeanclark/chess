@@ -1,7 +1,7 @@
 package handlers;
 
 import com.google.gson.Gson;
-import reqAndRes.*;
+import reqandres.*;
 import service.LoginService;
 import spark.*;
 

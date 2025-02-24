@@ -3,7 +3,7 @@ package servicetests;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import reqAndRes.LoginRequest;
+import reqandres.LoginRequest;
 import service.LoginService;
 
 class LoginServiceTest {

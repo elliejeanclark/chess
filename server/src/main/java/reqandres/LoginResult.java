@@ -1,4 +1,4 @@
-package reqAndRes;
+package reqandres;
 
 import model.*;
 
