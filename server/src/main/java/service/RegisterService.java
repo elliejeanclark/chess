@@ -21,6 +21,11 @@ public class RegisterService {
         this.authAccess = new MemoryAuthAccess();
     }
 
+    public void createTestUser(String username, String password, String email) {
+        UserData testUser = new UserData(username, password, email);
+        userAccess.createUser(testUser);
+    }
+
     private static String generateToken() {
         return UUID.randomUUID().toString();
     }
