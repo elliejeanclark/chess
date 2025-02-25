@@ -32,6 +32,15 @@ public class MemoryUserAccess implements UserDataAccess {
         }
     }
 
+    public boolean checkUsernameTaken(String username) {
+        if (users.get(username) != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     public UserData getUser(String username) throws DataAccessException {
         UserData user = users.get(username);
         try {
