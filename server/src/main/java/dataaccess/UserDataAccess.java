@@ -8,4 +8,6 @@ public interface UserDataAccess {
     void removeUser(String username) throws DataAccessException;
 
     UserData getUser(String username) throws DataAccessException;
+
+    boolean checkUsernameTaken(String username);
 }

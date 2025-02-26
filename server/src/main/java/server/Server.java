@@ -1,5 +1,6 @@
 package server;
 
+import dataaccess.*;
 import spark.*;
 import handlers.*;
 
@@ -11,7 +12,10 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        createRoutes();
+        MemoryUserAccess userAccess = new MemoryUserAccess();
+        MemoryAuthAccess authAccess = new MemoryAuthAccess();
+        MemoryGameAccess gameAccess = new MemoryGameAccess();
+        createRoutes(userAccess, authAccess, gameAccess);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
@@ -20,9 +24,10 @@ public class Server {
         return Spark.port();
     }
 
-    private static void createRoutes() {
-        Spark.get("/login", new Login());
-        Spark.get("/logout", new Logout());
+    private static void createRoutes(UserDataAccess userAccess, AuthDataAccess authAccess, GameDataAccess gameAccess) {
+        Spark.get("/login", new Login(userAccess, authAccess));
+        Spark.get("/logout", new Logout(authAccess));
+        Spark.get("/register", new Register(userAccess, authAccess));
     }
 
     public void stop() {

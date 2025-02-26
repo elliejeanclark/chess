@@ -1,5 +1,6 @@
 package servicetests;
 
+import dataaccess.MemoryAuthAccess;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,8 @@ class LogoutServiceTest {
     @BeforeEach
     void setUp() {
         LogoutRequest outReq = new LogoutRequest("correct auth token");
-        this.service = new LogoutService(outReq);
+        MemoryAuthAccess authAccess = new MemoryAuthAccess();
+        this.service = new LogoutService(outReq, authAccess);
     }
 
     @Test

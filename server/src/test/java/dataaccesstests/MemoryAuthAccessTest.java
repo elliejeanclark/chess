@@ -19,17 +19,16 @@ class MemoryAuthAccessTest {
     @Test
     void createAuth() {
         AuthData testAuthData = new AuthData("a test auth token", "test username");
-        verUsers.createAuth(testAuthData);
+        verUsers.createAuth("a test auth token", "test username");
         AuthData returnedAuth = verUsers.getAuth("a test auth token");
         Assertions.assertEquals(testAuthData, returnedAuth);
     }
 
     @Test
     void removeAuth() {
-        AuthData testAuthData = new AuthData("a test auth token", "test username");
-        verUsers.createAuth(testAuthData);
+        verUsers.createAuth("a test auth token", "test username");
         try {
-            verUsers.removeAuth("a test auth token");
+            verUsers.deleteAuth("a test auth token");
         }
         catch (DataAccessException ignored) {}
         int expectedSize = 0;

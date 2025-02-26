@@ -5,15 +5,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reqandres.LoginRequest;
 import service.LoginService;
+import dataaccess.*;
 
 class LoginServiceTest {
 
     private LoginService service;
+    private AuthDataAccess authAccess;
+    private UserDataAccess userAccess;
 
     @BeforeEach
     void setUp() {
         LoginRequest req = new LoginRequest("bob", "bob");
-        this.service = new LoginService(req);
+        this.authAccess = new MemoryAuthAccess();
+        this.userAccess = new MemoryUserAccess();
+        this.service = new LoginService(req, authAccess, userAccess);
     }
 
     @Test

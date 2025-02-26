@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.MemoryUserAccess;
-import dataaccess.MemoryAuthAccess;
+import dataaccess.*;
 import reqandres.*;
 import model.*;
 
@@ -12,13 +10,13 @@ public class RegisterService {
 
     private final RegisterRequest req;
     private RegisterResult res;
-    private final MemoryUserAccess userAccess;
-    private final MemoryAuthAccess authAccess;
+    private final AuthDataAccess authAccess;
+    private final UserDataAccess userAccess;
 
-    public RegisterService(RegisterRequest req) {
+    public RegisterService(RegisterRequest req, AuthDataAccess authAccess, UserDataAccess userAccess) {
         this.req = req;
-        this.userAccess = new MemoryUserAccess();
-        this.authAccess = new MemoryAuthAccess();
+        this.authAccess = authAccess;
+        this.userAccess = userAccess;
     }
 
     public void createTestUser(String username, String password, String email) {
@@ -41,7 +39,7 @@ public class RegisterService {
                 userAccess.createUser(userData);
                 String authToken = generateToken();
                 AuthData authData = new AuthData(authToken, req.username());
-                authAccess.createAuth(authData);
+                authAccess.createAuth(authToken, req.username());
                 this.res = new RegisterResult(authData, 200);
             }
         } catch (DataAccessException e) {

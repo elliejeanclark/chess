@@ -3,7 +3,7 @@ package dataaccess;
 import model.*;
 import java.util.HashMap;
 
-public class MemoryAuthAccess {
+public class MemoryAuthAccess implements AuthDataAccess {
 
     private final HashMap<String, AuthData> verifiedUsers;
 
@@ -15,16 +15,16 @@ public class MemoryAuthAccess {
         return verifiedUsers;
     }
 
-    public void createAuth(AuthData data) {
-        String authToken = data.authToken();
-        verifiedUsers.put(authToken, data);
+    public void createAuth(String authToken, String username) {
+        AuthData authData = new AuthData(authToken, username);
+        verifiedUsers.put(authToken, authData);
     }
 
     public AuthData getAuth(String authToken) {
         return verifiedUsers.get(authToken);
     }
 
-    public void removeAuth(String authToken) throws DataAccessException {
+    public void deleteAuth(String authToken) throws DataAccessException {
         try {
             if (verifiedUsers.containsKey(authToken)) {
                 verifiedUsers.remove(authToken);

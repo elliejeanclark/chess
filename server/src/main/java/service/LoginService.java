@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.MemoryUserAccess;
-import dataaccess.MemoryAuthAccess;
+import dataaccess.*;
 import reqandres.*;
 import model.*;
 import java.util.UUID;
@@ -10,13 +8,13 @@ import java.util.UUID;
 public class LoginService {
     private final LoginRequest req;
     private LoginResult res;
-    private final MemoryUserAccess userAccess;
-    private final MemoryAuthAccess authAccess;
+    private final AuthDataAccess authAccess;
+    private final UserDataAccess userAccess;
 
-    public LoginService(LoginRequest req) {
+    public LoginService(LoginRequest req, AuthDataAccess authAccess, UserDataAccess userAccess) {
         this.req = req;
-        userAccess = new MemoryUserAccess();
-        authAccess = new MemoryAuthAccess();
+        this.authAccess = authAccess;
+        this.userAccess = userAccess;
     }
 
     public void createTestUser(String username, String password, String email) {
@@ -48,7 +46,7 @@ public class LoginService {
                 String username = req.username();
                 String authToken = generateToken();
                 AuthData auth = new AuthData(authToken, username);
-                authAccess.createAuth(auth);
+                authAccess.createAuth(authToken, username);
                 this.res = new LoginResult(auth, 200);
                 return res;
             }
