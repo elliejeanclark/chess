@@ -28,6 +28,7 @@ public class Server {
         Spark.get("/login", new Login(userAccess, authAccess));
         Spark.get("/logout", new Logout(authAccess));
         Spark.get("/register", new Register(userAccess, authAccess));
+        Spark.get("/list", new ListGames(authAccess, gameAccess));
     }
 
     public void stop() {
