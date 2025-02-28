@@ -30,6 +30,7 @@ public class Server {
         Spark.get("/register", new Register(userAccess, authAccess));
         Spark.get("/list", new ListGames(authAccess, gameAccess));
         Spark.get("/create", new CreateGame(authAccess, gameAccess));
+        Spark.get("/join", new JoinGame(authAccess, gameAccess));
     }
 
     public void stop() {
