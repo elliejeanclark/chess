@@ -6,9 +6,17 @@ import java.util.HashMap;
 
 public class MemoryGameAccess implements GameDataAccess {
     private final HashMap<Integer, GameData> games;
+    private int gameID;
 
     public MemoryGameAccess() {
-        games = new HashMap<>();
+        this.games = new HashMap<>();
+        this.gameID = 0;
+    }
+
+    public int getNextID() {
+        int nextID = gameID;
+        gameID++;
+        return nextID;
     }
 
     public void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {

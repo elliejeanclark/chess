@@ -13,4 +13,6 @@ public interface GameDataAccess {
     HashMap<Integer, GameData> getGames();
 
     void updateGame(int gameID, ChessGame game);
+
+    int getNextID();
 }
