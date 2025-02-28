@@ -10,7 +10,7 @@ public class MemoryGameAccess implements GameDataAccess {
 
     public MemoryGameAccess() {
         this.games = new HashMap<>();
-        this.gameID = 0;
+        this.gameID = 1;
     }
 
     public int getNextID() {
