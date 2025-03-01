@@ -8,8 +8,6 @@ import reqandres.JoinGameRequest;
 import reqandres.JoinGameResult;
 import chess.ChessGame;
 
-import java.util.HashMap;
-
 public class JoinGameService {
 
     private final JoinGameRequest req;

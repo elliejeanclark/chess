@@ -31,6 +31,7 @@ public class Server {
         Spark.get("/list", new ListGames(authAccess, gameAccess));
         Spark.get("/create", new CreateGame(authAccess, gameAccess));
         Spark.get("/join", new JoinGame(authAccess, gameAccess));
+        Spark.get("/db", new ClearApplication(authAccess, userAccess, gameAccess));
     }
 
     public void stop() {
