@@ -25,14 +25,12 @@ public class JoinGameService {
 
     private boolean checkNotTaken() {
         ChessGame.TeamColor givenColor = req.playerColor();
-        HashMap<Integer, GameData> games = gameAccess.getGames();
-        for (GameData game : games.values()) {
-            if (givenColor == ChessGame.TeamColor.BLACK && game.blackUsername() == null) {
-                return true;
-            }
-            else if (givenColor == ChessGame.TeamColor.WHITE && game.whiteUsername() == null) {
-                return true;
-            }
+        GameData game = gameAccess.getGame(req.gameID());
+        if (givenColor == ChessGame.TeamColor.BLACK && game.blackUsername() == null) {
+            return true;
+        }
+        else if (givenColor == ChessGame.TeamColor.WHITE && game.whiteUsername() == null) {
+            return true;
         }
         return false;
     }
