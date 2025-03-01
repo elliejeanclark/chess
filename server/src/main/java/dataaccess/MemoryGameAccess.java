@@ -49,6 +49,10 @@ public class MemoryGameAccess implements GameDataAccess {
         return games;
     }
 
+    public void removeGame(int gameID) {
+        games.remove(gameID);
+    }
+
     public void updateGame(int gameID, ChessGame game) {
         GameData oldData = games.get(gameID);
         String whiteUsername = oldData.whiteUsername();
