@@ -49,8 +49,8 @@ public class MemoryGameAccess implements GameDataAccess {
         return games;
     }
 
-    public void removeGame(int gameID) {
-        games.remove(gameID);
+    public void clear() {
+        games.clear();
     }
 
     public void updateGame(int gameID, ChessGame game) {

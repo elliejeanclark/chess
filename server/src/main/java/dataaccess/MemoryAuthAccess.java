@@ -24,6 +24,10 @@ public class MemoryAuthAccess implements AuthDataAccess {
         return verifiedUsers.get(authToken);
     }
 
+    public void clear() {
+        verifiedUsers.clear();
+    }
+
     public void deleteAuth(String authToken) throws DataAccessException {
         try {
             if (verifiedUsers.containsKey(authToken)) {

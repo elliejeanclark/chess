@@ -14,4 +14,6 @@ public interface UserDataAccess {
     boolean checkUsernameTaken(String username);
 
     HashMap<String, UserData> getUsers();
+
+    void clear();
 }

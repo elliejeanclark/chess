@@ -12,4 +12,6 @@ public interface AuthDataAccess {
     void deleteAuth(String authToken) throws DataAccessException;
 
     HashMap<String, AuthData> getVerUsers();
+
+    void clear();
 }

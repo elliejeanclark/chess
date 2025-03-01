@@ -18,5 +18,5 @@ public interface GameDataAccess {
 
     void setPlayer(ChessGame.TeamColor playerColor, String username, int gameID);
 
-    void removeGame(int gameID);
+    void clear();
 }

@@ -20,6 +20,10 @@ public class MemoryUserAccess implements UserDataAccess {
         users.put(username, user);
     }
 
+    public void clear() {
+        users.clear();
+    }
+
     public void removeUser(String username) throws DataAccessException {
         try {
             UserData removed = users.remove(username);
