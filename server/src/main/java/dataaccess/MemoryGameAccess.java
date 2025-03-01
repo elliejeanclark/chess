@@ -13,6 +13,23 @@ public class MemoryGameAccess implements GameDataAccess {
         this.gameID = 1;
     }
 
+    public void setPlayer(ChessGame.TeamColor playerColor, String username, int gameID) {
+        GameData oldData = games.get(gameID);
+        if (playerColor == ChessGame.TeamColor.BLACK) {
+            String whiteUsername = oldData.whiteUsername();
+            String gameName = oldData.gameName();
+            ChessGame game = oldData.game();
+            GameData newData = new GameData(gameID, whiteUsername, username, gameName, game);
+            games.put(gameID, newData);
+        } else {
+            String blackUsername = oldData.blackUsername();
+            String gameName = oldData.gameName();
+            ChessGame game = oldData.game();
+            GameData newData = new GameData(gameID, username, blackUsername, gameName, game);
+            games.put(gameID, newData);
+        }
+    }
+
     public int getNextID() {
         int nextID = gameID;
         gameID++;

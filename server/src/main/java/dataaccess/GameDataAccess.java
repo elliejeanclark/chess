@@ -15,4 +15,6 @@ public interface GameDataAccess {
     void updateGame(int gameID, ChessGame game);
 
     int getNextID();
+
+    void setPlayer(ChessGame.TeamColor playerColor, String username, int gameID);
 }
