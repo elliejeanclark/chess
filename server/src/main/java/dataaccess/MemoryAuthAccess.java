@@ -2,7 +2,6 @@ package dataaccess;
 
 import model.*;
 
-import javax.xml.crypto.Data;
 import java.util.HashMap;
 
 public class MemoryAuthAccess implements AuthDataAccess {
@@ -24,15 +23,6 @@ public class MemoryAuthAccess implements AuthDataAccess {
 
     public AuthData getAuth(String authToken) {
         return verifiedUsers.get(authToken);
-    }
-
-    public AuthData getAuthByUsername(String username) throws DataAccessException {
-        for (AuthData authData : verifiedUsers.values()) {
-            if (authData.username().equals(username)) {
-                return authData;
-            }
-        }
-        throw new DataAccessException("no auth data exists for that user");
     }
 
     public void clear() {
