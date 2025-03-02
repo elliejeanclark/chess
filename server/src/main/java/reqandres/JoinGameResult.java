@@ -1,4 +1,3 @@
 package reqandres;
 
-public record JoinGameResult(int statusCode) {
-}
+public record JoinGameResult(String message) {}

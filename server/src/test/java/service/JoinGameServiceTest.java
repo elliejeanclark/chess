@@ -11,7 +11,6 @@ import reqandres.JoinGameRequest;
 class JoinGameServiceTest {
     private MemoryGameAccess gameAccess;
     private MemoryAuthAccess authAccess;
-    private JoinGameService service;
     private ChessGame testGame;
 
     @BeforeEach
@@ -28,18 +27,14 @@ class JoinGameServiceTest {
     public void joinGameSuccess() {
         JoinGameRequest req = new JoinGameRequest("bob's auth token", ChessGame.TeamColor.BLACK, 1);
         JoinGameService service = new JoinGameService(req, authAccess, gameAccess);
-        int expectedStatus = 200;
-        int actualStatus = service.joinGame().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertNull(null, service.joinGame().message());
     }
 
     @Test
     public void joinGameUnauthorized() {
         JoinGameRequest req = new JoinGameRequest("not bob's auth token", ChessGame.TeamColor.BLACK, 1);
         JoinGameService service = new JoinGameService(req, authAccess, gameAccess);
-        int expectedStatus = 401;
-        int actualStatus = service.joinGame().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertEquals("Error: unauthorized", service.joinGame().message());
     }
 
     @Test
@@ -48,8 +43,6 @@ class JoinGameServiceTest {
         gameAccess.createGame(2, "white", "another person", "first game", testGame);
         JoinGameRequest req = new JoinGameRequest("bob's auth token", ChessGame.TeamColor.BLACK, 2);
         JoinGameService service = new JoinGameService(req, authAccess, gameAccess);
-        int expectedStatus = 403;
-        int actualStatus = service.joinGame().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertEquals("Error: already Taken", service.joinGame().message());
     }
 }

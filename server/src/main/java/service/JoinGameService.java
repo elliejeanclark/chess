@@ -46,16 +46,19 @@ public class JoinGameService {
         boolean authorized = checkAuthorized();
         boolean notTaken = checkNotTaken();
         if (!authorized) {
-            this.res = new JoinGameResult(401);
+            this.res = new JoinGameResult("Error: unauthorized");
+        }
+        else if (req.playerColor() == null) {
+            this.res = new JoinGameResult("Error: bad request");
         }
         else if (!notTaken) {
-            this.res = new JoinGameResult(403);
+            this.res = new JoinGameResult("Error: already Taken");
         }
         else {
             AuthData authData = authAccess.getAuth(req.authToken());
             String username = authData.username();
             gameAccess.setPlayer(req.playerColor(), username, req.gameID());
-            this.res = new JoinGameResult(200);
+            this.res = new JoinGameResult(null);
         }
         return res;
     }
