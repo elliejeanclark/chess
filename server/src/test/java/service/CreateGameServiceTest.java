@@ -28,26 +28,20 @@ class CreateGameServiceTest {
     void createGameSuccess() {
         CreateGameRequest req = new CreateGameRequest("bob's auth token", "second game");
         this.service = new CreateGameService(req, authAccess, gameAccess);
-        int expectedStatus = 200;
-        int actualStatus = service.createGame().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertEquals(2, service.createGame().gameID());
     }
 
     @Test
     void createGameUnauthorized() {
         CreateGameRequest req = new CreateGameRequest("not Bob's auth token", "second game");
         this.service = new CreateGameService(req, authAccess, gameAccess);
-        int expectedStatus = 401;
-        int actualStatus = service.createGame().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertEquals(null, service.createGame().gameID());
     }
 
     @Test
     void createGameAlreadyTaken() {
         CreateGameRequest req = new CreateGameRequest("bob's auth token", "first game");
         this.service = new CreateGameService(req, authAccess, gameAccess);
-        int expectedStatus = 400;
-        int actualStatus = service.createGame().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertEquals(null, service.createGame().gameID());
     }
 }

@@ -1,3 +1,3 @@
 package reqandres;
 
-public record CreateGameResult(int statusCode, int gameID) {}
+public record CreateGameResult(Integer gameID, String message) {}

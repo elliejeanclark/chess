@@ -53,15 +53,15 @@ public class CreateGameService {
         boolean authorized = checkAuthorized();
         boolean available = checkNotTaken();
         if (!authorized) {
-            this.res = new CreateGameResult(401, 0);
+            this.res = new CreateGameResult(null, "Error: unauthorized");
         }
         else if (!available) {
-            this.res = new CreateGameResult(400, 0);
+            this.res = new CreateGameResult( null, "Error: already Taken");
         }
         else {
             int gameID = generateGameID();
             gameAccess.createGame(gameID, null, null, req.gameName(), new ChessGame());
-            this.res = new CreateGameResult(200, gameID);
+            this.res = new CreateGameResult(gameID, null);
         }
         return res;
     }
