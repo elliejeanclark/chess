@@ -35,15 +35,13 @@ public class ListGamesService {
     public ListGamesResult listGames() {
         boolean authorized = checkAuthorized();
         if (authorized) {
-            HashMap<String, ArrayList<GameData>> listOfGames = new HashMap<>();
             HashMap<Integer, GameData> games = gameAccess.getGames();
             ArrayList<GameData> arrayOfGames = new ArrayList<>();
             arrayOfGames.addAll(games.values());
-            listOfGames.put("games", arrayOfGames);
-            this.res = new ListGamesResult(200, listOfGames);
+            this.res = new ListGamesResult(arrayOfGames, null);
         }
         else {
-            this.res = new ListGamesResult(401, null);
+            this.res = new ListGamesResult(null, "Error: unauthorized");
         }
         return res;
     }

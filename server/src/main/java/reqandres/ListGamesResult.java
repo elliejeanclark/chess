@@ -1,7 +1,6 @@
 package reqandres;
 
-import java.util.HashMap;
 import java.util.ArrayList;
 import model.GameData;
 
-public record ListGamesResult(int statusCode, HashMap<String, ArrayList<GameData>> games) {}
+public record ListGamesResult(ArrayList<GameData> games, String message) {}

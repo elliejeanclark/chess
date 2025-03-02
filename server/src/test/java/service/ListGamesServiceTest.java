@@ -33,11 +33,9 @@ class ListGamesServiceTest {
     void listGamesAuthorized() {
         ListGamesRequest req = new ListGamesRequest("bob's Auth Token");
         this.service = new ListGamesService(req, authAccess, gameAccess);
-        HashMap<String, ArrayList<GameData>> expectedMap = new HashMap<>();
         ArrayList<GameData> listOfGames = new ArrayList<>();
         listOfGames.add(new GameData(1, "white", "black", "testgame", testGame));
-        expectedMap.put("games", listOfGames);
-        ListGamesResult expectedResult = new ListGamesResult(200, expectedMap);
+        ListGamesResult expectedResult = new ListGamesResult(listOfGames, null);
         ListGamesResult actualResult = service.listGames();
         Assertions.assertEquals(expectedResult, actualResult);
     }
@@ -46,8 +44,6 @@ class ListGamesServiceTest {
     void listGamesUnauthorized() {
         ListGamesRequest req = new ListGamesRequest("not bob's Auth Token");
         this.service = new ListGamesService(req, authAccess, gameAccess);
-        int expectedStatus = 401;
-        int actualStatus = service.listGames().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertEquals(null, service.listGames().games());
     }
 }

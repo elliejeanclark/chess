@@ -20,7 +20,7 @@ public class ListGames implements Route {
 
     public Object handle(Request req, Response res) {
         String authToken = req.headers("authorization");
-        ListGamesRequest request = new Gson().fromJson(authToken, ListGamesRequest.class);
+        ListGamesRequest request = new ListGamesRequest(authToken);
         ListGamesService service = new ListGamesService(request, authAccess, gameAccess);
         ListGamesResult result = service.listGames();
         return new Gson().toJson(result);
