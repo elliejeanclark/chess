@@ -1,3 +1,3 @@
 package reqandres;
 
-public record ListGamesRequest(String AuthToken) {}
+public record ListGamesRequest(String authToken) {}

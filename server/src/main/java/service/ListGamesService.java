@@ -25,7 +25,7 @@ public class ListGamesService {
 
     private boolean checkAuthorized() {
         boolean authorized = false;
-        AuthData authData = authAccess.getAuth(req.AuthToken());
+        AuthData authData = authAccess.getAuth(req.authToken());
         if (authData != null) {
             authorized = true;
         }

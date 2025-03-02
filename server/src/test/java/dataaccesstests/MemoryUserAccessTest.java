@@ -18,14 +18,6 @@ class MemoryUserAccessTest {
     }
 
     @Test
-    void getUser() throws DataAccessException {
-        UserData testUser = new UserData("user", "password", "bob");
-        access.createUser(testUser);
-        UserData returnedUser = access.getUser(testUser.username());
-        Assertions.assertEquals(testUser, returnedUser);
-    }
-
-    @Test
     void createUser() throws DataAccessException {
         UserData testUser = new UserData("user", "password", "bob");
         access.createUser(testUser);

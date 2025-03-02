@@ -145,6 +145,14 @@ public class ChessPiece {
         return null;
     }
 
+    private ArrayList<ChessMove> pawnAddValidMoves(ArrayList<ChessMove> validMoves, ChessPosition myPosition, ChessPosition nextPosition) {
+        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.ROOK));
+        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.BISHOP));
+        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.KNIGHT));
+        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.QUEEN));
+        return validMoves;
+    }
+
     private Collection<ChessMove> pawnMoveCalculator(ChessBoard board, ChessPosition myPosition, int rowMovement, int colMovement) {
         ArrayList<ChessMove> validMoves = new ArrayList<>();
         ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + rowMovement, myPosition.getColumn() + colMovement);
@@ -165,10 +173,7 @@ public class ChessPiece {
                 if (board.getPiece(nextPosition) == null) {
                     if (pieceColor == ChessGame.TeamColor.WHITE){
                         if (nextPosition.getRow() == 8) {
-                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.ROOK));
-                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.BISHOP));
-                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.KNIGHT));
-                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.QUEEN));
+                            pawnAddValidMoves(validMoves, myPosition, nextPosition);
                         }
                         else {
                             validMoves.add(new ChessMove(myPosition, nextPosition, null));
@@ -176,10 +181,7 @@ public class ChessPiece {
                     }
                     else {
                         if (nextPosition.getRow() == 1) {
-                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.ROOK));
-                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.BISHOP));
-                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.KNIGHT));
-                            validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.QUEEN));
+                            pawnAddValidMoves(validMoves, myPosition, nextPosition);
                         }
                         else {
                             validMoves.add(new ChessMove(myPosition, nextPosition, null));
@@ -192,16 +194,10 @@ public class ChessPiece {
             if (inBounds(nextPosition)) {
                 if(board.getPiece(nextPosition) != null) {
                     if (pieceColor == ChessGame.TeamColor.WHITE && nextPosition.getRow() == 8) {
-                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.ROOK));
-                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.BISHOP));
-                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.KNIGHT));
-                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.QUEEN));
+                        pawnAddValidMoves(validMoves, myPosition, nextPosition);
                     }
                     else if (pieceColor == ChessGame.TeamColor.BLACK && nextPosition.getRow() == 1) {
-                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.ROOK));
-                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.BISHOP));
-                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.KNIGHT));
-                        validMoves.add(new ChessMove(myPosition, nextPosition, PieceType.QUEEN));
+                        pawnAddValidMoves(validMoves, myPosition, nextPosition);
                     }
                     else if (pieceColor != board.getPiece(nextPosition).pieceColor){
                         validMoves.add(new ChessMove(myPosition, nextPosition, null));
