@@ -22,16 +22,12 @@ class RegisterServiceTest {
     @Test
     void registerAvailableUsername() {
         service.createTestUser("notBob35", "bob", "bob");
-        int expectedStatus = 200;
-        int actualStatus = service.register().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertEquals("bob", service.register().username());
     }
 
     @Test
     void registerTakenUsername() {
         service.createTestUser("bob", "bob", "bob");
-        int expectedStatus = 403;
-        int actualStatus = service.register().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertNull(null, service.register().username());
     }
 }

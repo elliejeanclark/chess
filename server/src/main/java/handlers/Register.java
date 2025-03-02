@@ -23,6 +23,17 @@ public class Register implements Route {
         RegisterRequest request = new Gson().fromJson(body, RegisterRequest.class);
         RegisterService service = new RegisterService(request, authAccess, userAccess);
         RegisterResult result = service.register();
+        if (result.authToken() == null) {
+            if (result.message().equals("Error: That username is taken")) {
+                res.status(403);
+            }
+            else {
+                res.status(400);
+            }
+        }
+        else {
+            res.status(200);
+        }
         return new Gson().toJson(result);
     }
 }

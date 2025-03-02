@@ -2,5 +2,5 @@ package reqandres;
 
 import model.AuthData;
 
-public record RegisterResult(AuthData authData, int statusCode) {
+public record RegisterResult(String username, String authToken, String message) {
 }

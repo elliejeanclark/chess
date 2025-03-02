@@ -3,7 +3,6 @@ package handlers;
 import com.google.gson.Gson;
 import dataaccess.AuthDataAccess;
 import dataaccess.UserDataAccess;
-import dataaccess.AuthDataAccess;
 import reqandres.*;
 import service.LoginService;
 import spark.*;

@@ -32,18 +32,20 @@ public class RegisterService {
         try {
             boolean usernameTaken = userAccess.checkUsernameTaken(req.username());
             if (usernameTaken) {
-                throw new DataAccessException("That username is taken");
+                throw new DataAccessException("Error: That username is taken");
+            }
+            else if (req.username() == null || req.password() == null || req.email() == null) {
+                throw new DataAccessException("Error: Bad Request");
             }
             else {
                 UserData userData = new UserData(req.username(), req.password(), req.email());
                 userAccess.createUser(userData);
                 String authToken = generateToken();
-                AuthData authData = new AuthData(authToken, req.username());
                 authAccess.createAuth(authToken, req.username());
-                this.res = new RegisterResult(authData, 200);
+                this.res = new RegisterResult(req.username(), authToken, null);
             }
         } catch (DataAccessException e) {
-            this.res = new RegisterResult(null, 403);
+            this.res = new RegisterResult(null, null, e.getMessage());
         }
         return res;
     }
