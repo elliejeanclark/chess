@@ -1,4 +1,4 @@
-package servicetests;
+package service;
 
 import chess.ChessGame;
 import dataaccess.MemoryAuthAccess;
@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import reqandres.JoinGameRequest;
-import service.JoinGameService;
 
 class JoinGameServiceTest {
     private MemoryGameAccess gameAccess;

@@ -1,11 +1,11 @@
-package servicetests;
+package service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reqandres.LoginRequest;
-import service.LoginService;
 import dataaccess.*;
+import reqandres.LoginResult;
 
 class LoginServiceTest {
 
@@ -24,24 +24,18 @@ class LoginServiceTest {
     @Test
     void getGoodAuth() {
         service.createTestUser("bob", "bob", "bob");
-        int expectedStatus = 200;
-        int actualStatus = service.login().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertEquals("bob", service.login().username());
     }
 
     @Test
     void getUnauthorized() {
         service.createTestUser("bob", "wrong password", "bob");
-        int expectedStatus = 401;
-        int actualStatus = service.login().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertEquals(null, service.login().username());
     }
 
     @Test
     void getNoUser() {
         service.createTestUser("bob's hacker david", "bob", "bob");
-        int expectedStatus = 500;
-        int actualStatus = service.login().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertEquals(null, service.login().username());
     }
 }

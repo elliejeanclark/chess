@@ -1,11 +1,10 @@
-package servicetests;
+package service;
 
 import dataaccess.MemoryAuthAccess;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reqandres.LogoutRequest;
-import service.LogoutService;
 
 class LogoutServiceTest {
 

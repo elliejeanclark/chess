@@ -1,7 +1,6 @@
 package service;
 
 import dataaccess.AuthDataAccess;
-import dataaccess.DataAccessException;
 import dataaccess.UserDataAccess;
 import dataaccess.GameDataAccess;
 import reqandres.ClearApplicationResult;

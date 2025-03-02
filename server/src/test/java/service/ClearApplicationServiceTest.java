@@ -1,4 +1,4 @@
-package servicetests;
+package service;
 
 import chess.ChessGame;
 import dataaccess.MemoryAuthAccess;
@@ -8,7 +8,6 @@ import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
-import service.ClearApplicationService;
 
 class ClearApplicationServiceTest {
 

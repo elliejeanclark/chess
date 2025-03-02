@@ -20,6 +20,7 @@ public class LoginService {
     public void createTestUser(String username, String password, String email) {
         UserData testUser = new UserData(username, password, email);
         userAccess.createUser(testUser);
+        authAccess.createAuth(generateToken(), username);
     }
 
     private UserData getUser() throws DataAccessException{
@@ -40,23 +41,24 @@ public class LoginService {
         try {
             UserData user = getUser();
             if (!user.password().equals(req.password())) {
-                throw new DataAccessException("wrong password");
+                throw new DataAccessException("Error: wrong password");
             }
             else {
                 String username = req.username();
-                String authToken = generateToken();
-                AuthData auth = new AuthData(authToken, username);
-                authAccess.createAuth(authToken, username);
-                this.res = new LoginResult(auth, 200);
+                AuthData auth = authAccess.getAuthByUsername(username);
+                this.res = new LoginResult(auth.authToken(), auth.username(), null);
                 return res;
             }
         }
         catch (DataAccessException exception) {
             if (exception.getMessage() == "User does not exist") {
-                this.res = new LoginResult(null, 500);
+                this.res = new LoginResult(null, null, exception.getMessage());
+            }
+            else if (exception.getMessage() == "no auth data exists for that user") {
+                this.res = new LoginResult(null, null, exception.getMessage());
             }
             else {
-                this.res = new LoginResult(null, 401);
+                this.res = new LoginResult(null, null, exception.getMessage());
             }
             return res;
         }

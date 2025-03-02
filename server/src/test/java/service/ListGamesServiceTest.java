@@ -1,4 +1,4 @@
-package servicetests;
+package service;
 
 import chess.ChessGame;
 import dataaccess.MemoryGameAccess;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import reqandres.ListGamesRequest;
 import reqandres.ListGamesResult;
-import service.ListGamesService;
 import model.GameData;
 
 import java.util.HashMap;

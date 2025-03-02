@@ -23,6 +23,13 @@ public class Login implements Route {
         LoginRequest request = new Gson().fromJson(body, LoginRequest.class);
         LoginService service = new LoginService(request, authAccess, userAccess);
         LoginResult result = service.login();
-        return new Gson().toJson(result);
+        if (result.username() == null) {
+            res.status(401);
+            return new Gson().toJson(result);
+        }
+        else {
+            res.status(200);
+            return new Gson().toJson(result);
+        }
     }
 }

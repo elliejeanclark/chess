@@ -52,7 +52,7 @@ public class MemoryUserAccess implements UserDataAccess {
                 return user;
             }
             else {
-                throw new DataAccessException("User does not exist");
+                throw new DataAccessException("Error: User does not exist");
             }
         }
         catch (DataAccessException e){
