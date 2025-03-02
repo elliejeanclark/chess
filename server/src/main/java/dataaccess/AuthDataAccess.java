@@ -9,8 +9,6 @@ public interface AuthDataAccess {
 
     AuthData getAuth(String authToken);
 
-    AuthData getAuthByUsername(String username) throws DataAccessException;
-
     void deleteAuth(String authToken) throws DataAccessException;
 
     HashMap<String, AuthData> getVerUsers();

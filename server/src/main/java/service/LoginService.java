@@ -45,8 +45,9 @@ public class LoginService {
             }
             else {
                 String username = req.username();
-                AuthData auth = authAccess.getAuthByUsername(username);
-                this.res = new LoginResult(auth.authToken(), auth.username(), null);
+                String authToken = generateToken();
+                authAccess.createAuth(authToken, username);
+                this.res = new LoginResult(authToken, username, null);
                 return res;
             }
         }

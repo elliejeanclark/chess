@@ -23,6 +23,12 @@ public class ListGames implements Route {
         ListGamesRequest request = new ListGamesRequest(authToken);
         ListGamesService service = new ListGamesService(request, authAccess, gameAccess);
         ListGamesResult result = service.listGames();
+        if (result.message() != null) {
+            res.status(401);
+        }
+        else {
+            res.status(200);
+        }
         return new Gson().toJson(result);
     }
 }
