@@ -16,9 +16,15 @@ public class Logout implements Route {
 
     public Object handle(Request req, Response res) {
         String authToken = req.headers("authorization");
-        LogoutRequest request = new Gson().fromJson(authToken, LogoutRequest.class);
+        LogoutRequest request = new LogoutRequest(authToken);
         LogoutService service = new LogoutService(request, authAccess);
         LogoutResult result = service.getResult();
+        if (result.message() != null) {
+            res.status(401);
+        }
+        else {
+            res.status(200);
+        }
         return new Gson().toJson(result);
     }
 }

@@ -1,4 +1,4 @@
 package reqandres;
 
-public record LogoutResult(int statusCode) {
+public record LogoutResult(String message) {
 }

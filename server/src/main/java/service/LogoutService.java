@@ -29,9 +29,9 @@ public class LogoutService {
     public LogoutResult getResult() {
         try {
             removeAuthorization();
-            this.res = new LogoutResult(200);
+            this.res = new LogoutResult(null);
         } catch (DataAccessException e) {
-            this.res = new LogoutResult(401);
+            this.res = new LogoutResult("Error: Unauthorized");
         }
         return res;
     }

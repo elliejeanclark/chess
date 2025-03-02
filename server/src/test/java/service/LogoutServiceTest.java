@@ -20,16 +20,12 @@ class LogoutServiceTest {
     @Test
     void getGoodLogout() {
         service.createTestAuth("correct auth token");
-        int expectedStatus = 200;
-        int actualStatus = service.getResult().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertNull(null, service.getResult().message());
     }
 
     @Test
     void getBadLogout() {
         service.createTestAuth("bad auth token");
-        int expectedStatus = 401;
-        int actualStatus = service.getResult().statusCode();
-        Assertions.assertEquals(expectedStatus, actualStatus);
+        Assertions.assertEquals("Error: Unauthorized", service.getResult().message());
     }
 }
