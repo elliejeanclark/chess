@@ -153,6 +153,26 @@ public class ChessPiece {
         return validMoves;
     }
 
+    private ArrayList<ChessMove> pawnAddCorrectColor(ArrayList<ChessMove> validMoves, ChessPosition myPosition, ChessPosition nextPosition) {
+        if (pieceColor == ChessGame.TeamColor.WHITE){
+            if (nextPosition.getRow() == 8) {
+                pawnAddValidMoves(validMoves, myPosition, nextPosition);
+            }
+            else {
+                validMoves.add(new ChessMove(myPosition, nextPosition, null));
+            }
+        }
+        else {
+            if (nextPosition.getRow() == 1) {
+                pawnAddValidMoves(validMoves, myPosition, nextPosition);
+            }
+            else {
+                validMoves.add(new ChessMove(myPosition, nextPosition, null));
+            }
+        }
+        return validMoves;
+    }
+
     private Collection<ChessMove> pawnMoveCalculator(ChessBoard board, ChessPosition myPosition, int rowMovement, int colMovement) {
         ArrayList<ChessMove> validMoves = new ArrayList<>();
         ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + rowMovement, myPosition.getColumn() + colMovement);
@@ -171,22 +191,7 @@ public class ChessPiece {
                     }
                 }
                 if (board.getPiece(nextPosition) == null) {
-                    if (pieceColor == ChessGame.TeamColor.WHITE){
-                        if (nextPosition.getRow() == 8) {
-                            pawnAddValidMoves(validMoves, myPosition, nextPosition);
-                        }
-                        else {
-                            validMoves.add(new ChessMove(myPosition, nextPosition, null));
-                        }
-                    }
-                    else {
-                        if (nextPosition.getRow() == 1) {
-                            pawnAddValidMoves(validMoves, myPosition, nextPosition);
-                        }
-                        else {
-                            validMoves.add(new ChessMove(myPosition, nextPosition, null));
-                        }
-                    }
+                    validMoves = (pawnAddCorrectColor(validMoves, myPosition, nextPosition));
                 }
             }
         }
