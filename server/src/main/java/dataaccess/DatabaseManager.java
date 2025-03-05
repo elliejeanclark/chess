@@ -43,7 +43,31 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
+            String users = "users";
+            String games = "games";
+            String auth = "auth";
+            try {
+                createTable(users);
+                createTable(games);
+                createTable(auth);
+            }
+            catch (DataAccessException e) {
+                throw e;
+            }
         } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    static void createTable(String tableName) throws DataAccessException {
+        try {
+            var statement = "CREATE TABLE IF NOT EXISTS " + tableName;
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+        }
+        catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
     }
