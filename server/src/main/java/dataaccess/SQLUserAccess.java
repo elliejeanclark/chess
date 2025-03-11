@@ -11,7 +11,7 @@ import static java.sql.Types.NULL;
 
 public class SQLUserAccess implements UserDataAccess {
 
-    SQLUserAccess() throws DataAccessException {
+    public SQLUserAccess() throws DataAccessException {
         configureDatabase();
     }
 

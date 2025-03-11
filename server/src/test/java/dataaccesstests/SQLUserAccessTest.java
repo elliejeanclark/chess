@@ -1,5 +1,7 @@
-package dataaccess;
+package dataaccesstests;
 
+import dataaccess.DataAccessException;
+import dataaccess.SQLUserAccess;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +28,7 @@ class SQLUserAccessTest {
     }
 
     @Test
-    void createGoodUser() throws DataAccessException {
+    void createAndGetGoodUser() throws DataAccessException {
         UserData testUser = new UserData("user", "password", "bob");
         userAccess.createUser(testUser);
         UserData returnedUser = userAccess.getUser(testUser.username());
@@ -34,14 +36,14 @@ class SQLUserAccessTest {
     }
 
     @Test
-    void createBadUser() {
+    void createAndGetBadUser() {
         UserData testUser = new UserData("user", "password", "bob");
         userAccess.createUser(testUser);
         Assertions.assertThrows(RuntimeException.class, () -> {userAccess.createUser(testUser);});
     }
 
     @Test
-    void removeGoodUser() throws DataAccessException {
+    void removeAndGetGoodUsers() throws DataAccessException {
         UserData testUser = new UserData("user", "password", "bob");
         userAccess.createUser(testUser);
         userAccess.removeUser(testUser.username());
@@ -50,7 +52,7 @@ class SQLUserAccessTest {
     }
 
     @Test
-    void removeBadUser() throws DataAccessException {
+    void removeAndGetBadUsers() throws DataAccessException {
         UserData testUser = new UserData("user", "password", "bob");
         userAccess.createUser(testUser);
         userAccess.removeUser("incorrectUsername");
@@ -72,5 +74,14 @@ class SQLUserAccessTest {
         userAccess.createUser(testUser);
         boolean verified = userAccess.verifyUser("user", "wrongPassword");
         Assertions.assertFalse(verified);
+    }
+
+    @Test
+    void testClear() {
+        UserData testUser = new UserData("user", "password", "bob");
+        userAccess.createUser(testUser);
+        userAccess.clear();
+        int expectedSize = 0;
+        Assertions.assertEquals(expectedSize, userAccess.getUsers().size());
     }
 }
