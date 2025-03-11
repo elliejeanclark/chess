@@ -1,14 +1,10 @@
 package dataaccess;
 
-import dataaccess.SQLUserAccess;
-
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class SQLUserAccessTest {
 
@@ -30,7 +26,7 @@ class SQLUserAccessTest {
     }
 
     @Test
-    void createUser() throws DataAccessException {
+    void createGoodUser() throws DataAccessException {
         UserData testUser = new UserData("user", "password", "bob");
         userAccess.createUser(testUser);
         UserData returnedUser = userAccess.getUser(testUser.username());
@@ -38,7 +34,14 @@ class SQLUserAccessTest {
     }
 
     @Test
-    void removeUser() throws DataAccessException {
+    void createBadUser() {
+        UserData testUser = new UserData("user", "password", "bob");
+        userAccess.createUser(testUser);
+        Assertions.assertThrows(RuntimeException.class, () -> {userAccess.createUser(testUser);});
+    }
+
+    @Test
+    void removeGoodUser() throws DataAccessException {
         UserData testUser = new UserData("user", "password", "bob");
         userAccess.createUser(testUser);
         userAccess.removeUser(testUser.username());
@@ -47,9 +50,27 @@ class SQLUserAccessTest {
     }
 
     @Test
-    void checkUsernameTaken() {
+    void removeBadUser() throws DataAccessException {
         UserData testUser = new UserData("user", "password", "bob");
         userAccess.createUser(testUser);
-        Assertions.assertThrows(RuntimeException.class, () -> {userAccess.createUser(testUser);});
+        userAccess.removeUser("incorrectUsername");
+        int expectedSize = 1;
+        Assertions.assertEquals(expectedSize, userAccess.getUsers().size());
+    }
+
+    @Test
+    void verifyGoodUser() throws DataAccessException {
+        UserData testUser = new UserData("user", "password", "bob");
+        userAccess.createUser(testUser);
+        boolean verified = userAccess.verifyUser("user", "password");
+        Assertions.assertTrue(verified);
+    }
+
+    @Test
+    void verifyBadUser() throws DataAccessException {
+        UserData testUser = new UserData("user", "password", "bob");
+        userAccess.createUser(testUser);
+        boolean verified = userAccess.verifyUser("user", "wrongPassword");
+        Assertions.assertFalse(verified);
     }
 }

@@ -40,15 +40,11 @@ public class SQLUserAccess implements UserDataAccess {
     public boolean verifyUser(String username, String password) throws DataAccessException {
         try {
             var storedHashedPassword = getUser(username).password();
-            var givenHashedPassword = hashPassword(password);
-            if (storedHashedPassword.equals(givenHashedPassword)) {
-                return true;
-            }
+            return BCrypt.checkpw(password, storedHashedPassword);
         }
         catch (DataAccessException e) {
             throw new DataAccessException(e.getMessage());
         }
-        return false;
     }
 
     public void createUser(UserData user) {
