@@ -88,7 +88,7 @@ public class SQLGameAccess implements GameDataAccess {
     public HashMap<Integer, GameData> getGames() {
         var result = new HashMap<Integer, GameData>();
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id, json FROM pet";
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games";
             try (var gs = conn.prepareStatement(statement)){
                 try (var rs = gs.executeQuery()) {
                     while (rs.next()) {
