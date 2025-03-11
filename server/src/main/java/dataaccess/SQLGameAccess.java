@@ -13,7 +13,7 @@ import static java.sql.Types.NULL;
 public class SQLGameAccess implements GameDataAccess {
 
     public SQLGameAccess() throws DataAccessException {
-        configureDatabase();
+        DatabaseManager.configureDatabase();
     }
 
     private int executeUpdate(String statement, Object... params) throws DataAccessException {
@@ -21,10 +21,18 @@ public class SQLGameAccess implements GameDataAccess {
             try (var gs = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param instanceof String p) gs.setString(i + 1, p);
-                    else if (param instanceof Integer p) gs.setInt(i + 1, p);
-                    else if (param instanceof ChessGame p) gs.setString(i + 1, serializeChessGame(p));
-                    else if (param == null) gs.setNull(i + 1, NULL);
+                    if (param instanceof String p) {
+                        gs.setString(i + 1, p);
+                    }
+                    else if (param instanceof Integer p) {
+                        gs.setInt(i + 1, p);
+                    }
+                    else if (param instanceof ChessGame p) {
+                        gs.setString(i + 1, serializeChessGame(p));
+                    }
+                    else if (param == null) {
+                        gs.setNull(i + 1, NULL);
+                    }
                 }
                 gs.executeUpdate();
 
@@ -136,32 +144,6 @@ public class SQLGameAccess implements GameDataAccess {
         }
         catch (DataAccessException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private final String[] createStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS games (
-              `gameID` int NOT NULL AUTO_INCREMENT,
-              `whiteUsername` varchar(256),
-              `blackUsername` varchar(256),
-              `gameName` varchar(256),
-              `game` TEXT DEFAULT NULL,
-              PRIMARY KEY (`gameID`)
-            )
-            """
-    };
-
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
 }

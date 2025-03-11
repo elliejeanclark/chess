@@ -13,7 +13,7 @@ import static java.sql.Types.NULL;
 public class SQLAuthAccess implements AuthDataAccess {
 
     public SQLAuthAccess() throws DataAccessException {
-        configureDatabase();
+        DatabaseManager.configureDatabase();
     }
 
     private int executeUpdate(String statement, Object... params) throws DataAccessException {
@@ -21,8 +21,12 @@ public class SQLAuthAccess implements AuthDataAccess {
             try (var gs = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param instanceof String p) gs.setString(i + 1, p);
-                    else if (param == null) gs.setNull(i + 1, NULL);
+                    if (param instanceof String p) {
+                        gs.setString(i + 1, p);
+                    }
+                    else if (param == null)  {
+                        gs.setNull(i + 1, NULL);
+                    }
                 }
                 gs.executeUpdate();
 
@@ -102,30 +106,6 @@ public class SQLAuthAccess implements AuthDataAccess {
         }
         catch (DataAccessException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private final String[] createStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS auth (
-              `authToken` varchar(256) NOT NULL,
-              `username` varchar(256) NOT NULL,
-              PRIMARY KEY (`authID`),
-              FOREIGN KEY username REFERENCES users(username)
-            )
-            """
-    };
-
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
 }
