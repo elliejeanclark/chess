@@ -60,7 +60,7 @@ public class SQLGameAccess implements GameDataAccess {
 
     public GameData getGame(int gameID) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games WHERE id=?";
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games WHERE gameID=?";
             try (var gs = conn.prepareStatement(statement)) {
                 gs.setInt(1, gameID);
                 try (var rs = gs.executeQuery()) {
