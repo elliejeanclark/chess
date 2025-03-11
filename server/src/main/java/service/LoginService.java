@@ -40,7 +40,7 @@ public class LoginService {
     public LoginResult login() {
         try {
             UserData user = getUser();
-            if (!user.password().equals(req.password())) {
+            if (!userAccess.verifyUser(user.username(), req.password())) {
                 throw new DataAccessException("Error: wrong password");
             }
             else {

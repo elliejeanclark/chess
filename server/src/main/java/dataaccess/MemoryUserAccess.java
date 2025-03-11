@@ -24,6 +24,19 @@ public class MemoryUserAccess implements UserDataAccess {
         users.clear();
     }
 
+    public boolean verifyUser(String username, String password) throws DataAccessException {
+        try {
+            UserData user = getUser(username);
+            if (user.password().equals(password)) {
+                return true;
+            }
+        }
+        catch (DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        return false;
+    }
+
     public void removeUser(String username) throws DataAccessException {
         try {
             UserData removed = users.remove(username);

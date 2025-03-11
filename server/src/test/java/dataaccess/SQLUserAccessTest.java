@@ -34,7 +34,7 @@ class SQLUserAccessTest {
         UserData testUser = new UserData("user", "password", "bob");
         userAccess.createUser(testUser);
         UserData returnedUser = userAccess.getUser(testUser.username());
-        Assertions.assertEquals(testUser, returnedUser);
+        Assertions.assertEquals(testUser.username(), returnedUser.username());
     }
 
     @Test

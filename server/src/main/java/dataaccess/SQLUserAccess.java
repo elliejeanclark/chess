@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -36,17 +37,35 @@ public class SQLUserAccess implements UserDataAccess {
         }
     }
 
+    public boolean verifyUser(String username, String password) throws DataAccessException {
+        try {
+            var storedHashedPassword = getUser(username).password();
+            var givenHashedPassword = hashPassword(password);
+            if (storedHashedPassword.equals(givenHashedPassword)) {
+                return true;
+            }
+        }
+        catch (DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        return false;
+    }
+
     public void createUser(UserData user) {
         String username = user.username();
-        String password = user.password();
+        String hashedPassword = hashPassword(user.password());
         String email = user.email();
 
         var statement = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
         try {
-            executeUpdate(statement, username, email, password);
+            executeUpdate(statement, username, email, hashedPassword);
         } catch (DataAccessException e) {
             throw new RuntimeException();
         }
+    }
+
+    private String hashPassword(String clearTextPassword) {
+        return BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
     }
 
     public void removeUser(String username) throws DataAccessException {

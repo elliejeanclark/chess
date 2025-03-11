@@ -13,6 +13,8 @@ public interface UserDataAccess {
 
     boolean checkUsernameTaken(String username);
 
+    boolean verifyUser(String username, String password) throws DataAccessException;
+
     HashMap<String, UserData> getUsers();
 
     void clear();
