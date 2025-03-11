@@ -105,20 +105,38 @@ public class SQLGameAccess implements GameDataAccess {
 
     public void updateGame(int gameID, ChessGame game) throws DataAccessException{
         try {
-            var statement = "UPDATE games SET game=? WHERE name=?";
-            executeUpdate(statement, gameID, game);
+            var statement = "UPDATE games SET game=? WHERE gameID=?";
+            executeUpdate(statement, game, gameID);
         }
         catch (DataAccessException e) {
             throw new DataAccessException(e.getMessage());
         }
     }
 
-    public void setPlayer(ChessGame.TeamColor playerColor, String username, int gameID) {
-
+    public void setPlayer(ChessGame.TeamColor playerColor, String username, int gameID) throws DataAccessException {
+        try {
+            if (playerColor == ChessGame.TeamColor.WHITE) {
+                var statement = "UPDATE games SET whiteUsername=? WHERE gameID=?";
+                executeUpdate(statement, username, gameID);
+            }
+            else {
+                var statement = "UPDATE games SET blackUsername=? WHERE gameID=?";
+                executeUpdate(statement, username, gameID);
+            }
+        }
+        catch (DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public void clear() {
-
+        var statement = "TRUNCATE games";
+        try {
+            executeUpdate(statement);
+        }
+        catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private final String[] createStatements = {

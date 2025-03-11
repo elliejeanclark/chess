@@ -128,7 +128,7 @@ public class SQLUserAccess implements UserDataAccess {
     }
 
     public void clear() {
-        var statement = "Truncate users";
+        var statement = "TRUNCATE users";
         try {
             executeUpdate(statement);
         }

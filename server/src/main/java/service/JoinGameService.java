@@ -61,10 +61,15 @@ public class JoinGameService {
             this.res = new JoinGameResult("Error: already Taken");
         }
         else {
-            AuthData authData = authAccess.getAuth(req.authToken());
-            String username = authData.username();
-            gameAccess.setPlayer(req.playerColor(), username, req.gameID());
-            this.res = new JoinGameResult(null);
+            try {
+                AuthData authData = authAccess.getAuth(req.authToken());
+                String username = authData.username();
+                gameAccess.setPlayer(req.playerColor(), username, req.gameID());
+                this.res = new JoinGameResult(null);
+            }
+            catch (DataAccessException e) {
+                this.res = new JoinGameResult(e.getMessage());
+            }
         }
         return res;
     }
