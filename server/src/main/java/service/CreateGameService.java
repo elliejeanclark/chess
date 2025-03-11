@@ -2,6 +2,7 @@ package service;
 
 import chess.ChessGame;
 import dataaccess.AuthDataAccess;
+import dataaccess.DataAccessException;
 import dataaccess.GameDataAccess;
 import reqandres.CreateGameRequest;
 import reqandres.CreateGameResult;
@@ -26,9 +27,13 @@ public class CreateGameService {
     private boolean checkAuthorized() {
         boolean authorized = false;
         String authToken = req.authToken();
-        AuthData authData = authAccess.getAuth(authToken);
-        if (authData != null) {
-            authorized = true;
+        try {
+            AuthData authData = authAccess.getAuth(authToken);
+            if (authData != null) {
+                authorized = true;
+            }
+        } catch (DataAccessException e) {
+            return false;
         }
         return authorized;
     }

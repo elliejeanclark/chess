@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDataAccess;
+import dataaccess.DataAccessException;
 import dataaccess.GameDataAccess;
 import reqandres.ListGamesRequest;
 import reqandres.ListGamesResult;
@@ -25,9 +26,14 @@ public class ListGamesService {
 
     private boolean checkAuthorized() {
         boolean authorized = false;
-        AuthData authData = authAccess.getAuth(req.authToken());
-        if (authData != null) {
-            authorized = true;
+        try {
+            AuthData authData = authAccess.getAuth(req.authToken());
+            if (authData != null) {
+                authorized = true;
+            }
+        }
+        catch (DataAccessException e) {
+            authorized = false;
         }
         return authorized;
     }

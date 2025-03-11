@@ -146,24 +146,6 @@ public class SQLUserAccess implements UserDataAccess {
               PRIMARY KEY (`username`)
             )
             """
-//            """
-//            CREATE TABLE IF NOT EXISTS auth (
-//              `authID` varchar(256) NOT NULL,
-//              `username` varchar(256) NOT NULL,
-//              PRIMARY KEY (`authID`),
-//              FOREIGN KEY username REFERENCES users(username)
-//            )
-//            """,
-//            """
-//            CREATE TABLE IF NOT EXISTS games (
-//              `gameID` int NOT NULL AUTO_INCREMENT,
-//              `whiteUsername` varchar(256),
-//              `blackUsername` varchar(256),
-//              `gameName` varchar(256),
-//              `game` TEXT DEFAULT NULL,
-//              PRIMARY KEY (`gameID`)
-//            )
-//            """
     };
 
     private void configureDatabase() throws DataAccessException {

@@ -95,9 +95,14 @@ public class SQLAuthAccess implements AuthDataAccess {
         return result;
     }
 
-    public void clear() throws DataAccessException {
-        var statement = "TRUNCATE auth";
-        executeUpdate(statement);
+    public void clear() {
+        try {
+            var statement = "TRUNCATE auth";
+            executeUpdate(statement);
+        }
+        catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private final String[] createStatements = {

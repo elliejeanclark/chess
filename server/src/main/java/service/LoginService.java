@@ -20,7 +20,12 @@ public class LoginService {
     public void createTestUser(String username, String password, String email) {
         UserData testUser = new UserData(username, password, email);
         userAccess.createUser(testUser);
-        authAccess.createAuth(generateToken(), username);
+        try {
+            authAccess.createAuth(generateToken(), username);
+        }
+        catch (DataAccessException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     private UserData getUser() throws DataAccessException{

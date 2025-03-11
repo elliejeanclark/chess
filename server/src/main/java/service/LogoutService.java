@@ -14,7 +14,12 @@ public class LogoutService {
     }
 
     public void createTestAuth(String authToken) {
-        authAccess.createAuth(authToken, "bob");
+        try {
+            authAccess.createAuth(authToken, "bob");
+        }
+        catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void removeAuthorization() throws DataAccessException {

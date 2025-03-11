@@ -41,9 +41,14 @@ public class JoinGameService {
 
     private boolean checkAuthorized() {
         String authToken = req.authToken();
-        AuthData authData = authAccess.getAuth(authToken);
-        if (authData != null) {
-            return true;
+        try {
+            AuthData authData = authAccess.getAuth(authToken);
+            if (authData != null) {
+                return true;
+            }
+        }
+        catch (DataAccessException e) {
+            return false;
         }
         return false;
     }
