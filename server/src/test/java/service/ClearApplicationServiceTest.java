@@ -26,8 +26,8 @@ class ClearApplicationServiceTest {
         UserData user2 = new UserData("gerald", "gerald", "gerald");
         authAccess.createAuth("bob's auth token", "bob");
         authAccess.createAuth("gerald's auth token", "gerald");
-        gameAccess.createGame(1, "white", "black", "game1", new ChessGame());
-        gameAccess.createGame(2, "white", "black", "game2", new ChessGame());
+        gameAccess.createGame( "white", "black", "game1", new ChessGame());
+        gameAccess.createGame("white", "black", "game2", new ChessGame());
         userAccess.createUser(user1);
         userAccess.createUser(user2);
     }

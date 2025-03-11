@@ -25,7 +25,7 @@ class ListGamesServiceTest {
         this.gameAccess = new MemoryGameAccess();
         this.authAccess = new MemoryAuthAccess();
         this.testGame = new ChessGame();
-        gameAccess.createGame(1, "white", "black", "testgame", testGame);
+        gameAccess.createGame( "white", "black", "testgame", testGame);
         authAccess.createAuth("bob's Auth Token", "bob");
     }
 

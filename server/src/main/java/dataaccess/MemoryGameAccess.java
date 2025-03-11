@@ -38,8 +38,8 @@ public class MemoryGameAccess implements GameDataAccess {
 
     public int createGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) {
         GameData gameData = new GameData(gameID, whiteUsername, blackUsername, gameName, game);
-        int usedID = incrementID();
         games.put(gameID, gameData);
+        int usedID = incrementID();
         return usedID;
     }
 

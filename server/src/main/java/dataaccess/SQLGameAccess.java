@@ -48,10 +48,10 @@ public class SQLGameAccess implements GameDataAccess {
         return new Gson().fromJson(serializedGame, ChessGame.class);
     }
 
-    public void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
+    public int createGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
         try {
             var statement = "INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
-            executeUpdate(statement, whiteUsername, blackUsername, gameName, game);
+            return executeUpdate(statement, whiteUsername, blackUsername, gameName, game);
         }
         catch (DataAccessException e) {
             throw new DataAccessException(e.getMessage());
@@ -111,10 +111,6 @@ public class SQLGameAccess implements GameDataAccess {
         catch (DataAccessException e) {
             throw new DataAccessException(e.getMessage());
         }
-    }
-
-    public int getNextID() {
-        return 0;
     }
 
     public void setPlayer(ChessGame.TeamColor playerColor, String username, int gameID) {

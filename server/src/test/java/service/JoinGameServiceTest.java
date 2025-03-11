@@ -18,8 +18,7 @@ class JoinGameServiceTest {
         this.gameAccess = new MemoryGameAccess();
         this.authAccess = new MemoryAuthAccess();
         this.testGame = new ChessGame();
-        gameAccess.getNextID();
-        gameAccess.createGame(1, "white", null, "first game", testGame);
+        gameAccess.createGame( "white", null, "first game", testGame);
         authAccess.createAuth("bob's auth token", "bob");
     }
 
@@ -39,8 +38,7 @@ class JoinGameServiceTest {
 
     @Test
     public void joinGameAlreadyTaken() {
-        gameAccess.getNextID();
-        gameAccess.createGame(2, "white", "another person", "first game", testGame);
+        gameAccess.createGame( "white", "another person", "first game", testGame);
         JoinGameRequest req = new JoinGameRequest("bob's auth token", ChessGame.TeamColor.BLACK, 2);
         JoinGameService service = new JoinGameService(req, authAccess, gameAccess);
         Assertions.assertEquals("Error: already Taken", service.joinGame().message());

@@ -44,11 +44,6 @@ public class CreateGameService {
         return true;
     }
 
-    private int generateGameID() {
-        int gameID = gameAccess.getNextID();
-        return gameID;
-    }
-
     public CreateGameResult createGame() {
         boolean authorized = checkAuthorized();
         boolean available = checkNotTaken();

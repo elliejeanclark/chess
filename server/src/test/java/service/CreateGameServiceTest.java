@@ -19,8 +19,7 @@ class CreateGameServiceTest {
         this.gameAccess = new MemoryGameAccess();
         this.authAccess = new MemoryAuthAccess();
         this.testGame = new ChessGame();
-        gameAccess.getNextID();
-        gameAccess.createGame(1, "white", "black", "first game", testGame);
+        gameAccess.createGame( "white", "black", "first game", testGame);
         authAccess.createAuth("bob's auth token", "bob");
     }
 

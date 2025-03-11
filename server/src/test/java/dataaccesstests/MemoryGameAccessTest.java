@@ -20,7 +20,7 @@ class MemoryGameAccessTest {
 
     @Test
     void createGame() {
-        games.createGame(1, "white", "black", "test game", new ChessGame());
+        games.createGame("white", "black", "test game", new ChessGame());
         int actualSize = games.getGames().size();
         int expectedSize = 1;
         Assertions.assertEquals(actualSize, expectedSize);
@@ -29,19 +29,18 @@ class MemoryGameAccessTest {
     @Test
     void getGame() {
         ChessGame testGame = new ChessGame();
-        games.createGame(1, "white", "black", "test game", testGame);
-        HashMap<Integer, GameData> expectedGames = new HashMap<>();
+        games.createGame("white", "black", "test game", testGame);
         GameData expectedData = new GameData(1, "white", "black", "test game", testGame);
-        expectedGames.put(1, expectedData);
-        Assertions.assertEquals(expectedGames.get(1), games.getGame(1));
+        GameData actualData = games.getGame(1);
+        Assertions.assertEquals(expectedData, actualData);
     }
 
     @Test
     void getGames() {
         ChessGame testGame1 = new ChessGame();
         ChessGame testGame2 = new ChessGame();
-        games.createGame(1, "white", "black", "test game1", testGame1);
-        games.createGame(2, "white", "black", "test game2", testGame2);
+        games.createGame("white", "black", "test game1", testGame1);
+        games.createGame("white", "black", "test game2", testGame2);
         HashMap<Integer, GameData> expectedGames = new HashMap<>();
         GameData expectedData1 = new GameData(1, "white", "black", "test game1", testGame1);
         GameData expectedData2 = new GameData(2, "white", "black", "test game2", testGame2);
@@ -54,7 +53,7 @@ class MemoryGameAccessTest {
     void updateGame() {
         ChessGame testGame = new ChessGame();
         ChessGame testUpdatedGame = new ChessGame();
-        games.createGame(1, "white", "black", "test game", testGame);
+        games.createGame( "white", "black", "test game", testGame);
         games.updateGame(1, testUpdatedGame);
 
         HashMap<Integer, GameData> expectedGames = new HashMap<>();
