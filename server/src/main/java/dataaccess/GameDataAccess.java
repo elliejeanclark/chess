@@ -6,7 +6,7 @@ import model.*;
 import java.util.HashMap;
 
 public interface GameDataAccess {
-    void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game);
+    void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException;
 
     GameData getGame(int gameID);
 

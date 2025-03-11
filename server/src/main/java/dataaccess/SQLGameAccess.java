@@ -4,6 +4,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -23,7 +24,7 @@ public class SQLGameAccess implements GameDataAccess {
                     var param = params[i];
                     if (param instanceof String p) us.setString(i + 1, p);
                     else if (param instanceof Integer p) us.setInt(i + 1, p);
-                    //handle if it is a chess game...
+                    else if (param instanceof ChessGame p) us.setString(i + 1, serializeChessGame(p));
                     else if (param == null) us.setNull(i + 1, NULL);
                 }
                 us.executeUpdate();
@@ -48,8 +49,14 @@ public class SQLGameAccess implements GameDataAccess {
         return new Gson().fromJson(serializedGame, ChessGame.class);
     }
 
-    public void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
-
+    public void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
+        try {
+            var statement = "INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
+            executeUpdate(statement, whiteUsername, blackUsername, gameName, game);
+        }
+        catch (DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public GameData getGame(int gameID) {
