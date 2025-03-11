@@ -30,15 +30,17 @@ public class MemoryGameAccess implements GameDataAccess {
         }
     }
 
-    public int getNextID() {
-        int nextID = gameID;
+    private int incrementID() {
+        int oldID = gameID;
         gameID++;
-        return nextID;
+        return oldID;
     }
 
-    public void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
+    public int createGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) {
         GameData gameData = new GameData(gameID, whiteUsername, blackUsername, gameName, game);
+        int usedID = incrementID();
         games.put(gameID, gameData);
+        return usedID;
     }
 
     public GameData getGame(int gameID) {

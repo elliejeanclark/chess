@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDataAccess;
+import dataaccess.DataAccessException;
 import dataaccess.GameDataAccess;
 import model.AuthData;
 import model.GameData;
@@ -23,12 +24,17 @@ public class JoinGameService {
 
     private boolean checkNotTaken() {
         ChessGame.TeamColor givenColor = req.playerColor();
-        GameData game = gameAccess.getGame(req.gameID());
-        if (givenColor == ChessGame.TeamColor.BLACK && game.blackUsername() == null) {
-            return true;
+        try {
+            GameData game = gameAccess.getGame(req.gameID());
+            if (givenColor == ChessGame.TeamColor.BLACK && game.blackUsername() == null) {
+                return true;
+            }
+            else if (givenColor == ChessGame.TeamColor.WHITE && game.whiteUsername() == null) {
+                return true;
+            }
         }
-        else if (givenColor == ChessGame.TeamColor.WHITE && game.whiteUsername() == null) {
-            return true;
+        catch (DataAccessException e) {
+            return false;
         }
         return false;
     }

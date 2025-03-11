@@ -59,9 +59,13 @@ public class CreateGameService {
             this.res = new CreateGameResult( null, "Error: already Taken");
         }
         else {
-            int gameID = generateGameID();
-            gameAccess.createGame(gameID, null, null, req.gameName(), new ChessGame());
-            this.res = new CreateGameResult(gameID, null);
+            try {
+                int gameID = gameAccess.createGame(null, null, req.gameName(), new ChessGame());
+                this.res = new CreateGameResult(gameID, null);
+            }
+            catch (Exception e) {
+                this.res = new CreateGameResult(null, e.getMessage());
+            }
         }
         return res;
     }

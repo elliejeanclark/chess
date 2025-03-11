@@ -4,8 +4,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 
-import javax.xml.crypto.Data;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -19,17 +18,17 @@ public class SQLGameAccess implements GameDataAccess {
 
     private int executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var us = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+            try (var gs = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param instanceof String p) us.setString(i + 1, p);
-                    else if (param instanceof Integer p) us.setInt(i + 1, p);
-                    else if (param instanceof ChessGame p) us.setString(i + 1, serializeChessGame(p));
-                    else if (param == null) us.setNull(i + 1, NULL);
+                    if (param instanceof String p) gs.setString(i + 1, p);
+                    else if (param instanceof Integer p) gs.setInt(i + 1, p);
+                    else if (param instanceof ChessGame p) gs.setString(i + 1, serializeChessGame(p));
+                    else if (param == null) gs.setNull(i + 1, NULL);
                 }
-                us.executeUpdate();
+                gs.executeUpdate();
 
-                var rs = us.getGeneratedKeys();
+                var rs = gs.getGeneratedKeys();
                 if (rs.next()) {
                     return rs.getInt(1);
                 }
@@ -59,16 +58,59 @@ public class SQLGameAccess implements GameDataAccess {
         }
     }
 
-    public GameData getGame(int gameID) {
+    public GameData getGame(int gameID) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games WHERE id=?";
+            try (var gs = conn.prepareStatement(statement)) {
+                gs.setInt(1, gameID);
+                try (var rs = gs.executeQuery()) {
+                    if (rs.next()) {
+                        return readGame(rs);
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            throw new DataAccessException (String.format("Unable to read data: %s", e.getMessage()));
+        }
         return null;
+    }
+
+    private GameData readGame(ResultSet rs) throws SQLException {
+        int id = rs.getInt("gameID");
+        String whiteUsername = rs.getString("whiteUsername");
+        String blackUsername = rs.getString("blackUsername");
+        String gameName = rs.getString("gameName");
+        ChessGame game = deserializeChessGame(rs.getString("game"));
+        return new GameData(id, whiteUsername, blackUsername, gameName, game);
     }
 
     public HashMap<Integer, GameData> getGames() {
-        return null;
+        var result = new HashMap<Integer, GameData>();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT id, json FROM pet";
+            try (var gs = conn.prepareStatement(statement)){
+                try (var rs = gs.executeQuery()) {
+                    while (rs.next()) {
+                        result.put(readGame(rs).gameID(), readGame(rs));
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            return result;
+        }
+        return result;
     }
 
-    public void updateGame(int gameID, ChessGame game) {
-
+    public void updateGame(int gameID, ChessGame game) throws DataAccessException{
+        try {
+            var statement = "UPDATE games SET game=? WHERE name=?";
+            executeUpdate(statement, gameID, game);
+        }
+        catch (DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public int getNextID() {
