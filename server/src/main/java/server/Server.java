@@ -11,16 +11,22 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        // Register your endpoints and handle exceptions here.
-        try {
-            UserDataAccess userAccess = new SQLUserAccess();
-            AuthDataAccess authAccess = new SQLAuthAccess();
-            GameDataAccess gameAccess = new SQLGameAccess();
-            createRoutes(userAccess, authAccess, gameAccess);
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        // Using Memory Access.
+        UserDataAccess userAccess = new MemoryUserAccess();
+        AuthDataAccess authAccess = new MemoryAuthAccess();
+        GameDataAccess gameAccess = new MemoryGameAccess();
+        createRoutes(userAccess, authAccess, gameAccess);
+
+        // Using SQL Access.
+//        try {
+//            UserDataAccess userAccess = new SQLUserAccess();
+//            AuthDataAccess authAccess = new SQLAuthAccess();
+//            GameDataAccess gameAccess = new SQLGameAccess();
+//            createRoutes(userAccess, authAccess, gameAccess);
+//        }
+//        catch (Exception e) {
+//            throw new RuntimeException(e.getMessage());
+//        }
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
