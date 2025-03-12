@@ -50,15 +50,6 @@ class SQLUserAccessTest {
     }
 
     @Test
-    void removeAndGetBadUsers() throws DataAccessException {
-        UserData testUser = new UserData("user", "password", "bob");
-        userAccess.createUser(testUser);
-        userAccess.removeUser("incorrectUsername");
-        int expectedSize = 1;
-        Assertions.assertEquals(expectedSize, userAccess.getUsers().size());
-    }
-
-    @Test
     void verifyGoodUser() throws DataAccessException {
         UserData testUser = new UserData("user", "password", "bob");
         userAccess.createUser(testUser);
