@@ -45,7 +45,11 @@ public class LoginService {
     public LoginResult login() {
         try {
             UserData user = getUser();
-            if (!userAccess.verifyUser(user.username(), req.password())) {
+            if (user == null) {
+                this.res = new LoginResult(null, null, "Error: That user does not exist");
+                return res;
+            }
+            else if (!userAccess.verifyUser(user.username(), req.password())) {
                 throw new DataAccessException("Error: wrong password");
             }
             else {

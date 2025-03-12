@@ -33,8 +33,15 @@ public class LogoutService {
 
     public LogoutResult getResult() {
         try {
+            int origSize = authAccess.getVerUsers().size();
             removeAuthorization();
-            this.res = new LogoutResult(null);
+            int newSize = authAccess.getVerUsers().size();
+            if (origSize == newSize || origSize == 0) {
+                this.res = new LogoutResult("Error: Unauthorized");
+            }
+            else {
+                this.res = new LogoutResult(null);
+            }
         } catch (DataAccessException e) {
             this.res = new LogoutResult("Error: Unauthorized");
         }
