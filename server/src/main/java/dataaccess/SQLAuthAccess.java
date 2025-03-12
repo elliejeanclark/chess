@@ -60,7 +60,7 @@ public class SQLAuthAccess implements AuthDataAccess {
 
     public AuthData getAuth(String authToken) throws DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT authToken, username FROM pet WHERE authToken=?";
+            var statement = "SELECT authToken, username FROM auth WHERE authToken=?";
             try (var as = conn.prepareStatement(statement)) {
                 as.setString(1, authToken);
                 try (var rs = as.executeQuery()) {

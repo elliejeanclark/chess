@@ -83,8 +83,7 @@ public class DatabaseManager {
             CREATE TABLE IF NOT EXISTS auth (
               `authToken` varchar(256) NOT NULL,
               `username` varchar(256) NOT NULL,
-              PRIMARY KEY (`authID`),
-              FOREIGN KEY username REFERENCES users(username)
+              PRIMARY KEY (`authToken`)
             )
             """,
             """
