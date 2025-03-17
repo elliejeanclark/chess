@@ -696,3 +696,72 @@ If after this there are lines in yellow or red, then the lines haven't been test
 
 # Spark Headers
 req.headers("authorization"); -- gives back the auth token if it is in there.
+
+# Computer Security
+Computer systems should be designed with security in mind. 
+There are many ways that people try and compromise the system.
+- Gain unauthorized access to data 
+  - Data in databases and files (data at rest)
+  - Data moving across a network (data in motion)
+- Gain unauthorized access to computers
+  - Inject viruses
+  - Reconfigure or disable systems, Destroy Data
+  - monitor activity
+- Disable a system so it can't be used
+  - DDoS (distributed denial of service) attacks.
+
+## Important Security Goals
+- Data confidentiality
+  - only authorized people and systems can access data
+- Authentication
+  - Verifying a person or system's identity (so you can decide if they can be trusted
+and/or should be authorized to access your system and data)
+- Data Integrity
+  - Verifying that data has not been modified from its original from. 
+- Non-Repudiation
+  - Verifying the origin or authorship of data
+  - Example: deciding if data can be trusted. 
+  - Example: preventing crypto-currency users from denying (or repudiating) they preformed a crypto transaction.
+
+## Foundational Concepts
+
+### Cryptographic Hash Functions
+Input -> Hash Function -> Digest
+Properties of Hash Functions:
+- One-Way
+  - Given the digest (or output), you cannot recover the input. 
+- Deterministic
+  - Given the same input, it produces the same digest.
+- Fixed-Size
+  - The Digest is always the same size (160 bits), regardless of the Input size.
+- Pseudo-Random
+  - The output seems statistically random, even though it is not (small change to the Input 
+makes the digest totally different)
+
+### Password Hashing
+- Problems with storing password Hashes
+  - Users with that have the same password would have the same password hash values in the database.
+    - You wouldn't know their password, but you would know that they have the same password.
+  - Attackers could still crack passwords using a dictionary attack. 
+    - Pre-Compute a "dictionary" containing the hashes of all likely passwords (maps hashes to passwords)
+    - Discover user passwords by searching the dictionary for the password ahshes stored in the database.
+- Salted Password Hashing
+  - Salting Passwords
+    - For each user account, generate a random "salt" value. 
+    - Append the user's salt value to their password before hashing it. 
+    - Store salt and hash (password + salt) in the database.
+    - Users with the same password no longer have the same password hash value. 
+    - Attackers can no longer user pre-computed dictionaries for password hashes.
+
+## Data Encryption
+- Plaintext => the data you are trying to protect
+  - "Hello world"
+- Ciphertext => the data in its encrypted form. "Cipher" is another name for an encryption algorithm. 
+  - 4209qe&3jiD
+- Key => A piece of information (sequence of bits) used as input to a cryptographic algorithm to 
+encode or decode data (often stored in a file)
+- Key Size => The number of bits in the key
+  - The bigger the key size, the more difficult it will be to crack the encryption.
+
+### Symmetric (or secret) key encryption
+- The same key is used for both Encryption and Decryption
