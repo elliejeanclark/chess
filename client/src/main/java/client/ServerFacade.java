@@ -1,6 +1,8 @@
 package client;
 
 
+import model.UserData;
+import model.AuthData;
 import ui.ResponseException;
 
 import com.google.gson.Gson;
@@ -13,6 +15,13 @@ public class ServerFacade {
 
     public ServerFacade(String url) {
         serverUrl = url;
+    }
+
+    public AuthData login(String username, String password, String email) throws ResponseException {
+        var path = "/session";
+        UserData request = new UserData(username, password, email);
+        var response = this.makeRequest("POST", path, request, AuthData.class);
+        return response;
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
