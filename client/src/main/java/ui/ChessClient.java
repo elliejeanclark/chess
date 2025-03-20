@@ -1,18 +1,17 @@
 package ui;
 
 import client.ServerFacade;
+import reqandres.*;
 
 import java.util.Arrays;
 
 public class ChessClient {
     private String username = null;
     private final ServerFacade server;
-    private final String serverUrl;
     private State state = State.SIGNEDOUT;
 
     public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
     }
 
     public State getState() {
@@ -27,6 +26,7 @@ public class ChessClient {
             return switch (cmd) {
                 case "login" -> signIn(params);
                 case "help" -> help();
+                case "register" -> register(params);
                 case "quit" -> "quit";
                 default -> "That is an invalid command. Please try again.\n" + help();
             };
@@ -54,12 +54,33 @@ public class ChessClient {
     }
 
     public String signIn(String... params) throws ResponseException {
-        if (params.length >= 1) {
-            state = State.SIGNEDIN;
-            username = String.join("-", params);
-            return String.format("You signed in as %s.", username);
+        if (params.length == 2) {
+            LoginResult result = server.login(params[0], params[1]);
+            if (result.message() == null) {
+                state = State.SIGNEDIN;
+                username = params[0];
+                return String.format("You signed in as %s. Type help to see new commands.", username);
+            }
+            else {
+                return result.message();
+            }
         }
-        throw new ResponseException(400, "Expected: <username>");
+        throw new ResponseException(400, "Expected: <username> <password> as arguments. Please try again.");
+    }
+
+    public String register(String... params) throws ResponseException {
+        if (params.length == 3) {
+            RegisterResult result = server.register(params[0], params[1], params[2]);
+            if (result.message() == null) {
+                state = State.SIGNEDIN;
+                username = params[0];
+                return String.format("Welcome %s. Type help to see new commands", username);
+            }
+            else {
+                return result.message();
+            }
+        }
+        throw new ResponseException(400, "Expected: <username> <password> <email> as arguments.");
     }
 
     private void assertSignedIn() throws ResponseException {
