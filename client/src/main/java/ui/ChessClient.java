@@ -29,6 +29,7 @@ public class ChessClient {
                 case "help" -> help();
                 case "register" -> register(params);
                 case "create" -> create(params);
+                case "logout" -> logout();
                 case "quit" -> "quit";
                 default -> "That is an invalid command. Please try again.\n" + help();
             };
@@ -95,6 +96,12 @@ public class ChessClient {
     }
 
     public String create(String... params) throws ResponseException {
+        try {
+            assertSignedIn();
+        }
+        catch (ResponseException e) {
+            throw e;
+        }
         if (params.length == 1) {
             CreateGameResult result = server.create(authToken, params[0]);
             if (result.message() == null) {
@@ -105,6 +112,24 @@ public class ChessClient {
             }
         }
         throw new ResponseException(400, "Expected: <NAME> as arguments.");
+    }
+
+    public String logout() throws ResponseException {
+        if (state == State.SIGNEDOUT) {
+            throw new ResponseException(400, "Error: you are already logged out");
+        }
+        else {
+            LogoutResult result = server.logout(authToken);
+            if (result.message() == null) {
+                username = null;
+                authToken = null;
+                state = State.SIGNEDOUT;
+                return String.format("You have been logged out.");
+            }
+            else {
+                return result.message();
+            }
+        }
     }
 
     private void assertSignedIn() throws ResponseException {

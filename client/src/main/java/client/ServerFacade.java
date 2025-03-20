@@ -36,6 +36,13 @@ public class ServerFacade {
         return response;
     }
 
+    public LogoutResult logout(String authToken) throws ResponseException {
+        var path = "/session";
+        LogoutRequest request = new LogoutRequest(authToken);
+        var response = this.makeRequest("DELETE", path, request, LogoutResult.class);
+        return response;
+    }
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
