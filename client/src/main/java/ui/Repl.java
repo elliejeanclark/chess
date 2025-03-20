@@ -6,6 +6,10 @@ import static ui.EscapeSequences.*;
 public class Repl {
     private final ChessClient client;
 
+    public static void main(String[] args) {
+        System.out.println("this is hopefully a chessboard at some point.");
+    }
+
     public Repl(String serverUrl) {
         client = new ChessClient(serverUrl);
     }
