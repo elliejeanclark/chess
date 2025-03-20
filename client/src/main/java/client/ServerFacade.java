@@ -44,6 +44,13 @@ public class ServerFacade {
         return response;
     }
 
+    public ListGamesResult list(String authToken) throws ResponseException {
+        var path = "/game";
+        ListGamesRequest request = new ListGamesRequest(authToken);
+        var response = this.makeRequest("GET", path, request, authToken, ListGamesResult.class);
+        return response;
+    }
+
     private <T> T makeRequest(String method, String path, Object request, String authToken, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();

@@ -2,7 +2,9 @@ package ui;
 
 import client.ServerFacade;
 import reqandres.*;
+import model.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ChessClient {
@@ -30,6 +32,7 @@ public class ChessClient {
                 case "register" -> register(params);
                 case "create" -> create(params);
                 case "logout" -> logout();
+                case "list" -> list();
                 case "quit" -> "quit";
                 default -> "That is an invalid command. Please try again.\n" + help();
             };
@@ -113,6 +116,27 @@ public class ChessClient {
             }
         }
         throw new ResponseException(400, "Expected: <NAME> as arguments.");
+    }
+
+    public String list() throws ResponseException {
+        try {
+            assertSignedIn();
+        }
+        catch (ResponseException e) {
+            throw e;
+        }
+        ListGamesResult result = server.list(authToken);
+        if (result.message() == null) {
+            String listOfGames = "";
+            ArrayList<GameData> games = result.games();
+            for (GameData data : games) {
+                listOfGames += String.format("GameID: %d, White: %s, Black: %s, Name: %s \n", data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName());
+            }
+            return listOfGames;
+        }
+        else {
+            return result.message();
+        }
     }
 
     public String logout() throws ResponseException {
