@@ -10,7 +10,6 @@ import reqandres.ListGamesRequest;
 import reqandres.ListGamesResult;
 import model.GameData;
 
-import java.util.HashMap;
 import java.util.ArrayList;
 
 class ListGamesServiceTest {

@@ -15,6 +15,10 @@ public class ChessClient {
         this.serverUrl = serverUrl;
     }
 
+    public State getState() {
+        return state;
+    }
+
     public String eval(String input) {
         try {
             var tokens = input.toLowerCase().split(" ");
@@ -22,7 +26,9 @@ public class ChessClient {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "login" -> signIn(params);
-                default -> help();
+                case "help" -> help();
+                case "quit" -> "quit";
+                default -> "That is an invalid command. Please try again.\n" + help();
             };
         }
         catch (ResponseException ex) {
@@ -35,11 +41,16 @@ public class ChessClient {
             return """
                     login <USERNAME> <PASSWORD> - to login and play chess
                     register <USERNAME> <PASSWORD> <EMAIL> - to create a new account
-                    quit - exit the probram
+                    quit - exit the program
                     help - list possible commands
                     """;
         }
-        return "here are some commands for once you have logged in";
+        else if (state == State.SIGNEDIN) {
+            return "here are some commands for once you have logged in";
+        }
+        else {
+            return "here are some commands for after you have joined a game";
+        }
     }
 
     public String signIn(String... params) throws ResponseException {

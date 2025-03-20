@@ -3,8 +3,8 @@ package handlers;
 import com.google.gson.Gson;
 import dataaccess.AuthDataAccess;
 import service.LogoutService;
-import reqandres.*;
 import spark.*;
+import reqandres.*;
 
 public class Logout implements Route {
 

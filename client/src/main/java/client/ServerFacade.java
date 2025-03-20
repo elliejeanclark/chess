@@ -1,11 +1,9 @@
 package client;
 
-
-import model.UserData;
-import model.AuthData;
 import ui.ResponseException;
 
 import com.google.gson.Gson;
+import reqandres.*;
 import java.net.*;
 import java.io.*;
 
@@ -17,10 +15,17 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public AuthData login(String username, String password, String email) throws ResponseException {
+    public RegisterResult register(String username, String password, String email) throws ResponseException {
+        var path = "/user";
+        RegisterRequest request = new RegisterRequest(username, password, email);
+        var response = this.makeRequest("POST", path, request, RegisterResult.class);
+        return response;
+    }
+
+    public LoginResult login(String username, String password) throws ResponseException {
         var path = "/session";
-        UserData request = new UserData(username, password, email);
-        var response = this.makeRequest("POST", path, request, AuthData.class);
+        LoginRequest request = new LoginRequest(username, password);
+        var response = this.makeRequest("POST", path, request, LoginResult.class);
         return response;
     }
 

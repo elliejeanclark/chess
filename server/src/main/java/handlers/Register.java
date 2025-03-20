@@ -2,8 +2,7 @@ package handlers;
 
 import dataaccess.AuthDataAccess;
 import dataaccess.UserDataAccess;
-import reqandres.RegisterRequest;
-import reqandres.RegisterResult;
+import reqandres.*;
 import service.RegisterService;
 import com.google.gson.Gson;
 import spark.*;

@@ -1,7 +1,7 @@
 package service;
 
-import dataaccess.*;
 import reqandres.*;
+import dataaccess.*;
 
 public class LogoutService {
     private final LogoutRequest req;
