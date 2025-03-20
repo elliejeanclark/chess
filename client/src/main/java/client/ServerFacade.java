@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import reqandres.*;
 import java.net.*;
 import java.io.*;
+import java.util.HashMap;
 
 public class ServerFacade {
 
@@ -18,37 +19,41 @@ public class ServerFacade {
     public RegisterResult register(String username, String password, String email) throws ResponseException {
         var path = "/user";
         RegisterRequest request = new RegisterRequest(username, password, email);
-        var response = this.makeRequest("POST", path, request, RegisterResult.class);
+        var response = this.makeRequest("POST", path, request, null, RegisterResult.class);
         return response;
     }
 
     public LoginResult login(String username, String password) throws ResponseException {
         var path = "/session";
         LoginRequest request = new LoginRequest(username, password);
-        var response = this.makeRequest("POST", path, request, LoginResult.class);
+        var response = this.makeRequest("POST", path, request, null, LoginResult.class);
         return response;
     }
 
     public CreateGameResult create(String authToken, String gameName) throws ResponseException {
         var path = "/game";
         CreateGameRequest request = new CreateGameRequest(authToken, gameName);
-        var response = this.makeRequest("POST", path, request, CreateGameResult.class);
+        var response = this.makeRequest("POST", path, request, authToken, CreateGameResult.class);
         return response;
     }
 
     public LogoutResult logout(String authToken) throws ResponseException {
         var path = "/session";
         LogoutRequest request = new LogoutRequest(authToken);
-        var response = this.makeRequest("DELETE", path, request, LogoutResult.class);
+        var response = this.makeRequest("DELETE", path, request, authToken, LogoutResult.class);
         return response;
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    private <T> T makeRequest(String method, String path, Object request, String authToken, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+
+            if (authToken != null) {
+                http.addRequestProperty("authorization", authToken);
+            }
 
             writeBody(request, http);
             http.connect();
@@ -78,7 +83,9 @@ public class ServerFacade {
         if (!isSuccessful(status)) {
             try (InputStream respErr = http.getErrorStream()) {
                 if (respErr!= null) {
-                    throw ResponseException.fromJson(respErr);
+                    var map = new Gson().fromJson(new InputStreamReader(respErr), HashMap.class);
+                    String message = map.get("message").toString();
+                    throw new ResponseException(status, message);
                 }
             }
 

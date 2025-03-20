@@ -86,6 +86,7 @@ public class ChessClient {
             if (result.message() == null) {
                 state = State.SIGNEDIN;
                 username = params[0];
+                authToken = result.authToken();
                 return String.format("Welcome %s. Type help to see new commands", username);
             }
             else {
