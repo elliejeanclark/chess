@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 public class ChessClient {
     private String username = null;
+    private String authToken  = null;
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
 
@@ -27,6 +28,7 @@ public class ChessClient {
                 case "login" -> signIn(params);
                 case "help" -> help();
                 case "register" -> register(params);
+                case "create" -> create(params);
                 case "quit" -> "quit";
                 default -> "That is an invalid command. Please try again.\n" + help();
             };
@@ -46,7 +48,15 @@ public class ChessClient {
                     """;
         }
         else if (state == State.SIGNEDIN) {
-            return "here are some commands for once you have logged in";
+            return """
+                    create <NAME> - create a game
+                    list - list all games
+                    join <ID> [WHITE|BLACK] - join a game based on ID and pick a color
+                    observe <id> - watch a game
+                    logout - logout of the system
+                    quit - exit the program
+                    help - list possible commands
+                    """;
         }
         else {
             return "here are some commands for after you have joined a game";
@@ -59,6 +69,7 @@ public class ChessClient {
             if (result.message() == null) {
                 state = State.SIGNEDIN;
                 username = params[0];
+                authToken = result.authToken();
                 return String.format("You signed in as %s. Type help to see new commands.", username);
             }
             else {
@@ -81,6 +92,19 @@ public class ChessClient {
             }
         }
         throw new ResponseException(400, "Expected: <username> <password> <email> as arguments.");
+    }
+
+    public String create(String... params) throws ResponseException {
+        if (params.length == 1) {
+            CreateGameResult result = server.create(authToken, params[0]);
+            if (result.message() == null) {
+                return String.format("Game %s has been created", params[0]);
+            }
+            else {
+                return result.message();
+            }
+        }
+        throw new ResponseException(400, "Expected: <NAME> as arguments.");
     }
 
     private void assertSignedIn() throws ResponseException {
