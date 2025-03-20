@@ -132,7 +132,12 @@ public class ChessClient {
             for (GameData data : games) {
                 listOfGames += String.format("GameID: %d, White: %s, Black: %s, Name: %s \n", data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName());
             }
-            return listOfGames;
+            if (listOfGames.equals("")){
+                return "No active games. Try creating a game!";
+            }
+            else {
+                return listOfGames;
+            }
         }
         else {
             return result.message();
