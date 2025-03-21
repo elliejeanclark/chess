@@ -45,4 +45,16 @@ public class ServerFacadeTests {
         facade.register("bob", "bob", "bob@gmail.com");
         Assertions.assertThrows(ResponseException.class, () -> facade.register("bob", "bob", "bob@gmail.com"));
     }
+
+    @Test
+    public void testGoodLogin() throws ResponseException {
+        facade.register("bob", "bob", "bob@gmail.com");
+        LoginResult result = facade.login("bob", "bob");
+        Assertions.assertNotNull(result.authToken());
+    }
+
+    @Test
+    public void testBadLogin(){
+        Assertions.assertThrows(ResponseException.class, () -> facade.login("bob", "bob"));
+    }
 }
