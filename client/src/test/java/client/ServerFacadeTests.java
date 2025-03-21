@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessGame;
 import org.junit.jupiter.api.*;
 import server.Server;
 import ui.ResponseException;
@@ -96,5 +97,19 @@ public class ServerFacadeTests {
     @Test
     public void testBadList() {
        Assertions.assertThrows(ResponseException.class, () -> facade.list(null));
+    }
+
+    @Test
+    public void testGoodJoin() throws ResponseException {
+        RegisterResult registerResult = facade.register("bob", "bob", "bob@gmail.com");
+        String authToken = registerResult.authToken();
+        facade.create(authToken, "testgame");
+        JoinGameResult result = facade.join(authToken, 1, ChessGame.TeamColor.WHITE);
+        Assertions.assertNull(result.message());
+    }
+
+    @Test
+    public void testBadJoin() {
+        Assertions.assertThrows(ResponseException.class, () -> facade.join(null, 0, null));
     }
 }
