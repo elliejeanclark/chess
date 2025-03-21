@@ -70,4 +70,17 @@ public class ServerFacadeTests {
     public void testBadCreate() {
         Assertions.assertThrows(ResponseException.class, () -> facade.create(null, "testgame"));
     }
+
+    @Test
+    public void testGoodLogout() throws ResponseException {
+        RegisterResult registerResult = facade.register("bob", "bob", "bob@gmail.com");
+        String authToken = registerResult.authToken();
+        LogoutResult result = facade.logout(authToken);
+        Assertions.assertNull(result.message());
+    }
+
+    @Test
+    public void testBadLogout() {
+        Assertions.assertThrows(ResponseException.class, () -> facade.logout(null));
+    }
 }
