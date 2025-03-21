@@ -141,7 +141,7 @@ public class ChessClient {
             ArrayList<GameData> games = result.games();
             int i = 1;
             for (GameData data : games) {
-                listOfGames += String.format("%d. GameID: %d, White: %s, Black: %s \n", i, data.gameID(), data.whiteUsername(), data.blackUsername());
+                listOfGames += String.format("%d. White: %s, Black: %s, GameName: %s \n", i, data.whiteUsername(), data.blackUsername(), data.gameName());
                 i++;
             }
             if (listOfGames.equals("")){
@@ -158,6 +158,7 @@ public class ChessClient {
 
     public String join(String... params) throws ResponseException {
         int givenGameID;
+        boolean gameExists = false;
         try {
             assertSignedIn();
         }
@@ -167,10 +168,7 @@ public class ChessClient {
         if (params.length != 2) {
             return "Incorrect amount of arguments";
         }
-        else if (params[1] == "BLACK" || params[1] == "WHITE") {
-            return "please enter a valid color to join";
-        }
-        else {
+        else if (params[1].equals("white") || params[1].equals("black")){
             String listresult = list();
             if (listresult.equals("No active games. Try creating a game!")) {
                 return "There are no games, try creating a game before joining";
@@ -181,6 +179,19 @@ public class ChessClient {
                 } catch (NumberFormatException e) {
                     return "Please enter an actual number for gameID";
                 }
+
+                ListGamesResult listResult = server.list(authToken);
+                ArrayList<GameData> games = listResult.games();
+                for (GameData data : games) {
+                    if (data.gameID() == givenGameID) {
+                        gameExists = true;
+                    }
+                }
+
+                if (!gameExists) {
+                    return "That game doesn't exist. Please enter a valid game";
+                }
+
                 ChessGame.TeamColor color;
                 if (params[1].equals("white")) {
                     color = ChessGame.TeamColor.WHITE;
@@ -197,6 +208,9 @@ public class ChessClient {
                     return result.message();
                 }
             }
+        }
+        else {
+            return "That is not a valid color choice. Please try again.";
         }
     }
 
@@ -311,7 +325,7 @@ public class ChessClient {
                     result += "\n";
                 }
                 else {
-                    result += drawRow(board, i);
+                    result += drawBlackRow(board, i);
                     result += RESET_BG_COLOR;
                     result += "\n";
                 }
@@ -348,6 +362,59 @@ public class ChessClient {
         }
         else {
             for (int j = 1; j <= 8; j++) {
+                if (j % 2 != 0) {
+                    row += SET_BG_COLOR_BLACK;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
+                }
+                else {
+                    row += SET_BG_COLOR_WHITE;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
+                }
+            }
+        }
+        row += SET_BG_COLOR_DARK_GREEN;
+        row += " ";
+        row += i;
+        row += " ";
+        return row;
+    }
+
+    private String drawBlackRow(ChessBoard board, int i) {
+        String row = "";
+        row += SET_BG_COLOR_DARK_GREEN;
+        row += " ";
+        row += i;
+        row += " ";
+        if (i % 2 == 0) {
+            for (int j = 8; j >= 1; j--) {
+                if (j % 2 != 0) {
+                    row += SET_BG_COLOR_WHITE;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
+                }
+                else {
+                    row += SET_BG_COLOR_BLACK;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
+                }
+            }
+        }
+        else {
+            for (int j = 8; j >= 1; j--) {
                 if (j % 2 != 0) {
                     row += SET_BG_COLOR_BLACK;
                     row += " ";
