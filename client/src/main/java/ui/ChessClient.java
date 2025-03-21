@@ -247,6 +247,7 @@ public class ChessClient {
 
     public String observe(String... params) throws ResponseException {
         int givenGameID;
+        boolean gameExists = false;
         try {
             assertSignedIn();
         } catch (ResponseException e) {
@@ -272,8 +273,14 @@ public class ChessClient {
                     int gameID = data.gameID();
                     if (gameID == givenGameID) {
                         currBoard = data.game().getBoard();
+                        gameExists = true;
                     }
                 }
+
+                if (!gameExists) {
+                    return "That game doesn't exist, please try again";
+                }
+
                 state = State.WATCHINGGAME;
                 teamColor = ChessGame.TeamColor.WHITE;
                 return stringifiedBoard(currBoard);
