@@ -49,6 +49,9 @@ public class Repl {
         else if (state == State.PLAYINGGAME) {
             stateMessage = "[PLAYING]";
         }
+        else if (state == State.WATCHINGGAME) {
+            stateMessage = "[WATCHING]";
+        }
         System.out.print("\n" + RESET_TEXT_COLOR + stateMessage + " >>> " + SET_TEXT_COLOR_GREEN);
     }
 }

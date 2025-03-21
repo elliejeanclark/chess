@@ -37,6 +37,7 @@ public class ChessClient {
                 case "list" -> list();
                 case "join" -> join(params);
                 case "observe" -> observe(params);
+                case "leaveGame" -> exit();
                 case "quit" -> "quit";
                 default -> "That is an invalid command. Please try again.\n" + help();
             };
@@ -67,7 +68,10 @@ public class ChessClient {
                     """;
         }
         else {
-            return "here are some commands for after you have joined a game. quit to exit the program";
+            return """
+                    leaveGame - exit watch/playing mode.
+                    quit - quit the program.
+                    """;
         }
     }
 
@@ -151,6 +155,7 @@ public class ChessClient {
     }
 
     public String join(String... params) throws ResponseException {
+        int givenGameID;
         try {
             assertSignedIn();
         }
@@ -169,7 +174,11 @@ public class ChessClient {
                 return "There are no games, try creating a game before joining";
             }
             else {
-                int givenGameID = Integer.parseInt(params[0]);
+                try {
+                    givenGameID = Integer.parseInt(params[0]);
+                } catch (NumberFormatException e) {
+                    return "Please enter an actual number for gameID";
+                }
                 ChessGame.TeamColor color;
                 if (params[1].equals("WHITE")) {
                     color = ChessGame.TeamColor.WHITE;
@@ -216,6 +225,7 @@ public class ChessClient {
     }
 
     public String observe(String... params) throws ResponseException {
+        int givenGameID;
         try {
             assertSignedIn();
         } catch (ResponseException e) {
@@ -230,7 +240,11 @@ public class ChessClient {
                 return "There are no games, try creating a game before watching.";
             }
             else {
-                int givenGameID = Integer.parseInt(params[0]);
+                try {
+                    givenGameID = Integer.parseInt(params[0]);
+                } catch (NumberFormatException e) {
+                    return "Please enter an actual number for gameID";
+                }
                 ListGamesResult gamesResult = server.list(authToken);
                 ArrayList<GameData> games = gamesResult.games();
                 for (GameData data : games) {
@@ -239,9 +253,19 @@ public class ChessClient {
                         currBoard = data.game().getBoard();
                     }
                 }
-                state = State.PLAYINGGAME;
+                state = State.WATCHINGGAME;
                 return stringifiedBoard(currBoard);
             }
+        }
+    }
+
+    private String exit() {
+        if (state == State.SIGNEDOUT || state == State.SIGNEDIN) {
+            return "You aren't watching or playing a game.";
+        }
+        else {
+            state = State.SIGNEDIN;
+            return "No longer playing/watching game.";
         }
     }
 
