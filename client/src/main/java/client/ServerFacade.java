@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessGame;
 import ui.ResponseException;
 
 import com.google.gson.Gson;
@@ -48,6 +49,13 @@ public class ServerFacade {
         var path = "/game";
         ListGamesRequest request = new ListGamesRequest(authToken);
         var response = this.makeRequest("GET", path, request, authToken, ListGamesResult.class);
+        return response;
+    }
+
+    public JoinGameResult join(String authToken, int gameID, ChessGame.TeamColor color) throws ResponseException {
+        var path = "/game";
+        JoinGameRequest request = new JoinGameRequest(authToken, color, gameID);
+        var response = this.makeRequest("PUT", path, request, authToken, JoinGameResult.class);
         return response;
     }
 

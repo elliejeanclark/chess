@@ -3,6 +3,7 @@ package ui;
 import client.ServerFacade;
 import reqandres.*;
 import model.*;
+import chess.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ public class ChessClient {
     private String authToken  = null;
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
+    private ChessBoard currBoard = null;
 
     public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
@@ -33,6 +35,7 @@ public class ChessClient {
                 case "create" -> create(params);
                 case "logout" -> logout();
                 case "list" -> list();
+                case "join" -> join(params);
                 case "quit" -> "quit";
                 default -> "That is an invalid command. Please try again.\n" + help();
             };
@@ -144,6 +147,47 @@ public class ChessClient {
         }
     }
 
+    public String join(String... params) throws ResponseException {
+        try {
+            assertSignedIn();
+        }
+        catch (ResponseException e) {
+            throw e;
+        }
+        if (params.length != 2) {
+            return "Incorrect amount of arguments";
+        }
+        else if (params[1] == "BLACK" || params[1] == "WHITE") {
+            return "please enter a valid color to join";
+        }
+        else {
+            int givenGameID = Integer.parseInt(params[0]);
+            ChessGame.TeamColor color = null;
+            if (params[1] == "WHITE") {
+                color = ChessGame.TeamColor.WHITE;
+            }
+            else {
+                color = ChessGame.TeamColor.BLACK;
+            }
+            JoinGameResult result = server.join(authToken, givenGameID, color);
+            if (result.message() == null) {
+                ListGamesResult gamesResult = server.list(authToken);
+                ArrayList<GameData> games = gamesResult.games();
+                for (GameData data : games) {
+                    int gameID = data.gameID();
+                    if (gameID == givenGameID) {
+                        currBoard = data.game().getBoard();
+                    }
+                }
+                state = State.PLAYINGGAME;
+                return stringifiedBoard(currBoard);
+            }
+            else {
+                return result.message();
+            }
+        }
+    }
+
     public String logout() throws ResponseException {
         if (state == State.SIGNEDOUT) {
             throw new ResponseException(400, "Error: you are already logged out");
@@ -160,6 +204,10 @@ public class ChessClient {
                 return result.message();
             }
         }
+    }
+
+    private String stringifiedBoard(ChessBoard board) {
+        return "here is a board";
     }
 
     private void assertSignedIn() throws ResponseException {
