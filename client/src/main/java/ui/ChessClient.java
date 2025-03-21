@@ -336,97 +336,112 @@ public class ChessClient {
 
     private String drawRow(ChessBoard board, int i, boolean whiteView) {
         String row = "";
+        row += drawHeader(i);
+        if (i % 2 == 0) {
+            row += evenRow(board, i, whiteView);
+        }
+        else {
+            row += oddRow(board, i, whiteView);
+        }
+        row += drawHeader(i);
+        return row;
+    }
+
+    private String drawHeader(int i) {
+        String row = "";
         row += SET_BG_COLOR_DARK_GREEN;
         row += " ";
         row += i;
         row += " ";
-        if (i % 2 == 0) {
-            if (whiteView) {
-                for (int j = 1; j <= 8; j++) {
-                    if (j % 2 != 0) {
-                        row += SET_BG_COLOR_WHITE;
-                        row += " ";
-                        row += getPieceColor(board, i, j);
-                        row += getPieceType(board, i, j);
-                        row += RESET_TEXT_COLOR;
-                        row += " ";
-                    } else {
-                        row += SET_BG_COLOR_BLACK;
-                        row += " ";
-                        row += getPieceColor(board, i, j);
-                        row += getPieceType(board, i, j);
-                        row += RESET_TEXT_COLOR;
-                        row += " ";
-                    }
+        return row;
+    }
+
+    private String oddRow(ChessBoard board, int i, boolean whiteView) {
+        String row = "";
+        if (whiteView) {
+            for (int j = 1; j <= 8; j++) {
+                if (j % 2 != 0) {
+                    row += SET_BG_COLOR_BLACK;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
                 }
-            }
-            else {
-                for (int j = 8; j >= 1; j--) {
-                    if (j % 2 != 0) {
-                        row += SET_BG_COLOR_WHITE;
-                        row += " ";
-                        row += getPieceColor(board, i, j);
-                        row += getPieceType(board, i, j);
-                        row += RESET_TEXT_COLOR;
-                        row += " ";
-                    }
-                    else {
-                        row += SET_BG_COLOR_BLACK;
-                        row += " ";
-                        row += getPieceColor(board, i, j);
-                        row += getPieceType(board, i, j);
-                        row += RESET_TEXT_COLOR;
-                        row += " ";
-                    }
+                else {
+                    row += SET_BG_COLOR_WHITE;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
                 }
             }
         }
         else {
-            if (whiteView) {
-                for (int j = 1; j <= 8; j++) {
-                    if (j % 2 != 0) {
-                        row += SET_BG_COLOR_BLACK;
-                        row += " ";
-                        row += getPieceColor(board, i, j);
-                        row += getPieceType(board, i, j);
-                        row += RESET_TEXT_COLOR;
-                        row += " ";
-                    }
-                    else {
-                        row += SET_BG_COLOR_WHITE;
-                        row += " ";
-                        row += getPieceColor(board, i, j);
-                        row += getPieceType(board, i, j);
-                        row += RESET_TEXT_COLOR;
-                        row += " ";
-                    }
+            for (int j = 8; j >= 1; j--) {
+                if (j % 2 != 0) {
+                    row += SET_BG_COLOR_BLACK;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
                 }
-            }
-            else {
-                for (int j = 8; j >= 1; j--) {
-                    if (j % 2 != 0) {
-                        row += SET_BG_COLOR_BLACK;
-                        row += " ";
-                        row += getPieceColor(board, i, j);
-                        row += getPieceType(board, i, j);
-                        row += RESET_TEXT_COLOR;
-                        row += " ";
-                    }
-                    else {
-                        row += SET_BG_COLOR_WHITE;
-                        row += " ";
-                        row += getPieceColor(board, i, j);
-                        row += getPieceType(board, i, j);
-                        row += RESET_TEXT_COLOR;
-                        row += " ";
-                    }
+                else {
+                    row += SET_BG_COLOR_WHITE;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
                 }
             }
         }
-        row += SET_BG_COLOR_DARK_GREEN;
-        row += " ";
-        row += i;
-        row += " ";
+        return row;
+    }
+
+    private String evenRow(ChessBoard board, int i, boolean whiteView) {
+        String row = "";
+        if (whiteView) {
+            for (int j = 1; j <= 8; j++) {
+                if (j % 2 != 0) {
+                    row += SET_BG_COLOR_WHITE;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
+                } else {
+                    row += SET_BG_COLOR_BLACK;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
+                }
+            }
+        }
+        else {
+            for (int j = 8; j >= 1; j--) {
+                if (j % 2 != 0) {
+                    row += SET_BG_COLOR_WHITE;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
+                }
+                else {
+                    row += SET_BG_COLOR_BLACK;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
+                }
+            }
+        }
         return row;
     }
 
