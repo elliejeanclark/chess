@@ -282,7 +282,7 @@ public class ChessClient {
         }
 
         if (whiteView) {
-            for (int i = 0; i <= 9; i++) {
+            for (int i = 9; i >= 0; i--) {
                 if (i == 0 || i == 9) {
                     result += RESET_TEXT_COLOR;
                     result += SET_BG_COLOR_DARK_GREEN;
@@ -291,14 +291,14 @@ public class ChessClient {
                     result += "\n";
                 }
                 else {
-                    result += drawRow(board, i);
+                    result += drawWhiteRow(board, i);
                     result += RESET_BG_COLOR;
                     result += "\n";
                 }
             }
         }
         else {
-            for (int i = 9; i >= 0; i++) {
+            for (int i = 0; i <= 9; i++) {
                 if (i == 0 || i == 9) {
                     result += RESET_TEXT_COLOR;
                     result += SET_BG_COLOR_DARK_GREEN;
@@ -307,7 +307,7 @@ public class ChessClient {
                     result += "\n";
                 }
                 else {
-                    result += drawRow(board, i);
+                    result += drawBlackRow(board, i);
                     result += RESET_BG_COLOR;
                     result += "\n";
                 }
@@ -316,7 +316,7 @@ public class ChessClient {
         return result;
     }
 
-    private String drawRow(ChessBoard board, int i) {
+    private String drawWhiteRow(ChessBoard board, int i) {
         String row = "";
         row += SET_BG_COLOR_DARK_GREEN;
         row += " ";
@@ -335,7 +335,7 @@ public class ChessClient {
                 else {
                     row += SET_BG_COLOR_BLACK;
                     row += " ";
-                    row += SET_TEXT_COLOR_BLUE;
+                    row += getPieceColor(board, i, j);
                     row += getPieceType(board, i, j);
                     row += RESET_TEXT_COLOR;
                     row += " ";
@@ -355,7 +355,60 @@ public class ChessClient {
                 else {
                     row += SET_BG_COLOR_WHITE;
                     row += " ";
-                    row += SET_TEXT_COLOR_BLUE;
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
+                }
+            }
+        }
+        row += SET_BG_COLOR_DARK_GREEN;
+        row += " ";
+        row += i;
+        row += " ";
+        return row;
+    }
+
+    private String drawBlackRow(ChessBoard board, int i) {
+        String row = "";
+        row += SET_BG_COLOR_DARK_GREEN;
+        row += " ";
+        row += i;
+        row += " ";
+        if (i % 2 == 0) {
+            for (int j = 1; j <= 8; j++) {
+                if (j % 2 != 0) {
+                    row += SET_BG_COLOR_WHITE;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
+                }
+                else {
+                    row += SET_BG_COLOR_BLACK;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
+                }
+            }
+        }
+        else {
+            for (int j = 1; j <= 8; j++) {
+                if (j % 2 != 0) {
+                    row += SET_BG_COLOR_BLACK;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
+                    row += getPieceType(board, i, j);
+                    row += RESET_TEXT_COLOR;
+                    row += " ";
+                }
+                else {
+                    row += SET_BG_COLOR_WHITE;
+                    row += " ";
+                    row += getPieceColor(board, i, j);
                     row += getPieceType(board, i, j);
                     row += RESET_TEXT_COLOR;
                     row += " ";
