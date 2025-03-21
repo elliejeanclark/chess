@@ -39,7 +39,7 @@ public class ChessClient {
                 case "list" -> list();
                 case "join" -> join(params);
                 case "observe" -> observe(params);
-                case "leaveGame" -> exit();
+                case "exit" -> exit();
                 case "quit" -> "quit";
                 default -> "That is an invalid command. Please try again.\n" + help();
             };
@@ -71,7 +71,7 @@ public class ChessClient {
         }
         else {
             return """
-                    leaveGame - exit watch/playing mode.
+                    exit - exit watch/playing mode.
                     quit - quit the program.
                     """;
         }
@@ -182,7 +182,7 @@ public class ChessClient {
                     return "Please enter an actual number for gameID";
                 }
                 ChessGame.TeamColor color;
-                if (params[1].equals("WHITE")) {
+                if (params[1].equals("white")) {
                     color = ChessGame.TeamColor.WHITE;
                 }
                 else {
