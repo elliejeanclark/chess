@@ -430,59 +430,6 @@ public class ChessClient {
         return row;
     }
 
-    private String drawBlackRow(ChessBoard board, int i) {
-        String row = "";
-        row += SET_BG_COLOR_DARK_GREEN;
-        row += " ";
-        row += i;
-        row += " ";
-        if (i % 2 == 0) {
-            for (int j = 8; j >= 1; j--) {
-                if (j % 2 != 0) {
-                    row += SET_BG_COLOR_WHITE;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
-                }
-                else {
-                    row += SET_BG_COLOR_BLACK;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
-                }
-            }
-        }
-        else {
-            for (int j = 8; j >= 1; j--) {
-                if (j % 2 != 0) {
-                    row += SET_BG_COLOR_BLACK;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
-                }
-                else {
-                    row += SET_BG_COLOR_WHITE;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
-                }
-            }
-        }
-        row += SET_BG_COLOR_DARK_GREEN;
-        row += " ";
-        row += i;
-        row += " ";
-        return row;
-    }
-
     private String getPieceType(ChessBoard board, int i, int j) {
         ChessPosition position = new ChessPosition(i, j);
         ChessPiece piece = board.getPiece(position);
