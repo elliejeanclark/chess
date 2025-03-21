@@ -161,29 +161,35 @@ public class ChessClient {
             return "please enter a valid color to join";
         }
         else {
-            int givenGameID = Integer.parseInt(params[0]);
-            ChessGame.TeamColor color = null;
-            if (params[1] == "WHITE") {
-                color = ChessGame.TeamColor.WHITE;
+            String listresult = list();
+            if (listresult.equals("No active games. Try creating a game!")) {
+                return "There are no games, try creating a game before joining";
             }
             else {
-                color = ChessGame.TeamColor.BLACK;
-            }
-            JoinGameResult result = server.join(authToken, givenGameID, color);
-            if (result.message() == null) {
-                ListGamesResult gamesResult = server.list(authToken);
-                ArrayList<GameData> games = gamesResult.games();
-                for (GameData data : games) {
-                    int gameID = data.gameID();
-                    if (gameID == givenGameID) {
-                        currBoard = data.game().getBoard();
-                    }
+                int givenGameID = Integer.parseInt(params[0]);
+                ChessGame.TeamColor color;
+                if (params[1].equals("WHITE")) {
+                    color = ChessGame.TeamColor.WHITE;
                 }
-                state = State.PLAYINGGAME;
-                return stringifiedBoard(currBoard);
-            }
-            else {
-                return result.message();
+                else {
+                    color = ChessGame.TeamColor.BLACK;
+                }
+                JoinGameResult result = server.join(authToken, givenGameID, color);
+                if (result.message() == null) {
+                    ListGamesResult gamesResult = server.list(authToken);
+                    ArrayList<GameData> games = gamesResult.games();
+                    for (GameData data : games) {
+                        int gameID = data.gameID();
+                        if (gameID == givenGameID) {
+                            currBoard = data.game().getBoard();
+                        }
+                    }
+                    state = State.PLAYINGGAME;
+                    return stringifiedBoard(currBoard);
+                }
+                else {
+                    return result.message();
+                }
             }
         }
     }
