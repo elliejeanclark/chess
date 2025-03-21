@@ -36,6 +36,7 @@ public class ChessClient {
                 case "logout" -> logout();
                 case "list" -> list();
                 case "join" -> join(params);
+                case "observe" -> observe(params);
                 case "quit" -> "quit";
                 default -> "That is an invalid command. Please try again.\n" + help();
             };
@@ -66,7 +67,7 @@ public class ChessClient {
                     """;
         }
         else {
-            return "here are some commands for after you have joined a game";
+            return "here are some commands for after you have joined a game. quit to exit the program";
         }
     }
 
@@ -210,6 +211,36 @@ public class ChessClient {
             }
             else {
                 return result.message();
+            }
+        }
+    }
+
+    public String observe(String... params) throws ResponseException {
+        try {
+            assertSignedIn();
+        } catch (ResponseException e) {
+            throw e;
+        }
+        if (params.length != 1) {
+            return "Invalid arguments. Enter a valid gameID.";
+        }
+        else {
+            String listresult = list();
+            if (listresult.equals("No active games. Try creating a game!")) {
+                return "There are no games, try creating a game before watching.";
+            }
+            else {
+                int givenGameID = Integer.parseInt(params[0]);
+                ListGamesResult gamesResult = server.list(authToken);
+                ArrayList<GameData> games = gamesResult.games();
+                for (GameData data : games) {
+                    int gameID = data.gameID();
+                    if (gameID == givenGameID) {
+                        currBoard = data.game().getBoard();
+                    }
+                }
+                state = State.PLAYINGGAME;
+                return stringifiedBoard(currBoard);
             }
         }
     }

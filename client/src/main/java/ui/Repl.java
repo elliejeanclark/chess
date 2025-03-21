@@ -46,6 +46,9 @@ public class Repl {
         else if (state == State.SIGNEDIN) {
             stateMessage = "[LOGGED_IN]";
         }
+        else if (state == State.PLAYINGGAME) {
+            stateMessage = "[PLAYING]";
+        }
         System.out.print("\n" + RESET_TEXT_COLOR + stateMessage + " >>> " + SET_TEXT_COLOR_GREEN);
     }
 }
