@@ -4,6 +4,7 @@ import client.ServerFacade;
 import reqandres.*;
 import model.*;
 import chess.*;
+import static ui.EscapeSequences.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 public class ChessClient {
     private String username = null;
     private String authToken  = null;
+    private ChessGame.TeamColor teamColor;
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
     private ChessBoard currBoard = null;
@@ -197,6 +199,7 @@ public class ChessClient {
                         }
                     }
                     state = State.PLAYINGGAME;
+                    teamColor = color;
                     return stringifiedBoard(currBoard);
                 }
                 else {
@@ -254,6 +257,7 @@ public class ChessClient {
                     }
                 }
                 state = State.WATCHINGGAME;
+                teamColor = ChessGame.TeamColor.WHITE;
                 return stringifiedBoard(currBoard);
             }
         }
@@ -265,12 +269,112 @@ public class ChessClient {
         }
         else {
             state = State.SIGNEDIN;
+            teamColor = null;
             return "No longer playing/watching game.";
         }
     }
 
-    private String stringifiedBoard(ChessBoard board) {
-        return "here is a board";
+    public String stringifiedBoard(ChessBoard board) {
+        boolean whiteView = false;
+        String result = "";
+        if (teamColor == ChessGame.TeamColor.WHITE) {
+            whiteView = true;
+        }
+
+        if (whiteView) {
+            for (int i = 0; i <= 9; i++) {
+                if (i == 0 || i == 9) {
+                    result += SET_BG_COLOR_DARK_GREY;
+                    result += "    a  b  c  d  e  f  g  h    ";
+                    result += RESET_BG_COLOR;
+                    result += "\n";
+                }
+                else {
+                    result += drawRow(board, i);
+                    result += RESET_BG_COLOR;
+                    result += "\n";
+                }
+            }
+        }
+        else {
+            for (int i = 9; i >= 0; i++) {
+                if (i == 0 || i == 9) {
+                    result += SET_BG_COLOR_DARK_GREY;
+                    result += "    h  g  f  e  d  c  b  a    ";
+                    result += RESET_BG_COLOR;
+                    result += "\n";
+                }
+                else {
+                    result += drawRow(board, i);
+                    result += RESET_BG_COLOR;
+                    result += "\n";
+                }
+            }
+        }
+        return result;
+    }
+
+    private String drawRow(ChessBoard board, int i) {
+        String row = "";
+        row += SET_BG_COLOR_DARK_GREY;
+        row += " ";
+        row += i;
+        for (int j = 1; j <= 8; j++) {
+            if (j % 2 != 0) {
+                row += SET_BG_COLOR_WHITE;
+                row += " ";
+                row += getPieceColor(board, i, j);
+                row += getPieceType(board, i, j);
+                row += RESET_TEXT_COLOR;
+                row += " ";
+            }
+            else {
+                row += SET_BG_COLOR_BLACK;
+                row += " ";
+                row += SET_TEXT_COLOR_BLUE;
+                row += getPieceType(board, i, j);
+                row += RESET_TEXT_COLOR;
+                row += " ";
+            }
+        }
+        row += SET_BG_COLOR_DARK_GREY;
+        row += " ";
+        row += i;
+        return row;
+    }
+
+    private String getPieceType(ChessBoard board, int i, int j) {
+        ChessPosition position = new ChessPosition(i, j);
+        ChessPiece piece = board.getPiece(position);
+        if (piece == null) {
+            return " ";
+        }
+        else {
+            ChessPiece.PieceType pieceType = piece.getPieceType();
+            return switch (pieceType) {
+                case ChessPiece.PieceType.KING -> "K";
+                case ChessPiece.PieceType.QUEEN -> "Q";
+                case ChessPiece.PieceType.PAWN -> "P";
+                case ChessPiece.PieceType.ROOK -> "R";
+                case ChessPiece.PieceType.KNIGHT -> "N";
+                case ChessPiece.PieceType.BISHOP -> "B";
+            };
+        }
+    }
+
+    private String getPieceColor(ChessBoard board, int i, int j) {
+        ChessPosition position = new ChessPosition(i, j);
+        ChessPiece piece = board.getPiece(position);
+        if (piece == null) {
+            return "";
+        }
+        else {
+            ChessGame.TeamColor color = piece.getTeamColor();
+            return switch (color) {
+                case ChessGame.TeamColor.WHITE -> SET_TEXT_COLOR_RED;
+                case ChessGame.TeamColor.BLACK -> SET_TEXT_COLOR_BLUE;
+            };
+        }
     }
 
     private void assertSignedIn() throws ResponseException {
