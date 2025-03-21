@@ -83,4 +83,18 @@ public class ServerFacadeTests {
     public void testBadLogout() {
         Assertions.assertThrows(ResponseException.class, () -> facade.logout(null));
     }
+
+    @Test
+    public void testGoodList() throws ResponseException {
+        RegisterResult registerResult = facade.register("bob", "bob", "bob@gmail.com");
+        String authToken = registerResult.authToken();
+        facade.create(authToken, "testgame");
+        ListGamesResult result = facade.list(authToken);
+        Assertions.assertNull(result.message());
+    }
+
+    @Test
+    public void testBadList() {
+       Assertions.assertThrows(ResponseException.class, () -> facade.list(null));
+    }
 }
