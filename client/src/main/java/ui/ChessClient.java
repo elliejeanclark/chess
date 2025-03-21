@@ -190,16 +190,7 @@ public class ChessClient {
                 }
                 JoinGameResult result = server.join(authToken, givenGameID, color);
                 if (result.message() == null) {
-                    ListGamesResult gamesResult = server.list(authToken);
-                    ArrayList<GameData> games = gamesResult.games();
-                    for (GameData data : games) {
-                        int gameID = data.gameID();
-                        if (gameID == givenGameID) {
-                            currBoard = data.game().getBoard();
-                        }
-                    }
-                    state = State.PLAYINGGAME;
-                    teamColor = color;
+                    joinGetBoardSetState(givenGameID, color);
                     return stringifiedBoard(currBoard);
                 }
                 else {
@@ -207,6 +198,19 @@ public class ChessClient {
                 }
             }
         }
+    }
+
+    private void joinGetBoardSetState(int givenGameID, ChessGame.TeamColor color) throws ResponseException {
+        ListGamesResult gamesResult = server.list(authToken);
+        ArrayList<GameData> games = gamesResult.games();
+        for (GameData data : games) {
+            int gameID = data.gameID();
+            if (gameID == givenGameID) {
+                currBoard = data.game().getBoard();
+            }
+        }
+        state = State.PLAYINGGAME;
+        teamColor = color;
     }
 
     public String logout() throws ResponseException {
