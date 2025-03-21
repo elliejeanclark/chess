@@ -371,43 +371,34 @@ public class ChessClient {
 
         if (whiteView) {
             for (int j = 1; j <= 8; j++) {
-                if (j % 2 != 0) {
-                    row += oddCol;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
-                }
-                else {
-                    row += evenCol;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
-                }
+                row += getSquare(board, i, j, oddCol, evenCol);
             }
         }
         else {
             for (int j = 8; j >= 1; j--) {
-                if (j % 2 != 0) {
-                    row += oddCol;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
-                }
-                else {
-                    row += evenCol;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
-                }
+                row += getSquare(board, i, j, oddCol, evenCol);
             }
+        }
+        return row;
+    }
+
+    private String getSquare(ChessBoard board, int i, int j, String oddCol, String evenCol) {
+        String row = "";
+        if (j % 2 != 0) {
+            row += oddCol;
+            row += " ";
+            row += getPieceColor(board, i, j);
+            row += getPieceType(board, i, j);
+            row += RESET_TEXT_COLOR;
+            row += " ";
+        }
+        else {
+            row += evenCol;
+            row += " ";
+            row += getPieceColor(board, i, j);
+            row += getPieceType(board, i, j);
+            row += RESET_TEXT_COLOR;
+            row += " ";
         }
         return row;
     }
