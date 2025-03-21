@@ -132,8 +132,10 @@ public class ChessClient {
         if (result.message() == null) {
             String listOfGames = "";
             ArrayList<GameData> games = result.games();
+            int i = 1;
             for (GameData data : games) {
-                listOfGames += String.format("GameID: %d, White: %s, Black: %s, Name: %s \n", data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName());
+                listOfGames += String.format("%d. GameID: %d, White: %s, Black: %s, Name: %s \n", i, data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName());
+                i++;
             }
             if (listOfGames.equals("")){
                 return "No active games. Try creating a game!";
