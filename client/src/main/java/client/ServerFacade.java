@@ -17,6 +17,11 @@ public class ServerFacade {
         serverUrl = url;
     }
 
+    public void clear() throws ResponseException {
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, null, ClearApplicationResult.class);
+    }
+
     public RegisterResult register(String username, String password, String email) throws ResponseException {
         var path = "/user";
         RegisterRequest request = new RegisterRequest(username, password, email);
