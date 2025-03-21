@@ -11,17 +11,20 @@ public class ServerFacadeTests {
 
     private static Server server;
     private ServerFacade facade;
+    private static int port;
 
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(8080);
+        port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
     }
 
     @BeforeEach
     public void setUp() {
-        facade = new ServerFacade("http://localhost:8080");
+        String serverURL = "http://localhost:";
+        serverURL += port;
+        facade = new ServerFacade(serverURL);
         try {
             facade.clear();
         } catch (ResponseException e) {
