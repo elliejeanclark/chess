@@ -338,10 +338,10 @@ public class ChessClient {
         String row = "";
         row += drawHeader(i);
         if (i % 2 == 0) {
-            row += evenRow(board, i, whiteView);
+            row += rowGuts(board, i, whiteView, false);
         }
         else {
-            row += oddRow(board, i, whiteView);
+            row += rowGuts(board, i, whiteView, true);
         }
         row += drawHeader(i);
         return row;
@@ -356,64 +356,31 @@ public class ChessClient {
         return row;
     }
 
-    private String oddRow(ChessBoard board, int i, boolean whiteView) {
+    private String rowGuts(ChessBoard board, int i, boolean whiteView, boolean oddRow) {
         String row = "";
-        if (whiteView) {
-            for (int j = 1; j <= 8; j++) {
-                if (j % 2 != 0) {
-                    row += SET_BG_COLOR_BLACK;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
-                }
-                else {
-                    row += SET_BG_COLOR_WHITE;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
-                }
-            }
+        String oddCol;
+        String evenCol;
+        if (oddRow) {
+            oddCol = SET_BG_COLOR_BLACK;
+            evenCol = SET_BG_COLOR_WHITE;
         }
         else {
-            for (int j = 8; j >= 1; j--) {
-                if (j % 2 != 0) {
-                    row += SET_BG_COLOR_BLACK;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
-                }
-                else {
-                    row += SET_BG_COLOR_WHITE;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
-                }
-            }
+            oddCol = SET_BG_COLOR_WHITE;
+            evenCol = SET_BG_COLOR_BLACK;
         }
-        return row;
-    }
 
-    private String evenRow(ChessBoard board, int i, boolean whiteView) {
-        String row = "";
         if (whiteView) {
             for (int j = 1; j <= 8; j++) {
                 if (j % 2 != 0) {
-                    row += SET_BG_COLOR_WHITE;
+                    row += oddCol;
                     row += " ";
                     row += getPieceColor(board, i, j);
                     row += getPieceType(board, i, j);
                     row += RESET_TEXT_COLOR;
                     row += " ";
-                } else {
-                    row += SET_BG_COLOR_BLACK;
+                }
+                else {
+                    row += evenCol;
                     row += " ";
                     row += getPieceColor(board, i, j);
                     row += getPieceType(board, i, j);
@@ -425,7 +392,7 @@ public class ChessClient {
         else {
             for (int j = 8; j >= 1; j--) {
                 if (j % 2 != 0) {
-                    row += SET_BG_COLOR_WHITE;
+                    row += oddCol;
                     row += " ";
                     row += getPieceColor(board, i, j);
                     row += getPieceType(board, i, j);
@@ -433,7 +400,7 @@ public class ChessClient {
                     row += " ";
                 }
                 else {
-                    row += SET_BG_COLOR_BLACK;
+                    row += evenCol;
                     row += " ";
                     row += getPieceColor(board, i, j);
                     row += getPieceType(board, i, j);
