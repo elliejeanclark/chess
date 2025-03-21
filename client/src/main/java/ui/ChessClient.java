@@ -141,7 +141,7 @@ public class ChessClient {
             ArrayList<GameData> games = result.games();
             int i = 1;
             for (GameData data : games) {
-                listOfGames += String.format("%d. White: %s, Black: %s, GameName: %s \n", i, data.whiteUsername(), data.blackUsername(), data.gameName());
+                listOfGames += String.format("%d. White: %s, Black: %s, Name: %s\n", i, data.whiteUsername(), data.blackUsername(), data.gameName());
                 i++;
             }
             if (listOfGames.equals("")){
@@ -309,7 +309,7 @@ public class ChessClient {
                     result += "\n";
                 }
                 else {
-                    result += drawRow(board, i);
+                    result += drawRow(board, i, whiteView);
                     result += RESET_BG_COLOR;
                     result += "\n";
                 }
@@ -325,7 +325,7 @@ public class ChessClient {
                     result += "\n";
                 }
                 else {
-                    result += drawBlackRow(board, i);
+                    result += drawRow(board, i, whiteView);
                     result += RESET_BG_COLOR;
                     result += "\n";
                 }
@@ -334,49 +334,92 @@ public class ChessClient {
         return result;
     }
 
-    private String drawRow(ChessBoard board, int i) {
+    private String drawRow(ChessBoard board, int i, boolean whiteView) {
         String row = "";
         row += SET_BG_COLOR_DARK_GREEN;
         row += " ";
         row += i;
         row += " ";
         if (i % 2 == 0) {
-            for (int j = 1; j <= 8; j++) {
-                if (j % 2 != 0) {
-                    row += SET_BG_COLOR_WHITE;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
+            if (whiteView) {
+                for (int j = 1; j <= 8; j++) {
+                    if (j % 2 != 0) {
+                        row += SET_BG_COLOR_WHITE;
+                        row += " ";
+                        row += getPieceColor(board, i, j);
+                        row += getPieceType(board, i, j);
+                        row += RESET_TEXT_COLOR;
+                        row += " ";
+                    } else {
+                        row += SET_BG_COLOR_BLACK;
+                        row += " ";
+                        row += getPieceColor(board, i, j);
+                        row += getPieceType(board, i, j);
+                        row += RESET_TEXT_COLOR;
+                        row += " ";
+                    }
                 }
-                else {
-                    row += SET_BG_COLOR_BLACK;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
+            }
+            else {
+                for (int j = 8; j >= 1; j--) {
+                    if (j % 2 != 0) {
+                        row += SET_BG_COLOR_WHITE;
+                        row += " ";
+                        row += getPieceColor(board, i, j);
+                        row += getPieceType(board, i, j);
+                        row += RESET_TEXT_COLOR;
+                        row += " ";
+                    }
+                    else {
+                        row += SET_BG_COLOR_BLACK;
+                        row += " ";
+                        row += getPieceColor(board, i, j);
+                        row += getPieceType(board, i, j);
+                        row += RESET_TEXT_COLOR;
+                        row += " ";
+                    }
                 }
             }
         }
         else {
-            for (int j = 1; j <= 8; j++) {
-                if (j % 2 != 0) {
-                    row += SET_BG_COLOR_BLACK;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
+            if (whiteView) {
+                for (int j = 1; j <= 8; j++) {
+                    if (j % 2 != 0) {
+                        row += SET_BG_COLOR_BLACK;
+                        row += " ";
+                        row += getPieceColor(board, i, j);
+                        row += getPieceType(board, i, j);
+                        row += RESET_TEXT_COLOR;
+                        row += " ";
+                    }
+                    else {
+                        row += SET_BG_COLOR_WHITE;
+                        row += " ";
+                        row += getPieceColor(board, i, j);
+                        row += getPieceType(board, i, j);
+                        row += RESET_TEXT_COLOR;
+                        row += " ";
+                    }
                 }
-                else {
-                    row += SET_BG_COLOR_WHITE;
-                    row += " ";
-                    row += getPieceColor(board, i, j);
-                    row += getPieceType(board, i, j);
-                    row += RESET_TEXT_COLOR;
-                    row += " ";
+            }
+            else {
+                for (int j = 8; j >= 1; j--) {
+                    if (j % 2 != 0) {
+                        row += SET_BG_COLOR_BLACK;
+                        row += " ";
+                        row += getPieceColor(board, i, j);
+                        row += getPieceType(board, i, j);
+                        row += RESET_TEXT_COLOR;
+                        row += " ";
+                    }
+                    else {
+                        row += SET_BG_COLOR_WHITE;
+                        row += " ";
+                        row += getPieceColor(board, i, j);
+                        row += getPieceType(board, i, j);
+                        row += RESET_TEXT_COLOR;
+                        row += " ";
+                    }
                 }
             }
         }
