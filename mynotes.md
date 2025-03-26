@@ -765,3 +765,42 @@ encode or decode data (often stored in a file)
 
 ### Symmetric (or secret) key encryption
 - The same key is used for both Encryption and Decryption
+
+# More Security
+## Symmetric or Secret Key Encryption
+The same key is used for both encryption and decryption. 
+The bigger the key the harder to crack.
+## Public Key Encryption aka Asymmetric Encryption  
+You can encrypt with either of the keys, and decrypt with the other. They reverse each other.
+### Disadvantages
+- Algorithims are slow.
+- Can only encrypts small amounts of data. 
+- Private keys must be securely stored, and never shared with others. 
+### Advantages
+- Secure Symmetric Key Exchange
+- Digital signatures.
+## Encryption Applications
+- Protect data as it traverses a computer network to prevent attackers from reading the data. (ie data in motion)
+  - Https
+- Protect data that is stored in a database or file (ie data at rest)
+  - Application-level encryption
+  - Database level encryption
+- Password Managers.
+## Secure Communication using HTTPS
+- Client sends server a random number. 
+- Server sends client a random umber. 
+- Server sends client its public key 
+- Client sends server another random number that is encrypted with server's public key
+- Server decrypts pre master secret using its private key
+- Both client and server use Client Random, Server Random, and Pre-Master Secret to generate the same symmetric key. 
+- Client and server exchange data encrypted with generated symmetric key.
+## HTTPS/TLS Server Authentication
+Public key certificates, also called digital certificates, prove that you are who you say you are.
+Certificate file = public key + key owner's identifying information. 
+During the HTTPS/TLS handshake, server sends its public key to client in the form of a public key certificate. 
+This gives Client the server's public key, as well as server's identity.
+Certificates are given by certificate authorities. 
+## Digital Signatures
+- Signer runs data through cryptographic hash function to create signer digest
+- Signer encrypts digest using their private key. This is the "digital signature"
+- Signer sends data + digital signature to receiver.
