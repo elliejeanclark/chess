@@ -804,3 +804,40 @@ Certificates are given by certificate authorities.
 - Signer runs data through cryptographic hash function to create signer digest
 - Signer encrypts digest using their private key. This is the "digital signature"
 - Signer sends data + digital signature to receiver.
+
+# Concurrency
+By default, programs do one thing at a time. They start executing in main, and then when main
+completes, the program terminates.
+
+Threads can be doing multiple things at the same time.
+
+## Parallel vs. Concurrent vs. Sequential Execution
+When you have multiple tasks and a single CPU (or core) the operating system will swap which task is executing so that each
+task gets a chance to run. This allows the tasks to run concurrently.
+If you have multiple cpus or cores, then the operating system can actually run the tasks at the same time, or in parallel.
+If each task has to run to completion before another task can start, then the tasks are running sequentially.
+
+## Join method
+The join method can be added to make a thread wait for another thread to finish before continuing on. 
+
+## Java thread pools
+The programmer creates a submitter, which tells the thread pool (java calls it executor service) to run the task 
+in the submitter in the background. 
+
+The actual thread pool uses available threads to run tasks that have been added to a task queue.
+
+## Race Conditions/Hazards
+This issue occurs when two threads are racing and one beats the other, and one of the thread doesn't execute.
+
+## Writing Thread-Safe Code
+Database Transactions
+- Make things run sequentially
+- Everything either works or nothing does.
+Synchronized Methods
+- Critical Sections
+  - Sections that access shared resources accessed by concurrent tasks.
+  - Critical sections of code are sections of code that only one thread should be allowed to run at a time. 
+- Synchronized Method
+  - Making a method synchronized prevents multiple threads from entering the method on the same object at the same time.
+  - Threads execute the method one at a time.
+  - Multiple threads can execute the method at the same time, but not on the same object. 
