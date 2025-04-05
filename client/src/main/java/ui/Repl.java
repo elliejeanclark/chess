@@ -1,15 +1,14 @@
 package ui;
 
+import clientwebsocket.NotificationHandler;
+import websocket.messages.ServerMessage;
+
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
-public class Repl {
+public class Repl implements NotificationHandler {
     private final ChessClient client;
     private State state;
-
-    public static void main(String[] args) {
-        System.out.println("this is hopefully a chessboard at some point.");
-    }
 
     public Repl(String serverUrl) {
         client = new ChessClient(serverUrl);
@@ -53,5 +52,10 @@ public class Repl {
             stateMessage = "[WATCHING]";
         }
         System.out.print("\n" + RESET_TEXT_COLOR + stateMessage + " >>> " + SET_TEXT_COLOR_GREEN);
+    }
+
+    public void notify(ServerMessage message) {
+        System.out.println(SET_TEXT_COLOR_RED + message.toString());
+        printPrompt();
     }
 }
