@@ -15,6 +15,10 @@ public class ConnectionManager {
         connections.put(username, connection);
     }
 
+    public void remove(String visitorName) {
+        connections.remove(visitorName);
+    }
+
     public void broadcast(String excludeUsername, ServerMessage message) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
