@@ -28,8 +28,13 @@ public class WebSocketFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String> () {
                 @Override
                 public void onMessage(String message) {
-                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-                    notificationHandler.notify(serverMessage);
+                    try {
+                        ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+                        notificationHandler.notify(serverMessage);
+                    }
+                    catch (Exception e) {
+                        System.out.println("There was an error in OnMessage");
+                    }
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {

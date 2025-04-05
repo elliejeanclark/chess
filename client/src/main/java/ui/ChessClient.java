@@ -203,8 +203,6 @@ public class ChessClient {
 
                 ChessGame.TeamColor color;
                 currGameID = givenGameID;
-                ws = new WebSocketFacade(serverUrl, notificationHandler);
-                ws.joinGame(authToken, currGameID);
                 if (params[1].equals("white")) {
                     color = ChessGame.TeamColor.WHITE;
                 }
@@ -214,6 +212,8 @@ public class ChessClient {
                 JoinGameResult result = server.join(authToken, givenGameID, color);
                 if (result.message() == null) {
                     joinGetBoardSetState(givenGameID, color);
+                    ws = new WebSocketFacade(serverUrl, notificationHandler);
+                    ws.joinGame(authToken, currGameID);
                     return stringifiedBoard(currBoard);
                 }
                 else {
