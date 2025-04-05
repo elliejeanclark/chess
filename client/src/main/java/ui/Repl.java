@@ -11,7 +11,7 @@ public class Repl implements NotificationHandler {
     private State state;
 
     public Repl(String serverUrl) {
-        client = new ChessClient(serverUrl);
+        client = new ChessClient(serverUrl, this);
         state = client.getState();
     }
 

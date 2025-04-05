@@ -1,6 +1,8 @@
 package ui;
 
 import client.ServerFacade;
+import clientwebsocket.NotificationHandler;
+import clientwebsocket.WebSocketFacade;
 import reqandres.*;
 import model.*;
 import chess.*;
@@ -13,12 +15,18 @@ public class ChessClient {
     private String username = null;
     private String authToken  = null;
     private ChessGame.TeamColor teamColor;
+    private int currGameID;
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
     private ChessBoard currBoard = null;
+    private final NotificationHandler notificationHandler;
+    private WebSocketFacade ws;
+    private final String serverUrl;
 
-    public ChessClient(String serverUrl) {
+    public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
         server = new ServerFacade(serverUrl);
+        this.serverUrl = serverUrl;
+        this.notificationHandler = notificationHandler;
     }
 
     public State getState() {
@@ -193,6 +201,9 @@ public class ChessClient {
                 }
 
                 ChessGame.TeamColor color;
+                currGameID = givenGameID;
+                ws = new WebSocketFacade(serverUrl, notificationHandler);
+                ws.joinGame(authToken, currGameID);
                 if (params[1].equals("white")) {
                     color = ChessGame.TeamColor.WHITE;
                 }
@@ -288,13 +299,14 @@ public class ChessClient {
         }
     }
 
-    private String exit() {
+    private String exit() throws ResponseException {
         if (state == State.SIGNEDOUT || state == State.SIGNEDIN) {
             return "You aren't watching or playing a game.";
         }
         else {
             state = State.SIGNEDIN;
             teamColor = null;
+            ws.leaveGame(authToken, currGameID);
             return "No longer playing/watching game.";
         }
     }
