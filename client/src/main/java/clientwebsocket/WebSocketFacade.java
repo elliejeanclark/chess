@@ -3,7 +3,9 @@ package clientwebsocket;
 import com.google.gson.Gson;
 import ui.ResponseException;
 import websocket.commands.UserGameCommand;
+import websocket.commands.UserGameCommand.*;
 import websocket.messages.ServerMessage;
+import chess.ChessMove;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -37,4 +39,45 @@ public class WebSocketFacade extends Endpoint {
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {}
+
+    public void joinGame(String authToken, int gameID) throws ResponseException {
+        try {
+            var command = new UserGameCommand(CommandType.CONNECT, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        }
+        catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public void leaveGame(String authToken, int gameID) throws ResponseException {
+        try {
+            var command = new UserGameCommand(CommandType.LEAVE, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+            this.session.close();
+        }
+        catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public void resignGame(String authToken, int gameID) throws ResponseException {
+        try {
+            var command = new UserGameCommand(CommandType.RESIGN, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        }
+        catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public void makeMove(String authToken, int gameID) throws ResponseException {
+        try {
+            var command = new UserGameCommand(CommandType.MAKE_MOVE, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        }
+        catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
 }
