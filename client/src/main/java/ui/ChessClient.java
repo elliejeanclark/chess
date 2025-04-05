@@ -7,6 +7,7 @@ import reqandres.*;
 import model.*;
 import chess.*;
 import static ui.EscapeSequences.*;
+import exception.ResponseException;
 
 import java.util.ArrayList;
 import java.util.Arrays;

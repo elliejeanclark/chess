@@ -1,7 +1,7 @@
 package client;
 
 import chess.ChessGame;
-import ui.ResponseException;
+import exception.ResponseException;
 
 import com.google.gson.Gson;
 import reqandres.*;
