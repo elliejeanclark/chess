@@ -294,6 +294,8 @@ public class ChessClient {
                 }
 
                 state = State.WATCHINGGAME;
+                ws = new WebSocketFacade(serverUrl, notificationHandler);
+                ws.joinGame(authToken, currGameID);
                 teamColor = ChessGame.TeamColor.WHITE;
                 return stringifiedBoard(currBoard);
             }
