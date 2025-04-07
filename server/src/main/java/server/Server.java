@@ -7,19 +7,19 @@ import handlers.*;
 
 public class Server {
 
-    private WebSocketHandler webSocketHandler;
+    private static WebSocketHandler webSocketHandler;
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
 
-        webSocketHandler = new WebSocketHandler();
         // Using SQL Access.
         try {
             UserDataAccess userAccess = new SQLUserAccess();
             AuthDataAccess authAccess = new SQLAuthAccess();
             GameDataAccess gameAccess = new SQLGameAccess();
+            webSocketHandler = new WebSocketHandler(userAccess, authAccess, gameAccess);
             createRoutes(userAccess, authAccess, gameAccess);
         }
         catch (Exception e) {
@@ -34,7 +34,7 @@ public class Server {
     }
 
     private static void createRoutes(UserDataAccess userAccess, AuthDataAccess authAccess, GameDataAccess gameAccess) {
-        Spark.webSocket("/ws", new WebSocketHandler());
+        Spark.webSocket("/ws", webSocketHandler);
         Spark.post("/session", new Login(userAccess, authAccess));
         Spark.delete("/session", new Logout(authAccess));
         Spark.post("/user", new Register(userAccess, authAccess));

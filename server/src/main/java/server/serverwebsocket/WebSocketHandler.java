@@ -1,6 +1,11 @@
 package server.serverwebsocket;
 
 import com.google.gson.Gson;
+import dataaccess.AuthDataAccess;
+import dataaccess.DataAccessException;
+import dataaccess.GameDataAccess;
+import dataaccess.UserDataAccess;
+import model.UserData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -13,6 +18,15 @@ import java.io.IOException;
 @WebSocket
 public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
+    private final AuthDataAccess authAccess;
+    private final UserDataAccess userAccess;
+    private final GameDataAccess gameAccess;
+
+    public WebSocketHandler(UserDataAccess userAccess, AuthDataAccess authAccess, GameDataAccess gameAccess) {
+        this.authAccess = authAccess;
+        this.userAccess = userAccess;
+        this.gameAccess = gameAccess;
+    }
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException {
@@ -23,11 +37,15 @@ public class WebSocketHandler {
         }
     }
 
-    private void join(String username, Session session) throws IOException {
-        connections.add(username, session);
-        var message = String.format("%s has joined the game", username);
-        var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(username, notification);
+    private void join(String authToken, Session session) throws IOException {
+        try {
+            String username = authAccess.getUsername(authToken);
+            connections.add(username, session);
+            var message = String.format("%s has joined the game", username);
+            var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            connections.broadcast(null, notification);
+        }
+        catch (DataAccessException ignored) {}
     }
 
     private void exit(String username) throws IOException {

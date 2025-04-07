@@ -841,3 +841,25 @@ Synchronized Methods
   - Making a method synchronized prevents multiple threads from entering the method on the same object at the same time.
   - Threads execute the method one at a time.
   - Multiple threads can execute the method at the same time, but not on the same object. 
+- Atomic Variables
+  - Synchronized code blocks protect critical sections.
+    - We only need 'synchronized' when we have critical sections.
+    - Protecting critical sections with 'synchronized' adds overhead.
+  - Some critical sections contain only one simple operation. 
+    - x ++ 
+    - x = x + 10 (or x += 10)
+  - Atomic variables can be used to read or write variable values with one CPU operation, thereby eliminating
+the need for synchronized methods or code blocks.
+
+# Command-line Builds
+Building Software requires a lot of steps
+- Retrieving source code
+- Downloading/resolving dependencies
+- Compiling code
+- Compiling and running automated tests
+- Measuring test coverage
+- Packaging compiled code into a distributable format
+- Installing/deploying the software.
+Running server with maven
+- mvn install
+- 

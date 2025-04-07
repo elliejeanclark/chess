@@ -13,5 +13,7 @@ public interface AuthDataAccess {
 
     HashMap<String, AuthData> getVerUsers() throws DataAccessException;
 
+    String getUsername(String authToken) throws DataAccessException;
+
     void clear();
 }
