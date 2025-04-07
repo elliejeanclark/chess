@@ -78,10 +78,22 @@ public class ChessClient {
                     help - list possible commands
                     """;
         }
+        else if (state == State.PLAYINGGAME) {
+            return """
+                    redraw - redraws the chess board to its current state.
+                    leave - leave the game.
+                    move <row><col> <row><col> - move the piece at the first index to the second index
+                    resign - forfeit the game.
+                    legal <row><col> - allows you to see legal moves for a piece at the given index.
+                    quit - exit the program
+                    help - list possible commands
+                    """;
+        }
         else {
             return """
                     exit - exit watch/playing mode.
                     quit - quit the program.
+                    help - list possible commands.
                     """;
         }
     }
@@ -325,7 +337,7 @@ public class ChessClient {
             for (int i = 9; i >= 0; i--) {
                 if (i == 0 || i == 9) {
                     result += RESET_TEXT_COLOR;
-                    result += SET_BG_COLOR_DARK_GREEN;
+                    result += SET_BG_COLOR_MAGENTA;
                     result += "    a  b  c  d  e  f  g  h    ";
                     result += RESET_BG_COLOR;
                     result += "\n";
@@ -341,7 +353,7 @@ public class ChessClient {
             for (int i = 0; i <= 9; i++) {
                 if (i == 0 || i == 9) {
                     result += RESET_TEXT_COLOR;
-                    result += SET_BG_COLOR_DARK_GREEN;
+                    result += SET_BG_COLOR_MAGENTA;
                     result += "    h  g  f  e  d  c  b  a    ";
                     result += RESET_BG_COLOR;
                     result += "\n";

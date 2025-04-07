@@ -11,6 +11,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
@@ -34,7 +35,7 @@ public class WebSocketHandler {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
             case UserGameCommand.CommandType.CONNECT -> join(command.getAuthToken(), command.getGameID(), session);
-            case UserGameCommand.CommandType.LEAVE -> exit(command.getAuthToken());
+            case UserGameCommand.CommandType.LEAVE -> exit(command.getAuthToken(), command.getGameID(), session);
         }
     }
 
@@ -62,13 +63,42 @@ public class WebSocketHandler {
                 connections.broadcast(username, notification);
             }
         }
-        catch (DataAccessException ignored) {}
+        catch (DataAccessException ex) {
+            var message = ex.getMessage();
+            var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message);
+            connections.broadcast(null, notification);
+        }
     }
 
-    private void exit(String username) throws IOException {
-        connections.remove(username);
-        var message = String.format("%s has left the game", username);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-        connections.broadcast(username, notification);
+    private void exit(String authToken, int gameID, Session session) throws IOException {
+        try {
+            String username = authAccess.getUsername(authToken);
+            GameData gameData = gameAccess.getGame(gameID);
+            String whiteUsername = gameData.whiteUsername();
+            String blackUsername = gameData.blackUsername();
+            if (username.equals(whiteUsername)) {
+                var message = String.format("%s has left the game as the white player", username);
+                var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                connections.broadcast(username, notification);
+                connections.remove(username);
+            }
+            else if (username.equals(blackUsername)) {
+                var message = String.format("%s has left the game as the black player", username);
+                var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                connections.broadcast(username, notification);
+                connections.remove(username);
+            }
+            else {
+                var message = String.format("%s is no longer watching the game", username);
+                var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                connections.broadcast(username, notification);
+                connections.remove(username);
+            }
+        }
+        catch (DataAccessException ex) {
+            var message = ex.getMessage();
+            var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message);
+            connections.broadcast(null, notification);
+        }
     }
 }
