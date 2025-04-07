@@ -1,16 +1,14 @@
 package server.serverwebsocket;
 
 import com.google.gson.Gson;
-import dataaccess.*;
-import exception.ResponseException;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
-import java.util.Timer;
 
 @WebSocket
 public class WebSocketHandler {
@@ -28,7 +26,7 @@ public class WebSocketHandler {
     private void join(String username, Session session) throws IOException {
         connections.add(username, session);
         var message = String.format("%s has joined the game", username);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.broadcast(username, notification);
     }
 

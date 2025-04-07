@@ -369,7 +369,7 @@ public class ChessClient {
 
     private String drawHeader(int i) {
         String row = "";
-        row += SET_BG_COLOR_DARK_GREEN;
+        row += SET_BG_COLOR_MAGENTA;
         row += " ";
         row += i;
         row += " ";
