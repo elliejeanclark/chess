@@ -5,7 +5,8 @@ import dataaccess.AuthDataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.GameDataAccess;
 import dataaccess.UserDataAccess;
-import model.UserData;
+import chess.*;
+import model.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -32,18 +33,34 @@ public class WebSocketHandler {
     public void onMessage(Session session, String message) throws IOException {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
-            case UserGameCommand.CommandType.CONNECT -> join(command.getAuthToken(), session);
+            case UserGameCommand.CommandType.CONNECT -> join(command.getAuthToken(), command.getGameID(), session);
             case UserGameCommand.CommandType.LEAVE -> exit(command.getAuthToken());
         }
     }
 
-    private void join(String authToken, Session session) throws IOException {
+    private void join(String authToken, int gameID, Session session) throws IOException {
         try {
             String username = authAccess.getUsername(authToken);
-            connections.add(username, session);
-            var message = String.format("%s has joined the game", username);
-            var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-            connections.broadcast(null, notification);
+            GameData gameData = gameAccess.getGame(gameID);
+            String whiteUsername = gameData.whiteUsername();
+            String blackUsername = gameData.blackUsername();
+            if (username.equals(whiteUsername)) {
+                connections.add(username, session);
+                var message = String.format("%s has joined the game as the white player", username);
+                var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                connections.broadcast(username, notification);
+            }
+            else if (username.equals(blackUsername)) {
+                connections.add(username, session);
+                var message = String.format("%s has joined the game as the black player", username);
+                var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                connections.broadcast(username, notification);
+            } else {
+                connections.add(username, session);
+                var message = String.format("%s is watching the game", username);
+                var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                connections.broadcast(username, notification);
+            }
         }
         catch (DataAccessException ignored) {}
     }
