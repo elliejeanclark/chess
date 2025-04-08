@@ -188,6 +188,17 @@ public class ChessClient {
         game.makeMove(move);
     }
 
+    private void getUpdatedBoard() throws ResponseException {
+        ListGamesResult gamesResult = server.list(authToken);
+        ArrayList<GameData> games = gamesResult.games();
+        for (GameData data : games) {
+            int gameID = data.gameID();
+            if (gameID == currGameID) {
+                currBoard = data.game().getBoard();
+            }
+        }
+    }
+
     public String move(String... params) throws ResponseException {
         assertSignedIn();
         if (state != State.PLAYINGGAME) {
@@ -214,10 +225,11 @@ public class ChessClient {
             }
 
             ws.makeMove(authToken, currGameID, move);
+            getUpdatedBoard();
+            return "Successfully made move";
         } catch (ResponseException e) {
             return e.getMessage();
         }
-        return "Successfully made move";
     }
 
     public String signIn(String... params) throws ResponseException {

@@ -10,6 +10,7 @@ import model.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.NotificationMessage;
@@ -36,6 +37,10 @@ public class WebSocketHandler {
         switch (command.getCommandType()) {
             case UserGameCommand.CommandType.CONNECT -> join(command.getAuthToken(), command.getGameID(), session);
             case UserGameCommand.CommandType.LEAVE -> exit(command.getAuthToken(), command.getGameID());
+            case UserGameCommand.CommandType.MAKE_MOVE -> {
+                MakeMoveCommand moveCommand = new Gson().fromJson(message, MakeMoveCommand.class);
+                makeMove(moveCommand.getAuthToken(), moveCommand.getGameID(), moveCommand.getMove());
+            }
         }
     }
 
@@ -109,11 +114,9 @@ public class WebSocketHandler {
             String username = authAccess.getUsername(authToken);
             GameData gameData = gameAccess.getGame(gameID);
             ChessGame game = gameData.game();
-            try {
-                game.makeMove(move);
-            } catch (InvalidMoveException e) {
-                throw new RuntimeException(e);
-            }
+            game.makeMove(move);
+            gameAccess.updateGame(gameID, game);
+
         }
         catch (Exception ex) {
             var message = ex.getMessage();
