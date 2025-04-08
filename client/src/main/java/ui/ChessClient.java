@@ -184,6 +184,10 @@ public class ChessClient {
         }
     }
 
+    private void validateMove(ChessGame game, ChessMove move) throws InvalidMoveException {
+        game.makeMove(move);
+    }
+
     public String move(String... params) throws ResponseException {
         assertSignedIn();
         if (state != State.PLAYINGGAME) {
@@ -192,6 +196,23 @@ public class ChessClient {
         ChessMove move;
         try {
             move = parseChessMove(params);
+            ListGamesResult result = server.list(authToken);
+            ChessGame currGame = null;
+            ArrayList<GameData> games = result.games();
+            for (GameData data : games) {
+                if (data.gameID() == currGameID) {
+                    currGame = data.game();
+                }
+            }
+            if (currGame == null) {
+                return "Unable to find the game in the database.";
+            }
+            try {
+                validateMove(currGame, move);
+            } catch (InvalidMoveException e) {
+                return e.getMessage();
+            }
+
             ws.makeMove(authToken, currGameID, move);
         } catch (ResponseException e) {
             return e.getMessage();

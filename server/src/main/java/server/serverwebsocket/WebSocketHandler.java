@@ -10,7 +10,6 @@ import model.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import server.Server;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.NotificationMessage;
@@ -105,7 +104,21 @@ public class WebSocketHandler {
         }
     }
 
-    private void makeMove(String authToken, int gameID, ChessMove move) {
-
+    private void makeMove(String authToken, int gameID, ChessMove move) throws IOException {
+        try {
+            String username = authAccess.getUsername(authToken);
+            GameData gameData = gameAccess.getGame(gameID);
+            ChessGame game = gameData.game();
+            try {
+                game.makeMove(move);
+            } catch (InvalidMoveException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        catch (Exception ex) {
+            var message = ex.getMessage();
+            var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message);
+            connections.broadcast(null, notification, gameID);
+        }
     }
 }
