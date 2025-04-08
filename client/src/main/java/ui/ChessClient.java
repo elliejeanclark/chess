@@ -9,6 +9,7 @@ import chess.*;
 import static ui.EscapeSequences.*;
 import exception.ResponseException;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -50,6 +51,8 @@ public class ChessClient {
                 case "join" -> join(params);
                 case "observe" -> observe(params);
                 case "leave" -> leave();
+                case "redraw" -> redraw();
+                case "move" -> move(params);
                 case "quit" -> "quit";
                 default -> "That is an invalid command. Please try again.\n" + help();
             };
@@ -83,7 +86,7 @@ public class ChessClient {
             return """
                     redraw - redraws the chess board to its current state.
                     leave - leave the game.
-                    move <row><col> <row><col> - move the piece at the first index to the second index
+                    move <row>,<col> <row>,<col> - move the piece at the first index to the second index
                     resign - forfeit the game.
                     legal <row><col> - allows you to see legal moves for a piece at the given index.
                     quit - exit the program
@@ -97,6 +100,92 @@ public class ChessClient {
                     help - list possible commands.
                     """;
         }
+    }
+
+    private ChessMove parseChessMove(String[] params) throws ResponseException {
+        if (params.length == 2) {
+            String param1 = params[0];
+            String param2 = params[1];
+            String[] param1Items = param1.split(",");
+            String [] param2Items = param2.split(",");
+            int rowFrom;
+            int colFrom;
+            int rowTo;
+            int colTo;
+            if (param1Items.length != 2) {
+                try {
+                    rowFrom = Integer.parseInt(param1Items[0]);
+                } catch (NumberFormatException e) {
+                    throw new ResponseException(400, "Please enter a valid number for the row.");
+                }
+
+
+                switch (param1Items[1].toLowerCase()) {
+                    case "a" -> colFrom = 1;
+                    case "b" -> colFrom = 2;
+                    case "c" -> colFrom = 3;
+                    case "d" -> colFrom = 4;
+                    case "e" -> colFrom = 5;
+                    case "f" -> colFrom = 6;
+                    case "g" -> colFrom = 7;
+                    case "h" -> colFrom = 8;
+                    default -> colFrom = 0;
+                };
+
+                if (colFrom == 0) {
+                    throw new ResponseException(400, "Please enter a valid letter for the column");
+                }
+            }
+            else {
+                throw new ResponseException(400, "Invalid first coordinate, please try again.");
+            }
+
+            if (param2Items.length != 2) {
+                try {
+                    rowTo = Integer.parseInt(param2Items[0]);
+                } catch (NumberFormatException e) {
+                    throw new ResponseException(400, "Please enter a valid number for the row.");
+                }
+                switch (param2Items[1].toLowerCase()) {
+                    case "a" -> colTo = 1;
+                    case "b" -> colTo = 2;
+                    case "c" -> colTo = 3;
+                    case "d" -> colTo = 4;
+                    case "e" -> colTo = 5;
+                    case "f" -> colTo = 6;
+                    case "g" -> colTo = 7;
+                    case "h" -> colTo = 8;
+                    default -> colTo = 0;
+                };
+
+                if (colTo == 0) {
+                    throw new ResponseException(400, "Please enter a valid letter for the column");
+                }
+            }
+            else {
+                throw new ResponseException(400, "Invalid second coordinate, please try again.");
+            }
+
+            ChessPosition startPosition = new ChessPosition(rowFrom, colFrom);
+            ChessPosition endPosition = new ChessPosition(rowTo, colTo);
+            ChessPiece piece = currBoard.getPiece(startPosition);
+            if (piece == null) {
+                throw new ResponseException(400, "There isn't a piece there on the board");
+            }
+            else if (piece.getTeamColor() != teamColor) {
+                throw new ResponseException(400, "That's not your piece");
+            }
+            else {
+                return new ChessMove(startPosition, endPosition, piece.getPieceType());
+            }
+        }
+        else {
+            throw new ResponseException(400, "Invalid number of arguments");
+        }
+    }
+
+    public String move(String... params) throws ResponseException {
+        return "you've made a move ta da";
     }
 
     public String signIn(String... params) throws ResponseException {
@@ -243,6 +332,10 @@ public class ChessClient {
         else {
             return "That is not a valid color choice. Please try again.";
         }
+    }
+
+    public String redraw() {
+        return stringifiedBoard(currBoard);
     }
 
     private void joinGetBoardSetState(int givenGameID, ChessGame.TeamColor color) throws ResponseException {
