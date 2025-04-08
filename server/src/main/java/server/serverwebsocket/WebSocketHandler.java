@@ -78,12 +78,14 @@ public class WebSocketHandler {
             String whiteUsername = gameData.whiteUsername();
             String blackUsername = gameData.blackUsername();
             if (username.equals(whiteUsername)) {
+                gameAccess.setPlayer(ChessGame.TeamColor.WHITE, null, gameID);
                 var message = String.format("%s has left the game as the white player", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
                 connections.broadcast(username, notification, gameID);
                 connections.remove(username);
             }
             else if (username.equals(blackUsername)) {
+                gameAccess.setPlayer(ChessGame.TeamColor.BLACK, null, gameID);
                 var message = String.format("%s has left the game as the black player", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
                 connections.broadcast(username, notification, gameID);

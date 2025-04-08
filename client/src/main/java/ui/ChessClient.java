@@ -20,20 +20,15 @@ public class ChessClient {
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
     private ChessBoard currBoard = null;
-    private NotificationHandler notificationHandler;
+    private final NotificationHandler notificationHandler;
     private WebSocketFacade ws;
     private final String serverUrl;
+    private boolean inSession = false;
 
     public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
             server = new ServerFacade(serverUrl);
             this.serverUrl = serverUrl;
-            try {
-                ws = new WebSocketFacade(serverUrl, notificationHandler);
-                this.notificationHandler = notificationHandler;
-            }
-            catch (ResponseException ex) {
-                System.out.print("There was an error starting the websocket facade");
-            }
+            this.notificationHandler = notificationHandler;
     }
 
     public State getState() {
@@ -54,7 +49,7 @@ public class ChessClient {
                 case "list" -> list();
                 case "join" -> join(params);
                 case "observe" -> observe(params);
-                case "exit" -> exit();
+                case "leave" -> leave();
                 case "quit" -> "quit";
                 default -> "That is an invalid command. Please try again.\n" + help();
             };
@@ -230,8 +225,14 @@ public class ChessClient {
                 JoinGameResult result = server.join(authToken, givenGameID, color);
                 if (result.message() == null) {
                     joinGetBoardSetState(givenGameID, color);
-                    ws = new WebSocketFacade(serverUrl, notificationHandler);
-                    ws.joinGame(authToken, currGameID);
+                    if (!inSession) {
+                        ws = new WebSocketFacade(serverUrl, notificationHandler);
+                        ws.joinGame(authToken, currGameID);
+                        inSession = true;
+                    }
+                    else {
+                        ws.joinGame(authToken, currGameID);
+                    }
                     return stringifiedBoard(currBoard);
                 }
                 else {
@@ -313,14 +314,21 @@ public class ChessClient {
 
                 state = State.WATCHINGGAME;
                 currGameID = givenGameID;
-                ws.joinGame(authToken, currGameID);
+                if (!inSession) {
+                    ws = new WebSocketFacade(serverUrl, notificationHandler);
+                    ws.joinGame(authToken, currGameID);
+                    inSession = true;
+                }
+                else {
+                    ws.joinGame(authToken, currGameID);
+                }
                 teamColor = ChessGame.TeamColor.WHITE;
                 return stringifiedBoard(currBoard);
             }
         }
     }
 
-    private String exit() throws ResponseException {
+    private String leave() throws ResponseException {
         if (state == State.SIGNEDOUT || state == State.SIGNEDIN) {
             return "You aren't watching or playing a game.";
         }
@@ -328,6 +336,7 @@ public class ChessClient {
             state = State.SIGNEDIN;
             teamColor = null;
             ws.leaveGame(authToken, currGameID);
+            inSession = false;
             return "No longer playing/watching game.";
         }
     }
