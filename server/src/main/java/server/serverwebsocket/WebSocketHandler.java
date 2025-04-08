@@ -8,8 +8,10 @@ import dataaccess.UserDataAccess;
 import chess.*;
 import model.*;
 import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import server.Server;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.NotificationMessage;
@@ -35,7 +37,7 @@ public class WebSocketHandler {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
             case UserGameCommand.CommandType.CONNECT -> join(command.getAuthToken(), command.getGameID(), session);
-            case UserGameCommand.CommandType.LEAVE -> exit(command.getAuthToken(), command.getGameID(), session);
+            case UserGameCommand.CommandType.LEAVE -> exit(command.getAuthToken(), command.getGameID());
         }
     }
 
@@ -70,7 +72,7 @@ public class WebSocketHandler {
         }
     }
 
-    private void exit(String authToken, int gameID, Session session) throws IOException {
+    private void exit(String authToken, int gameID) throws IOException {
         try {
             String username = authAccess.getUsername(authToken);
             GameData gameData = gameAccess.getGame(gameID);

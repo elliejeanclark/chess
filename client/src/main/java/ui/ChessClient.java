@@ -20,14 +20,20 @@ public class ChessClient {
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
     private ChessBoard currBoard = null;
-    private final NotificationHandler notificationHandler;
+    private NotificationHandler notificationHandler;
     private WebSocketFacade ws;
     private final String serverUrl;
 
     public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
-        server = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
-        this.notificationHandler = notificationHandler;
+            server = new ServerFacade(serverUrl);
+            this.serverUrl = serverUrl;
+            try {
+                ws = new WebSocketFacade(serverUrl, notificationHandler);
+                this.notificationHandler = notificationHandler;
+            }
+            catch (ResponseException ex) {
+                System.out.print("There was an error starting the websocket facade");
+            }
     }
 
     public State getState() {
@@ -306,7 +312,7 @@ public class ChessClient {
                 }
 
                 state = State.WATCHINGGAME;
-                ws = new WebSocketFacade(serverUrl, notificationHandler);
+                currGameID = givenGameID;
                 ws.joinGame(authToken, currGameID);
                 teamColor = ChessGame.TeamColor.WHITE;
                 return stringifiedBoard(currBoard);
