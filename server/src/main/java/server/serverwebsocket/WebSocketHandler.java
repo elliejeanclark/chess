@@ -8,7 +8,6 @@ import dataaccess.UserDataAccess;
 import chess.*;
 import model.*;
 import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import server.Server;
@@ -48,27 +47,27 @@ public class WebSocketHandler {
             String whiteUsername = gameData.whiteUsername();
             String blackUsername = gameData.blackUsername();
             if (username.equals(whiteUsername)) {
-                connections.add(username, session);
+                connections.add(username, session, gameID);
                 var message = String.format("%s has joined the game as the white player", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(username, notification);
+                connections.broadcast(username, notification, gameID);
             }
             else if (username.equals(blackUsername)) {
-                connections.add(username, session);
+                connections.add(username, session, gameID);
                 var message = String.format("%s has joined the game as the black player", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(username, notification);
+                connections.broadcast(username, notification, gameID);
             } else {
-                connections.add(username, session);
+                connections.add(username, session, gameID);
                 var message = String.format("%s is watching the game", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(username, notification);
+                connections.broadcast(username, notification, gameID);
             }
         }
         catch (DataAccessException ex) {
             var message = ex.getMessage();
             var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message);
-            connections.broadcast(null, notification);
+            connections.broadcast(null, notification, gameID);
         }
     }
 
@@ -81,26 +80,26 @@ public class WebSocketHandler {
             if (username.equals(whiteUsername)) {
                 var message = String.format("%s has left the game as the white player", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(username, notification);
+                connections.broadcast(username, notification, gameID);
                 connections.remove(username);
             }
             else if (username.equals(blackUsername)) {
                 var message = String.format("%s has left the game as the black player", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(username, notification);
+                connections.broadcast(username, notification, gameID);
                 connections.remove(username);
             }
             else {
                 var message = String.format("%s is no longer watching the game", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(username, notification);
+                connections.broadcast(username, notification, gameID);
                 connections.remove(username);
             }
         }
         catch (DataAccessException ex) {
             var message = ex.getMessage();
             var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message);
-            connections.broadcast(null, notification);
+            connections.broadcast(null, notification, gameID);
         }
     }
 }

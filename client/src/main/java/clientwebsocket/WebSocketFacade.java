@@ -29,11 +29,10 @@ public class WebSocketFacade extends Endpoint {
                 @Override
                 public void onMessage(String message) {
                     try {
-                        ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-                        notificationHandler.notify(serverMessage);
+                        notificationHandler.notify(message);
                     }
                     catch (Exception e) {
-                        System.out.println("There was an error in OnMessage");
+                        System.out.println(e.getMessage());
                     }
                 }
             });
