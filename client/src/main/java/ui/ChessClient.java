@@ -185,7 +185,18 @@ public class ChessClient {
     }
 
     public String move(String... params) throws ResponseException {
-        return "you've made a move ta da";
+        assertSignedIn();
+        if (state != State.PLAYINGGAME) {
+            return "You cannot make a move if you aren't playing a game.";
+        }
+        ChessMove move;
+        try {
+            move = parseChessMove(params);
+            ws.makeMove(authToken, currGameID, move);
+        } catch (ResponseException e) {
+            return e.getMessage();
+        }
+        return "Successfully made move";
     }
 
     public String signIn(String... params) throws ResponseException {

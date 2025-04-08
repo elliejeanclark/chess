@@ -104,4 +104,8 @@ public class WebSocketHandler {
             connections.broadcast(null, notification, gameID);
         }
     }
+
+    private void makeMove(String authToken, int gameID, ChessMove move) {
+
+    }
 }
