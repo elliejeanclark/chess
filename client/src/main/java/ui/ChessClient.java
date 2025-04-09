@@ -1,8 +1,7 @@
 package ui;
 
 import client.ServerFacade;
-import clientwebsocket.NotificationHandler;
-import clientwebsocket.WebSocketFacade;
+import clientwebsocket.*;
 import reqandres.*;
 import model.*;
 import chess.*;
@@ -31,9 +30,7 @@ public class ChessClient {
             this.notificationHandler = notificationHandler;
     }
 
-    public State getState() {
-        return state;
-    }
+    public State getState() { return state; }
 
     public String eval(String input) {
         try {
@@ -63,44 +60,22 @@ public class ChessClient {
         }
     }
 
-    public String help() {
-        if (state == State.SIGNEDOUT) {
-            return """
-                    login <USERNAME> <PASSWORD> - to login and play chess
-                    register <USERNAME> <PASSWORD> <EMAIL> - to create a new account
-                    quit - exit the program
-                    help - list possible commands
-                    """;
-        }
-        else if (state == State.SIGNEDIN) {
-            return """
-                    create <NAME> - create a game
-                    list - list all games
-                    join <ID> [WHITE|BLACK] - join a game based on ID and pick a color
-                    observe <id> - watch a game
-                    logout - logout of the system
-                    quit - exit the program
-                    help - list possible commands
-                    """;
-        }
-        else if (state == State.PLAYINGGAME) {
-            return """
-                    redraw - redraws the chess board to its current state.
-                    leave - leave the game.
-                    move <row>,<col> <row>,<col> <optional promotion piece> - move the piece at the first index to the second index
-                    resign - forfeit the game.
-                    legal <row> <col> - allows you to see legal moves for a piece at the given index.
-                    quit - exit the program
-                    help - list possible commands
-                    """;
-        }
-        else {
-            return """
-                    exit - exit watch/playing mode.
-                    quit - quit the program.
-                    help - list possible commands.
-                    """;
-        }
+    public String help() { return new Help(state).getHelp(); }
+
+    private int getNumFromLetter(String letter) {
+        int col;
+        switch (letter.toLowerCase()) {
+            case "a" -> col = 1;
+            case "b" -> col = 2;
+            case "c" -> col = 3;
+            case "d" -> col = 4;
+            case "e" -> col = 5;
+            case "f" -> col = 6;
+            case "g" -> col = 7;
+            case "h" -> col = 8;
+            default -> col = 0;
+        };
+        return col;
     }
 
     public String highlightLegalMoves(String... params) throws ResponseException {
@@ -117,26 +92,13 @@ public class ChessClient {
             catch (NumberFormatException e) {
                 throw new ResponseException(400, "Please enter a valid number for the row.");
             }
-
-            switch (params[1].toLowerCase()) {
-                case "a" -> col = 1;
-                case "b" -> col = 2;
-                case "c" -> col = 3;
-                case "d" -> col = 4;
-                case "e" -> col = 5;
-                case "f" -> col = 6;
-                case "g" -> col = 7;
-                case "h" -> col = 8;
-                default -> col = 0;
-            };
-
+            col = getNumFromLetter(params[1]);
             if (row < 1 || row > 8) {
                 throw new ResponseException(400, "Out of bounds row.");
             }
             if (col == 0) {
                 throw new ResponseException(400, "Please enter a valid letter for the column");
             }
-
             ChessPosition position = new ChessPosition(row, col);
             ChessPiece piece = currBoard.getPiece(position);
             if (piece == null) {
@@ -170,20 +132,7 @@ public class ChessClient {
                 } catch (NumberFormatException e) {
                     throw new ResponseException(400, "Please enter a valid number for the row.");
                 }
-
-
-                switch (param1Items[1].toLowerCase()) {
-                    case "a" -> colFrom = 1;
-                    case "b" -> colFrom = 2;
-                    case "c" -> colFrom = 3;
-                    case "d" -> colFrom = 4;
-                    case "e" -> colFrom = 5;
-                    case "f" -> colFrom = 6;
-                    case "g" -> colFrom = 7;
-                    case "h" -> colFrom = 8;
-                    default -> colFrom = 0;
-                };
-
+                colFrom = getNumFromLetter(param1Items[1]);
                 if (colFrom == 0) {
                     throw new ResponseException(400, "Please enter a valid letter for the column");
                 }
@@ -191,25 +140,12 @@ public class ChessClient {
             else {
                 throw new ResponseException(400, "Invalid first coordinate, please try again.");
             }
-
             if (param2Items.length == 2) {
-                try {
-                    rowTo = Integer.parseInt(param2Items[0]);
-                } catch (NumberFormatException e) {
+                try { rowTo = Integer.parseInt(param2Items[0]); }
+                catch (NumberFormatException e) {
                     throw new ResponseException(400, "Please enter a valid number for the row.");
                 }
-                switch (param2Items[1].toLowerCase()) {
-                    case "a" -> colTo = 1;
-                    case "b" -> colTo = 2;
-                    case "c" -> colTo = 3;
-                    case "d" -> colTo = 4;
-                    case "e" -> colTo = 5;
-                    case "f" -> colTo = 6;
-                    case "g" -> colTo = 7;
-                    case "h" -> colTo = 8;
-                    default -> colTo = 0;
-                };
-
+                colTo = getNumFromLetter(param2Items[1]);
                 if (colTo == 0) {
                     throw new ResponseException(400, "Please enter a valid letter for the column");
                 }
@@ -217,7 +153,6 @@ public class ChessClient {
             else {
                 throw new ResponseException(400, "Invalid second coordinate, please try again.");
             }
-
             ChessPosition startPosition = new ChessPosition(rowFrom, colFrom);
             ChessPosition endPosition = new ChessPosition(rowTo, colTo);
             ChessPiece piece = currBoard.getPiece(startPosition);
@@ -425,11 +360,9 @@ public class ChessClient {
                         currGame = data.game();
                     }
                 }
-
                 if (!gameExists) {
                     return "That game doesn't exist";
                 }
-
                 ChessGame.TeamColor color;
                 currGameID = givenGameID;
                 if (params[1].equals("white")) {
@@ -440,7 +373,7 @@ public class ChessClient {
                 }
                 JoinGameResult result = server.join(authToken, givenGameID, color);
                 if (result.message() == null) {
-                    joinGetBoardSetState(givenGameID, color);
+                    joinGetBoardSetState(color);
                     if (!inSession) {
                         ws = new WebSocketFacade(serverUrl, notificationHandler);
                         ws.joinGame(authToken, currGameID);
@@ -461,20 +394,10 @@ public class ChessClient {
         }
     }
 
-    public String redraw() {
-        return new StringyBoard(currBoard, teamColor).getBoard();
-    }
+    public String redraw() { return new StringyBoard(currBoard, teamColor).getBoard(); }
 
-    private void joinGetBoardSetState(int givenGameID, ChessGame.TeamColor color) throws ResponseException {
-        ListGamesResult gamesResult = server.list(authToken);
-        ArrayList<GameData> games = gamesResult.games();
-        for (GameData data : games) {
-            int gameID = data.gameID();
-            if (gameID == givenGameID) {
-                currBoard = data.game().getBoard();
-                currGame = data.game();
-            }
-        }
+    private void joinGetBoardSetState(ChessGame.TeamColor color) throws ResponseException {
+        getUpdatedBoard();
         state = State.PLAYINGGAME;
         teamColor = color;
     }
@@ -532,7 +455,6 @@ public class ChessClient {
                 if (!gameExists) {
                     return "That game doesn't exist, please try again";
                 }
-
                 state = State.WATCHINGGAME;
                 currGameID = givenGameID;
                 if (!inSession) {
@@ -544,7 +466,7 @@ public class ChessClient {
                     ws.joinGame(authToken, currGameID);
                 }
                 teamColor = ChessGame.TeamColor.WHITE;
-                return redraw();
+                return "";
             }
         }
     }
