@@ -4,7 +4,7 @@ import clientwebsocket.NotificationHandler;
 import websocket.messages.*;
 
 import java.util.Scanner;
-import static ui.EscapeSequences.*;
+import static model.EscapeSequences.*;
 
 public class Repl implements NotificationHandler {
     private final ChessClient client;
