@@ -477,8 +477,10 @@ public class ChessClient {
         }
         else {
             state = State.SIGNEDIN;
-            teamColor = null;
             ws.leaveGame(authToken, currGameID);
+            teamColor = null;
+            currGame = null;
+            currGameID = 0;
             inSession = false;
             return "No longer playing/watching game.";
         }

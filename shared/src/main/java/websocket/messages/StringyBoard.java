@@ -27,8 +27,8 @@ public class StringyBoard {
         this.pieceRow = position.getRow();
         this.pieceCol = position.getColumn();
         setValidMoveArray(game, position);
-        this.stringifiedBoard = stringifyBoard(board);
         this.highlight = true;
+        this.stringifiedBoard = stringifyBoard(board);
     }
 
     private void setValidMoveArray(ChessGame game, ChessPosition position) {
