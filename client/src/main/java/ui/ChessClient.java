@@ -360,7 +360,15 @@ public class ChessClient {
                 }
 
                 if (!gameExists) {
-                    return "That game doesn't exist. Please enter a valid game";
+//                    if (!inSession) {
+//                        ws = new WebSocketFacade(serverUrl, notificationHandler);
+//                        ws.joinGame(authToken, currGameID);
+//                        inSession = true;
+//                    }
+//                    else {
+//                        ws.joinGame(authToken, currGameID);
+//                    }
+                    return "";
                 }
 
                 ChessGame.TeamColor color;

@@ -15,7 +15,6 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.*;
 
 import java.io.IOException;
-import java.util.concurrent.ScheduledExecutorService;
 
 @WebSocket
 public class WebSocketHandler {
@@ -43,43 +42,55 @@ public class WebSocketHandler {
         }
     }
 
+    private void sendError(String username, Session session, int gameID, ErrorMessage notification) throws IOException {
+        connections.add(username, session, gameID);
+        connections.broadcastToSpecificPlayer(username, notification);
+    }
+
     private void join(String authToken, int gameID, Session session) throws IOException {
         try {
             String username = authAccess.getUsername(authToken);
+            AuthData authData = authAccess.getAuth(authToken);
             GameData gameData = gameAccess.getGame(gameID);
-            ChessGame game = gameData.game();
-            String whiteUsername = gameData.whiteUsername();
-            String blackUsername = gameData.blackUsername();
-            String whitePerspective = new StringyBoard(game.getBoard(), ChessGame.TeamColor.WHITE).getBoard();
-            String blackPerspective = new StringyBoard(game.getBoard(), ChessGame.TeamColor.BLACK).getBoard();
-            var whiteNotification = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, whitePerspective);
-            var blackNotification = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, blackPerspective);
-            if (username.equals(whiteUsername)) {
-                connections.add(username, session, gameID);
-                var message = String.format("%s has joined the game as the white player", username);
-                var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(username, notification, gameID);
-                connections.broadcastToSpecificPlayer(username, whiteNotification);
+            if (gameData == null) {
+                var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "That game doesn't exist");
+                sendError(username, session, gameID, notification);
             }
-            else if (username.equals(blackUsername)) {
-                connections.add(username, session, gameID);
-                var message = String.format("%s has joined the game as the black player", username);
-                var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(username, notification, gameID);
-                connections.broadcastToSpecificPlayer(username, blackNotification);
-            } else {
-                connections.add(username, session, gameID);
-                var message = String.format("%s is watching the game", username);
-                var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(username, notification, gameID);
-                connections.broadcastToSpecificPlayer(username, whiteNotification);
+            if (authData == null) {
+                var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "bad auth");
+                sendError(username, session, gameID, notification);
+            }
+            else {
+                ChessGame game = gameData.game();
+                String whiteUsername = gameData.whiteUsername();
+                String blackUsername = gameData.blackUsername();
+                String whitePerspective = new StringyBoard(game.getBoard(), ChessGame.TeamColor.WHITE).getBoard();
+                String blackPerspective = new StringyBoard(game.getBoard(), ChessGame.TeamColor.BLACK).getBoard();
+                var whiteNotification = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, whitePerspective);
+                var blackNotification = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, blackPerspective);
+                if (username.equals(whiteUsername)) {
+                    connections.add(username, session, gameID);
+                    var message = String.format("%s has joined the game as the white player", username);
+                    var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                    connections.broadcast(username, notification, gameID);
+                    connections.broadcastToSpecificPlayer(username, whiteNotification);
+                }
+                else if (username.equals(blackUsername)) {
+                    connections.add(username, session, gameID);
+                    var message = String.format("%s has joined the game as the black player", username);
+                    var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                    connections.broadcast(username, notification, gameID);
+                    connections.broadcastToSpecificPlayer(username, blackNotification);
+                } else {
+                    connections.add(username, session, gameID);
+                    var message = String.format("%s is watching the game", username);
+                    var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                    connections.broadcast(username, notification, gameID);
+                    connections.broadcastToSpecificPlayer(username, whiteNotification);
+                }
             }
         }
-        catch (DataAccessException ex) {
-            var message = ex.getMessage();
-            var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message);
-            connections.broadcast(null, notification, gameID);
-        }
+        catch (DataAccessException ignored) {}
     }
 
     private void exit(String authToken, int gameID) throws IOException {

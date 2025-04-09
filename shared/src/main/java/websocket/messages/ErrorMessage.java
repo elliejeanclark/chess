@@ -3,19 +3,19 @@ package websocket.messages;
 import com.google.gson.Gson;
 
 public class ErrorMessage extends ServerMessage{
-    private String message;
+    private String errorMessage;
 
-    public ErrorMessage(ServerMessageType type, String message) {
+    public ErrorMessage(ServerMessageType type, String errorMessage) {
         super(type);
-        this.message = message;
+        this.errorMessage = errorMessage;
     }
 
     public void setMessage(String message) {
-        this.message = message;
+        this.errorMessage = message;
     }
 
     public String getMessage() {
-        return message;
+        return errorMessage;
     }
 
     public String toString() {
