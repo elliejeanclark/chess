@@ -9,6 +9,7 @@ import exception.ResponseException;
 import websocket.messages.StringyBoard;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class ChessClient {
     private String username = null;
@@ -196,6 +197,7 @@ public class ChessClient {
         for (GameData data : games) {
             int gameID = data.gameID();
             if (gameID == currGameID) {
+                currGame = data.game();
                 currBoard = data.game().getBoard();
             }
         }
@@ -206,11 +208,22 @@ public class ChessClient {
         if (state != State.PLAYINGGAME) {
             return "You cannot resign if you are not playing a game.";
         }
-        ws.resignGame(authToken, currGameID);
-        state = State.SIGNEDIN;
-        currGameID = 0;
-        currGame = null;
-        return "You have resigned the game.";
+        System.out.print("Are you sure you wish to resign? (y/n)");
+        Scanner scanner = new Scanner(System.in);
+        String result = scanner.nextLine();
+        if (!result.equals("y") && !result.equals("n")) {
+            return "Invalid response, canceled resignation process";
+        }
+        else if (result.equals("y")) {
+            ws.resignGame(authToken, currGameID);
+            state = State.SIGNEDIN;
+            currGameID = 0;
+            currGame = null;
+            return "You have resigned the game.";
+        }
+        else {
+            return "canceled resignation process.";
+        }
     }
 
     public String move(String... params) throws ResponseException {
@@ -221,14 +234,7 @@ public class ChessClient {
         ChessMove move;
         try {
             move = parseChessMove(params);
-            ListGamesResult result = server.list(authToken);
-            ChessGame currGame = null;
-            ArrayList<GameData> games = result.games();
-            for (GameData data : games) {
-                if (data.gameID() == currGameID) {
-                    currGame = data.game();
-                }
-            }
+            getUpdatedBoard();
             if (currGame == null) {
                 return "Unable to find the game in the database.";
             }
@@ -327,7 +333,6 @@ public class ChessClient {
 
     public String join(String... params) throws ResponseException {
         int givenGameID;
-        boolean gameExists = false;
         try {
             assertSignedIn();
         }
@@ -352,19 +357,9 @@ public class ChessClient {
                     return "Please enter an actual number for gameID";
                 }
 
-                ListGamesResult listResult = server.list(authToken);
-                ArrayList<GameData> games = listResult.games();
-                for (GameData data : games) {
-                    if (data.gameID() == givenGameID) {
-                        gameExists = true;
-                        currGame = data.game();
-                    }
-                }
-                if (!gameExists) {
-                    return "That game doesn't exist";
-                }
-                ChessGame.TeamColor color;
                 currGameID = givenGameID;
+                getUpdatedBoard();
+                ChessGame.TeamColor color;
                 if (params[1].equals("white")) {
                     color = ChessGame.TeamColor.WHITE;
                 }
@@ -394,7 +389,15 @@ public class ChessClient {
         }
     }
 
-    public String redraw() { return new StringyBoard(currBoard, teamColor).getBoard(); }
+    public String redraw() throws ResponseException {
+        if (state == State.PLAYINGGAME || state == State.WATCHINGGAME) {
+            getUpdatedBoard();
+            return new StringyBoard(currBoard, teamColor).getBoard();
+        }
+        else {
+            return "You can't redraw a board if you aren't watching or playing.";
+        }
+    }
 
     private void joinGetBoardSetState(ChessGame.TeamColor color) throws ResponseException {
         getUpdatedBoard();

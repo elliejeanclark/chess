@@ -268,12 +268,14 @@ public class WebSocketHandler {
                 var message = String.format("%s has resigned the game as the white player", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
                 connections.broadcast(null, notification, gameID);
+                connections.remove(username);
             }
             else if (username.equals(blackUsername)) {
                 gameAccess.setGameOver(gameID);
                 var message = String.format("%s has resigned the game as the black player", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
                 connections.broadcast(null, notification, gameID);
+                connections.remove(username);
             }
             else {
                 var message = String.format("you cannot resign a game you are just watching.");
