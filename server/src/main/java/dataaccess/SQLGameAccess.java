@@ -146,4 +146,16 @@ public class SQLGameAccess implements GameDataAccess {
             throw new RuntimeException(e);
         }
     }
+
+    public void setGameOver(int gameID) throws DataAccessException {
+        try {
+            GameData oldData = getGame(gameID);
+            ChessGame oldGame = oldData.game();
+            oldGame.setGameOver();
+            updateGame(gameID, oldGame);
+        }
+        catch (DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
 }

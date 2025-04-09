@@ -19,6 +19,7 @@ public class ChessClient {
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
     private ChessBoard currBoard = null;
+    private ChessGame currGame = null;
     private final NotificationHandler notificationHandler;
     private WebSocketFacade ws;
     private final String serverUrl;
@@ -51,6 +52,7 @@ public class ChessClient {
                 case "leave" -> leave();
                 case "redraw" -> redraw();
                 case "move" -> move(params);
+                case "resign" -> resign();
                 case "quit" -> "quit";
                 default -> "That is an invalid command. Please try again.\n" + help();
             };
@@ -179,7 +181,7 @@ public class ChessClient {
                     if (piece.getPieceType() != ChessPiece.PieceType.PAWN) {
                         throw new ResponseException(400, "You can't promote a piece that isn't a pawn.");
                     }
-                    switch (params[3].toLowerCase()) {
+                    switch (params[2].toLowerCase()) {
                         case "pawn" -> type = ChessPiece.PieceType.PAWN;
                         case "knight" -> type = ChessPiece.PieceType.KNIGHT;
                         case "queen" -> type = ChessPiece.PieceType.QUEEN;
@@ -210,6 +212,18 @@ public class ChessClient {
                 currBoard = data.game().getBoard();
             }
         }
+    }
+
+    public String resign() throws ResponseException {
+        assertSignedIn();
+        if (state != State.PLAYINGGAME) {
+            return "You cannot resign if you are not playing a game.";
+        }
+        ws.resignGame(authToken, currGameID);
+        state = State.SIGNEDIN;
+        currGameID = 0;
+        currGame = null;
+        return "You have resigned the game.";
     }
 
     public String move(String... params) throws ResponseException {
@@ -356,6 +370,7 @@ public class ChessClient {
                 for (GameData data : games) {
                     if (data.gameID() == givenGameID) {
                         gameExists = true;
+                        currGame = data.game();
                     }
                 }
 
@@ -405,6 +420,7 @@ public class ChessClient {
             int gameID = data.gameID();
             if (gameID == givenGameID) {
                 currBoard = data.game().getBoard();
+                currGame = data.game();
             }
         }
         state = State.PLAYINGGAME;

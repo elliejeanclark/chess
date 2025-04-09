@@ -63,4 +63,15 @@ public class MemoryGameAccess implements GameDataAccess {
         GameData newData = new GameData(gameID, whiteUsername, blackUsername, gameName, game);
         games.put(gameID, newData);
     }
+
+    public void setGameOver(int gameID) {
+        GameData oldData = games.get(gameID);
+        String whiteUsername = oldData.whiteUsername();
+        String blackUsername = oldData.blackUsername();
+        String gameName = oldData.gameName();
+        ChessGame oldGame = oldData.game();
+        oldGame.setGameOver();
+        GameData newData = new GameData(gameID, whiteUsername, blackUsername, gameName, oldGame);
+        games.put(gameID, newData);
+    }
 }

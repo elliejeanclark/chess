@@ -17,4 +17,6 @@ public interface GameDataAccess {
     void setPlayer(ChessGame.TeamColor playerColor, String username, int gameID) throws DataAccessException;
 
     void clear();
+
+    void setGameOver(int gameID) throws DataAccessException;
 }

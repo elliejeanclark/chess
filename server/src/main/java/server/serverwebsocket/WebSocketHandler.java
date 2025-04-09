@@ -39,6 +39,7 @@ public class WebSocketHandler {
                 MakeMoveCommand moveCommand = new Gson().fromJson(message, MakeMoveCommand.class);
                 makeMove(moveCommand.getAuthToken(), moveCommand.getGameID(), moveCommand.getMove(), session);
             }
+            case UserGameCommand.CommandType.RESIGN -> resign(command.getAuthToken(), command.getGameID(), session);
         }
     }
 
@@ -240,5 +241,33 @@ public class WebSocketHandler {
             catch (DataAccessException ignored) {}
         }
         catch (Exception ignored) {}
+    }
+
+    private void resign(String authToken, int gameID, Session session) throws IOException {
+        try {
+            String username = authAccess.getUsername(authToken);
+            GameData gameData = gameAccess.getGame(gameID);
+            String whiteUsername = gameData.whiteUsername();
+            String blackUsername = gameData.blackUsername();
+            if (username.equals(whiteUsername)) {
+                gameAccess.setGameOver(gameID);
+                var message = String.format("%s has resigned the game as the white player", username);
+                var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                connections.broadcast(username, notification, gameID);
+                connections.remove(username);
+            }
+            else if (username.equals(blackUsername)) {
+                gameAccess.setGameOver(gameID);
+                var message = String.format("%s has resigned the game as the black player", username);
+                var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                connections.broadcast(username, notification, gameID);
+                connections.remove(username);
+            }
+            else {
+                var message = String.format("you cannot resign a game you are just watching.");
+                var notification = new ErrorMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                sendError(username, session, gameID, notification);
+            }
+        } catch (DataAccessException ignored) {}
     }
 }
