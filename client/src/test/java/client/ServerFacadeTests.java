@@ -3,7 +3,7 @@ package client;
 import chess.ChessGame;
 import org.junit.jupiter.api.*;
 import server.Server;
-import ui.ResponseException;
+import exception.ResponseException;
 import reqandres.*;
 
 
