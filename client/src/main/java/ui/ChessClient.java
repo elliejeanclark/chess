@@ -333,6 +333,9 @@ public class ChessClient {
         catch (ResponseException e) {
             throw e;
         }
+        if (state == State.PLAYINGGAME || state == State.WATCHINGGAME) {
+            return "You cannot join or watch another game while you are already playing or watching.";
+        }
         if (params.length != 2) {
             return "Incorrect amount of arguments";
         }
