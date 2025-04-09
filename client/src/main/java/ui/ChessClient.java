@@ -89,7 +89,7 @@ public class ChessClient {
                     leave - leave the game.
                     move <row>,<col> <row>,<col> <optional promotion piece> - move the piece at the first index to the second index
                     resign - forfeit the game.
-                    legal <row><col> - allows you to see legal moves for a piece at the given index.
+                    legal <row> <col> - allows you to see legal moves for a piece at the given index.
                     quit - exit the program
                     help - list possible commands
                     """;
@@ -104,7 +104,47 @@ public class ChessClient {
     }
 
     public String highlightLegalMoves(String... params) throws ResponseException {
-        return "Highlighted legal moves";
+        if (params.length == 2) {
+            int row;
+            int col;
+            try {
+                row = Integer.parseInt(params[0]);
+            }
+            catch (NumberFormatException e) {
+                throw new ResponseException(400, "Please enter a valid number for the row.");
+            }
+
+            switch (params[1].toLowerCase()) {
+                case "a" -> col = 1;
+                case "b" -> col = 2;
+                case "c" -> col = 3;
+                case "d" -> col = 4;
+                case "e" -> col = 5;
+                case "f" -> col = 6;
+                case "g" -> col = 7;
+                case "h" -> col = 8;
+                default -> col = 0;
+            };
+
+            if (col == 0) {
+                throw new ResponseException(400, "Please enter a valid letter for the column");
+            }
+
+            ChessPosition position = new ChessPosition(row, col);
+            ChessPiece piece = currBoard.getPiece(position);
+            if (piece == null) {
+                return "There is no piece there.";
+            }
+            else if (piece.getTeamColor() != teamColor) {
+                return "That is not one of your pieces.";
+            }
+            else {
+                return new HighlightMovesBoard(currGame, teamColor, position).getBoard();
+            }
+        }
+        else {
+            return "Invalid number of arguments.";
+        }
     }
 
     private ChessMove parseChessMove(String[] params) throws ResponseException {
