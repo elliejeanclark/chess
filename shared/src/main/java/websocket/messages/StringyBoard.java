@@ -17,7 +17,7 @@ public class StringyBoard {
 
     private String stringifyBoard(ChessBoard board) {
         boolean whiteView = false;
-        String result = "";
+        String result = "\n";
         if (teamColor == ChessGame.TeamColor.WHITE) {
             whiteView = true;
         }

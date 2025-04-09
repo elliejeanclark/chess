@@ -19,6 +19,6 @@ public class ErrorMessage extends ServerMessage{
     }
 
     public String toString() {
-        return new Gson().toJson(message);
+        return new Gson().toJson(this);
     }
 }

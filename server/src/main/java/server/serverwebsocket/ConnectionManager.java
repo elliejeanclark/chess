@@ -58,7 +58,7 @@ public class ConnectionManager {
         }
     }
 
-    public void broadcastToBlackPlayer(String username, ServerMessage message) throws IOException {
+    public void broadcastToSpecificPlayer(String username, ServerMessage message) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
             if (c.session.isOpen()) {

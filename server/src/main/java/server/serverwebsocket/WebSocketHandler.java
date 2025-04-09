@@ -47,24 +47,32 @@ public class WebSocketHandler {
         try {
             String username = authAccess.getUsername(authToken);
             GameData gameData = gameAccess.getGame(gameID);
+            ChessGame game = gameData.game();
             String whiteUsername = gameData.whiteUsername();
             String blackUsername = gameData.blackUsername();
+            String whitePerspective = new StringyBoard(game.getBoard(), ChessGame.TeamColor.WHITE).getBoard();
+            String blackPerspective = new StringyBoard(game.getBoard(), ChessGame.TeamColor.BLACK).getBoard();
+            var whiteNotification = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, whitePerspective);
+            var blackNotification = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, blackPerspective);
             if (username.equals(whiteUsername)) {
                 connections.add(username, session, gameID);
                 var message = String.format("%s has joined the game as the white player", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
                 connections.broadcast(username, notification, gameID);
+                connections.broadcastToSpecificPlayer(username, whiteNotification);
             }
             else if (username.equals(blackUsername)) {
                 connections.add(username, session, gameID);
                 var message = String.format("%s has joined the game as the black player", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
                 connections.broadcast(username, notification, gameID);
+                connections.broadcastToSpecificPlayer(username, blackNotification);
             } else {
                 connections.add(username, session, gameID);
                 var message = String.format("%s is watching the game", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
                 connections.broadcast(username, notification, gameID);
+                connections.broadcastToSpecificPlayer(username, whiteNotification);
             }
         }
         catch (DataAccessException ex) {
@@ -135,7 +143,7 @@ public class WebSocketHandler {
             var blackNotification = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, blackPerspective);
 
             if (color == ChessGame.TeamColor.BLACK) {
-                connections.broadcastToBlackPlayer(username, blackNotification);
+                connections.broadcastToSpecificPlayer(username, blackNotification);
                 connections.broadcastWhitePerspective(username, whiteNotification, gameID);
             }
             else {
@@ -144,7 +152,7 @@ public class WebSocketHandler {
                 }
                 else {
                     connections.broadcastWhitePerspective(opponentUsername, whiteNotification, gameID);
-                    connections.broadcastToBlackPlayer(opponentUsername, blackNotification);
+                    connections.broadcastToSpecificPlayer(opponentUsername, blackNotification);
                 }
             }
 

@@ -19,6 +19,6 @@ public class LoadGameMessage extends ServerMessage {
     }
 
     public String toString() {
-        return game;
+        return new Gson().toJson(this);
     }
 }

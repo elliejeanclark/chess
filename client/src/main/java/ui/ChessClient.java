@@ -382,7 +382,7 @@ public class ChessClient {
                     else {
                         ws.joinGame(authToken, currGameID);
                     }
-                    return redraw();
+                    return "Successfully joined game";
                 }
                 else {
                     return result.message();
