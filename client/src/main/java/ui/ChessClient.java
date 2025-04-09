@@ -53,6 +53,7 @@ public class ChessClient {
                 case "redraw" -> redraw();
                 case "move" -> move(params);
                 case "resign" -> resign();
+                case "legal" -> highlightLegalMoves(params);
                 case "quit" -> "quit";
                 default -> "That is an invalid command. Please try again.\n" + help();
             };
@@ -100,6 +101,10 @@ public class ChessClient {
                     help - list possible commands.
                     """;
         }
+    }
+
+    public String highlightLegalMoves(String... params) throws ResponseException {
+        return "Highlighted legal moves";
     }
 
     private ChessMove parseChessMove(String[] params) throws ResponseException {
