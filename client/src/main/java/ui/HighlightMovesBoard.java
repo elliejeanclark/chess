@@ -10,7 +10,6 @@ import static model.EscapeSequences.*;
 public class HighlightMovesBoard {
     private String stringifiedBoard;
     private ChessGame.TeamColor teamColor;
-    private ChessPiece piece;
     private int pieceRow;
     private int pieceCol;
     private ChessBoard board;
@@ -19,7 +18,6 @@ public class HighlightMovesBoard {
     public HighlightMovesBoard(ChessGame game, ChessGame.TeamColor color, ChessPosition position) {
         this.teamColor = color;
         this.board = game.getBoard();
-        this.piece = board.getPiece(position);
         this.pieceRow = position.getRow();
         this.pieceCol = position.getColumn();
         setValidMoveArray(game, position);
