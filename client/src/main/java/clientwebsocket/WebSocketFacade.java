@@ -5,7 +5,7 @@ import exception.ResponseException;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.commands.UserGameCommand.*;
-import websocket.messages.ServerMessage;
+import websocket.messages.*;
 import chess.ChessMove;
 
 import javax.websocket.*;
@@ -29,11 +29,18 @@ public class WebSocketFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String> () {
                 @Override
                 public void onMessage(String message) {
-                    try {
-                        notificationHandler.notify(message);
+                    ErrorMessage errorNotification = new Gson().fromJson(message, ErrorMessage.class);
+                    NotificationMessage notification = new Gson().fromJson(message, NotificationMessage.class);
+                    LoadGameMessage loadGameNotification = new Gson().fromJson(message, LoadGameMessage.class);
+
+                    if (errorNotification.getMessage() != null) {
+                        notificationHandler.notifyError(errorNotification);
                     }
-                    catch (Exception e) {
-                        System.out.println(e.getMessage());
+                    else if (notification.getMessage() != null) {
+                        notificationHandler.notifyNotification(notification);
+                    }
+                    else if (loadGameNotification.getGame() != null) {
+                        notificationHandler.notifyLoadGame(loadGameNotification);
                     }
                 }
             });
