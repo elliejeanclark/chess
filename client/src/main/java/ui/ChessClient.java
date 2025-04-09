@@ -8,8 +8,6 @@ import model.*;
 import chess.*;
 import exception.ResponseException;
 import websocket.messages.StringyBoard;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -86,7 +84,7 @@ public class ChessClient {
             return """
                     redraw - redraws the chess board to its current state.
                     leave - leave the game.
-                    move <row>,<col> <row>,<col> - move the piece at the first index to the second index
+                    move <row>,<col> <row>,<col> <optional promotion piece> - move the piece at the first index to the second index
                     resign - forfeit the game.
                     legal <row><col> - allows you to see legal moves for a piece at the given index.
                     quit - exit the program
@@ -103,7 +101,7 @@ public class ChessClient {
     }
 
     private ChessMove parseChessMove(String[] params) throws ResponseException {
-        if (params.length == 2) {
+        if (params.length == 2 || params.length == 3) {
             String param1 = params[0];
             String param2 = params[1];
             String[] param1Items = param1.split(",");
@@ -112,7 +110,7 @@ public class ChessClient {
             int colFrom;
             int rowTo;
             int colTo;
-            if (param1Items.length != 2) {
+            if (param1Items.length == 2) {
                 try {
                     rowFrom = Integer.parseInt(param1Items[0]);
                 } catch (NumberFormatException e) {
@@ -140,7 +138,7 @@ public class ChessClient {
                 throw new ResponseException(400, "Invalid first coordinate, please try again.");
             }
 
-            if (param2Items.length != 2) {
+            if (param2Items.length == 2) {
                 try {
                     rowTo = Integer.parseInt(param2Items[0]);
                 } catch (NumberFormatException e) {
@@ -176,7 +174,22 @@ public class ChessClient {
                 throw new ResponseException(400, "That's not your piece");
             }
             else {
-                return new ChessMove(startPosition, endPosition, piece.getPieceType());
+                if (params.length == 3) {
+                    ChessPiece.PieceType type = null;
+                    if (piece.getPieceType() != ChessPiece.PieceType.PAWN) {
+                        throw new ResponseException(400, "You can't promote a piece that isn't a pawn.");
+                    }
+                    switch (params[3].toLowerCase()) {
+                        case "pawn" -> type = ChessPiece.PieceType.PAWN;
+                        case "knight" -> type = ChessPiece.PieceType.KNIGHT;
+                        case "queen" -> type = ChessPiece.PieceType.QUEEN;
+                        case "bishop" -> type = ChessPiece.PieceType.BISHOP;
+                        case "rook" -> type = ChessPiece.PieceType.ROOK;
+                        default -> throw new ResponseException(400, "invalid promotion piece type");
+                    }
+                    return new ChessMove(startPosition, endPosition, type);
+                }
+                return new ChessMove(startPosition, endPosition, null);
             }
         }
         else {
