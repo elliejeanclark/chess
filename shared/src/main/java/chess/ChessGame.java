@@ -14,6 +14,7 @@ public class ChessGame {
 
     TeamColor activeTeam;
     ChessBoard board;
+    boolean gameOver;
 
     @Override
     public boolean equals(Object o) {
@@ -32,6 +33,7 @@ public class ChessGame {
     public ChessGame() {
         this.activeTeam = TeamColor.WHITE;
         this.board = new ChessBoard();
+        this.gameOver = false;
         board.resetBoard();
     }
 
@@ -112,6 +114,9 @@ public class ChessGame {
         else if (currPiece.getTeamColor() != activeTeam){
             throw new InvalidMoveException("It is not your turn");
         }
+        else if (gameOver) {
+            throw new InvalidMoveException("The game has ended.");
+        }
         else {
             ArrayList<ChessMove> potentialMoves = new ArrayList<>();
             potentialMoves.addAll(validMoves(startPosition));
@@ -164,6 +169,7 @@ public class ChessGame {
         }
 
         if (allMoves.isEmpty()){
+            gameOver = true;
             return true;
         }
 
@@ -186,6 +192,7 @@ public class ChessGame {
         }
 
         if (allMoves.isEmpty() && !inCheck(teamColor, board)){
+            gameOver = true;
             return true;
         }
         else{
@@ -210,6 +217,10 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return board;
     }
+
+    public boolean isGameOver() {return gameOver;}
+
+    public void setGameOver() {gameOver = true;}
 
     private ChessPosition getKing(ChessBoard board, TeamColor color) {
         int row = 1;
