@@ -12,9 +12,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
-import websocket.messages.ErrorMessage;
-import websocket.messages.NotificationMessage;
-import websocket.messages.ServerMessage;
+import websocket.messages.*;
 
 import java.io.IOException;
 
@@ -112,11 +110,42 @@ public class WebSocketHandler {
     private void makeMove(String authToken, int gameID, ChessMove move) throws IOException {
         try {
             String username = authAccess.getUsername(authToken);
+            String opponentUsername = null;
             GameData gameData = gameAccess.getGame(gameID);
+            ChessGame.TeamColor color;
+            if (username.equals(gameData.blackUsername())) {
+                if (gameData.whiteUsername() != null) {
+                    opponentUsername = gameData.whiteUsername();
+                }
+                color = ChessGame.TeamColor.BLACK;
+            }
+            else {
+                if (gameData.blackUsername() != null) {
+                    opponentUsername = gameData.blackUsername();
+                }
+                color = ChessGame.TeamColor.WHITE;
+            }
             ChessGame game = gameData.game();
             game.makeMove(move);
             gameAccess.updateGame(gameID, game);
+            String whitePerspective = new StringyBoard(game.getBoard(), ChessGame.TeamColor.WHITE).getBoard();
+            String blackPerspective = new StringyBoard(game.getBoard(), ChessGame.TeamColor.BLACK).getBoard();
+            var whiteNotification = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, whitePerspective);
+            var blackNotification = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, blackPerspective);
 
+            if (color == ChessGame.TeamColor.BLACK) {
+                connections.broadcastToBlackPlayer(username, blackNotification);
+                connections.broadcastWhitePerspective(username, whiteNotification, gameID);
+            }
+            else {
+                if (opponentUsername == null) {
+                    connections.broadcastWhitePerspective(null, whiteNotification, gameID);
+                }
+                else {
+                    connections.broadcastWhitePerspective(opponentUsername, whiteNotification, gameID);
+                    connections.broadcastToBlackPlayer(opponentUsername, blackNotification);
+                }
+            }
         }
         catch (Exception ex) {
             var message = ex.getMessage();

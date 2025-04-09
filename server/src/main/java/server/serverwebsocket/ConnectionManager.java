@@ -19,6 +19,7 @@ public class ConnectionManager {
 
     public void remove(String visitorName) {
         connections.remove(visitorName);
+        usersInGame.remove(visitorName);
     }
 
     public void broadcast(String excludeUsername, ServerMessage message, int gameID) throws IOException {
@@ -26,6 +27,42 @@ public class ConnectionManager {
         for (var c : connections.values()) {
             if (c.session.isOpen()) {
                 if (!c.username.equals(excludeUsername) && gameID == usersInGame.get(c.username)) {
+                    c.send(message.toString());
+                }
+            }
+            else {
+                removeList.add(c);
+            }
+        }
+
+        for (var c : removeList) {
+            connections.remove(c.username);
+        }
+    }
+
+    public void broadcastWhitePerspective(String excludeBlack, ServerMessage message, int gameID) throws IOException {
+        var removeList = new ArrayList<Connection>();
+        for (var c : connections.values()) {
+            if (c.session.isOpen()) {
+                if (!c.username.equals(excludeBlack)  && gameID == usersInGame.get(c.username)) {
+                    c.send(message.toString());
+                }
+            }
+            else {
+                removeList.add(c);
+            }
+        }
+
+        for (var c : removeList) {
+            connections.remove(c.username);
+        }
+    }
+
+    public void broadcastToBlackPlayer(String username, ServerMessage message) throws IOException {
+        var removeList = new ArrayList<Connection>();
+        for (var c : connections.values()) {
+            if (c.session.isOpen()) {
+                if (c.username.equals(username)) {
                     c.send(message.toString());
                 }
             }

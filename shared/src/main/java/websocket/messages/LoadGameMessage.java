@@ -1,21 +1,13 @@
 package websocket.messages;
 
-import chess.*;
 import com.google.gson.Gson;
 
 public class LoadGameMessage extends ServerMessage {
     private String game;
 
-    public LoadGameMessage(ServerMessageType type, ChessGame game) {
+    public LoadGameMessage(ServerMessageType type, String game) {
         super(type);
-        ChessGame.TeamColor color;
-        if (game.getTeamTurn() == ChessGame.TeamColor.BLACK) {
-            color = ChessGame.TeamColor.WHITE;
-        }
-        else {
-            color = ChessGame.TeamColor.BLACK;
-        }
-        this.game = new StringyBoard(game.getBoard(), color).getBoard();
+        this.game = game;
     }
 
     public void setGame(String message) {
