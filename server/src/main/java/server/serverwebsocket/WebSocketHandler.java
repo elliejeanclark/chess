@@ -247,25 +247,29 @@ public class WebSocketHandler {
         try {
             String username = authAccess.getUsername(authToken);
             GameData gameData = gameAccess.getGame(gameID);
+            ChessGame game = gameData.game();
             String whiteUsername = gameData.whiteUsername();
             String blackUsername = gameData.blackUsername();
-            if (username.equals(whiteUsername)) {
+            if (game.isGameOver()) {
+                var message = "You cannot resign, the game is already over.";
+                var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message);
+                sendError(username, session, gameID, notification);
+            }
+            else if (username.equals(whiteUsername)) {
                 gameAccess.setGameOver(gameID);
                 var message = String.format("%s has resigned the game as the white player", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(username, notification, gameID);
-                connections.remove(username);
+                connections.broadcast(null, notification, gameID);
             }
             else if (username.equals(blackUsername)) {
                 gameAccess.setGameOver(gameID);
                 var message = String.format("%s has resigned the game as the black player", username);
                 var notification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(username, notification, gameID);
-                connections.remove(username);
+                connections.broadcast(null, notification, gameID);
             }
             else {
                 var message = String.format("you cannot resign a game you are just watching.");
-                var notification = new ErrorMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message);
                 sendError(username, session, gameID, notification);
             }
         } catch (DataAccessException ignored) {}
