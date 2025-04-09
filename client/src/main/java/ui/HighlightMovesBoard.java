@@ -137,7 +137,12 @@ public class HighlightMovesBoard {
                 row += SET_BG_COLOR_YELLOW;
             }
             else if (validMoves.containsKey(i) && validMoves.get(i) == j) {
-                row += SET_BG_COLOR_DARK_GREEN;
+                if (oddCol == SET_BG_COLOR_BLACK) {
+                    row += SET_BG_COLOR_DARK_GREEN;
+                }
+                else {
+                    row += SET_BG_COLOR_GREEN;
+                }
             }
             else {
                 row += oddCol;
@@ -153,7 +158,12 @@ public class HighlightMovesBoard {
                 row += SET_BG_COLOR_YELLOW;
             }
             else if (validMoves.containsKey(i) && validMoves.get(i) == j) {
-                row += SET_BG_COLOR_DARK_GREEN;
+                if (evenCol == SET_BG_COLOR_BLACK) {
+                    row += SET_BG_COLOR_DARK_GREEN;
+                }
+                else {
+                    row += SET_BG_COLOR_GREEN;
+                }
             }
             else {
                 row += evenCol;

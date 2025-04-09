@@ -104,7 +104,11 @@ public class ChessClient {
     }
 
     public String highlightLegalMoves(String... params) throws ResponseException {
-        if (params.length == 2) {
+        assertSignedIn();
+        if (state != State.PLAYINGGAME) {
+            return "You can only highlight legal moves if you are playing.";
+        }
+        else if (params.length == 2) {
             int row;
             int col;
             try {
@@ -126,6 +130,9 @@ public class ChessClient {
                 default -> col = 0;
             };
 
+            if (row < 1 || row > 8) {
+                throw new ResponseException(400, "Out of bounds row.");
+            }
             if (col == 0) {
                 throw new ResponseException(400, "Please enter a valid letter for the column");
             }
