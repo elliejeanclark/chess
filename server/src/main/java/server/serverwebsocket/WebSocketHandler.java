@@ -132,66 +132,66 @@ public class WebSocketHandler {
         game.makeMove(move);
     }
 
-    private void broadcastValidMove(ChessGame game, ChessMove move, int gameID, String username, ChessGame.TeamColor color, String opponentUsername) throws InvalidMoveException {
+    private void broadcast(ChessGame g, ChessMove m, int id, String u, ChessGame.TeamColor color, String ou) throws InvalidMoveException {
         try {
-            validateMove(game, move);
-            gameAccess.updateGame(gameID, game);
-            String whitePerspective = new StringyBoard(game.getBoard(), ChessGame.TeamColor.WHITE).getBoard();
-            String blackPerspective = new StringyBoard(game.getBoard(), ChessGame.TeamColor.BLACK).getBoard();
+            validateMove(g, m);
+            gameAccess.updateGame(id, g);
+            String whitePerspective = new StringyBoard(g.getBoard(), ChessGame.TeamColor.WHITE).getBoard();
+            String blackPerspective = new StringyBoard(g.getBoard(), ChessGame.TeamColor.BLACK).getBoard();
             var whiteNotification = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, whitePerspective);
             var blackNotification = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, blackPerspective);
 
-            if (color == ChessGame.TeamColor.BLACK && !game.isGameOver()) {
-                connections.broadcastToSpecificPlayer(username, blackNotification);
-                connections.broadcastWhitePerspective(username, whiteNotification, gameID);
+            if (color == ChessGame.TeamColor.BLACK && !g.isGameOver()) {
+                connections.broadcastToSpecificPlayer(u, blackNotification);
+                connections.broadcastWhitePerspective(u, whiteNotification, id);
             }
-            else if (!game.isGameOver()){
-                if (opponentUsername == null) {
-                    connections.broadcastWhitePerspective(null, whiteNotification, gameID);
+            else if (!g.isGameOver()){
+                if (ou == null) {
+                    connections.broadcastWhitePerspective(null, whiteNotification, id);
                 }
                 else {
-                    connections.broadcastWhitePerspective(opponentUsername, whiteNotification, gameID);
-                    connections.broadcastToSpecificPlayer(opponentUsername, blackNotification);
+                    connections.broadcastWhitePerspective(ou, whiteNotification, id);
+                    connections.broadcastToSpecificPlayer(ou, blackNotification);
                 }
             }
 
-            int rowFrom = move.getStartPosition().getRow();
-            int colFrom = move.getStartPosition().getColumn();
-            int rowTo = move.getEndPosition().getRow();
-            int colTo = move.getEndPosition().getColumn();
-            String moveMessage = String.format("%s made a move from %d,%d to %d,%d.", username, rowFrom, colFrom, rowTo, colTo);
+            int rowFrom = m.getStartPosition().getRow();
+            int colFrom = m.getStartPosition().getColumn();
+            int rowTo = m.getEndPosition().getRow();
+            int colTo = m.getEndPosition().getColumn();
+            String moveMessage = String.format("%s made a move from %d,%d to %d,%d.", u, rowFrom, colFrom, rowTo, colTo);
             NotificationMessage moveNotification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, moveMessage);
-            connections.broadcast(username, moveNotification, gameID);
+            connections.broadcast(u, moveNotification, id);
 
-            boolean blackInCheckmate = game.isInCheckmate(ChessGame.TeamColor.BLACK);
-            boolean whiteInCheckmate = game.isInCheckmate(ChessGame.TeamColor.WHITE);
+            boolean blackInCheckmate = g.isInCheckmate(ChessGame.TeamColor.BLACK);
+            boolean whiteInCheckmate = g.isInCheckmate(ChessGame.TeamColor.WHITE);
 
-            if (game.isInStalemate(ChessGame.TeamColor.BLACK) && game.isInStalemate(ChessGame.TeamColor.WHITE)) {
+            if (g.isInStalemate(ChessGame.TeamColor.BLACK) && g.isInStalemate(ChessGame.TeamColor.WHITE)) {
                 String stalemateMessage = "Game ends in stalemate.";
                 NotificationMessage notif = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, stalemateMessage);
-                connections.broadcast(null, notif, gameID);
+                connections.broadcast(null, notif, id);
             }
             if (whiteInCheckmate) {
-                game.setGameOver();
+                g.setGameOver();
                 String checkmateMessage = "White is in checkmate, Black wins!";
                 NotificationMessage notif = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, checkmateMessage);
-                connections.broadcast(null, notif, gameID);
+                connections.broadcast(null, notif, id);
             }
             if (blackInCheckmate) {
-                game.setGameOver();
+                g.setGameOver();
                 String checkmateMessage = "Black is in checkmate, White wins!";
                 NotificationMessage notif = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, checkmateMessage);
-                connections.broadcast(null, notif, gameID);
+                connections.broadcast(null, notif, id);
             }
-            if (game.isInCheck(ChessGame.TeamColor.WHITE) && !whiteInCheckmate && !blackInCheckmate) {
+            if (g.isInCheck(ChessGame.TeamColor.WHITE) && !whiteInCheckmate && !blackInCheckmate) {
                 String checkMessage = "White is in check";
                 NotificationMessage notif = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, checkMessage);
-                connections.broadcast(null, notif, gameID);
+                connections.broadcast(null, notif, id);
             }
-            if (game.isInCheck(ChessGame.TeamColor.BLACK) && !blackInCheckmate && !whiteInCheckmate) {
+            if (g.isInCheck(ChessGame.TeamColor.BLACK) && !blackInCheckmate && !whiteInCheckmate) {
                 String checkMessage = "Black is in check";
                 NotificationMessage notif = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, checkMessage);
-                connections.broadcast(null, notif, gameID);
+                connections.broadcast(null, notif, id);
             }
         }
         catch (DataAccessException ignored) {}
@@ -232,7 +232,7 @@ public class WebSocketHandler {
                 }
                 else {
                     try {
-                        broadcastValidMove(game, move, gameID, username, color, opponentUsername);
+                        broadcast(game, move, gameID, username, color, opponentUsername);
                     } catch (InvalidMoveException e) {
                         var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, e.getMessage());
                         sendError(username, session, gameID, notification);

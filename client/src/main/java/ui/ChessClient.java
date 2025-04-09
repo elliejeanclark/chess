@@ -108,7 +108,7 @@ public class ChessClient {
                 return "That is not one of your pieces.";
             }
             else {
-                return new HighlightMovesBoard(currGame, teamColor, position).getBoard();
+                return new StringyBoard(currGame, teamColor, position).getBoard();
             }
         }
         else {

@@ -1,14 +1,44 @@
 package websocket.messages;
 import chess.*;
+
+import java.util.Collection;
+import java.util.HashMap;
+
 import static model.EscapeSequences.*;
 
 public class StringyBoard {
     private String stringifiedBoard;
     private ChessGame.TeamColor teamColor;
+    private int pieceRow;
+    private int pieceCol;
+    private ChessBoard board;
+    private HashMap<Integer, Integer> validMoves = new HashMap<>();
+    boolean highlight;
 
     public StringyBoard(ChessBoard board, ChessGame.TeamColor color) {
         this.teamColor = color;
         this.stringifiedBoard = stringifyBoard(board);
+        this.highlight = false;
+    }
+
+    public StringyBoard(ChessGame game, ChessGame.TeamColor color, ChessPosition position) {
+        this.teamColor = color;
+        this.board = game.getBoard();
+        this.pieceRow = position.getRow();
+        this.pieceCol = position.getColumn();
+        setValidMoveArray(game, position);
+        this.stringifiedBoard = stringifyBoard(board);
+        this.highlight = true;
+    }
+
+    private void setValidMoveArray(ChessGame game, ChessPosition position) {
+        Collection<ChessMove> validMovesCollection = game.validMoves(position);
+        for (ChessMove move : validMovesCollection) {
+            ChessPosition endPosition = move.getEndPosition();
+            int row = endPosition.getRow();
+            int col = endPosition.getColumn();
+            validMoves.put(row, col);
+        }
     }
 
     public String getBoard() {
@@ -94,13 +124,70 @@ public class StringyBoard {
 
         if (whiteView) {
             for (int j = 1; j <= 8; j++) {
-                row += getSquare(board, i, j, oddCol, evenCol);
+                if (highlight) {
+                    row += getValidMovesSquare(board, i, j, oddCol, evenCol);
+                }
+                else {
+                    row += getSquare(board, i, j, oddCol, evenCol);
+                }
             }
         }
         else {
             for (int j = 8; j >= 1; j--) {
-                row += getSquare(board, i, j, oddCol, evenCol);
+                if (highlight) {
+                    row += getValidMovesSquare(board, i, j, oddCol, evenCol);
+                }
+                else {
+                    row += getSquare(board, i, j, oddCol, evenCol);
+                }
             }
+        }
+        return row;
+    }
+
+    private String getValidMovesSquare(ChessBoard board, int i, int j, String oddCol, String evenCol) {
+        String row = "";
+        if (j % 2 != 0) {
+            if (i == pieceRow && j == pieceCol) {
+                row += SET_BG_COLOR_YELLOW;
+            }
+            else if (validMoves.containsKey(i) && validMoves.get(i) == j) {
+                if (oddCol == SET_BG_COLOR_BLACK) {
+                    row += SET_BG_COLOR_DARK_GREEN;
+                }
+                else {
+                    row += SET_BG_COLOR_GREEN;
+                }
+            }
+            else {
+                row += oddCol;
+            }
+            row += " ";
+            row += getPieceColor(board, i, j);
+            row += getPieceType(board, i, j);
+            row += RESET_TEXT_COLOR;
+            row += " ";
+        }
+        else {
+            if (i == pieceRow && j == pieceCol) {
+                row += SET_BG_COLOR_YELLOW;
+            }
+            else if (validMoves.containsKey(i) && validMoves.get(i) == j) {
+                if (evenCol == SET_BG_COLOR_BLACK) {
+                    row += SET_BG_COLOR_DARK_GREEN;
+                }
+                else {
+                    row += SET_BG_COLOR_GREEN;
+                }
+            }
+            else {
+                row += evenCol;
+            }
+            row += " ";
+            row += getPieceColor(board, i, j);
+            row += getPieceType(board, i, j);
+            row += RESET_TEXT_COLOR;
+            row += " ";
         }
         return row;
     }
