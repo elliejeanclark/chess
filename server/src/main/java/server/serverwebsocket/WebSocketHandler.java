@@ -15,6 +15,7 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.*;
 
 import java.io.IOException;
+import java.util.concurrent.ScheduledExecutorService;
 
 @WebSocket
 public class WebSocketHandler {
@@ -145,6 +146,40 @@ public class WebSocketHandler {
                     connections.broadcastWhitePerspective(opponentUsername, whiteNotification, gameID);
                     connections.broadcastToBlackPlayer(opponentUsername, blackNotification);
                 }
+            }
+
+            int rowFrom = move.getStartPosition().getRow();
+            int colFrom = move.getStartPosition().getColumn();
+            int rowTo = move.getEndPosition().getRow();
+            int colTo = move.getEndPosition().getColumn();
+            String moveMessage = String.format("%s made a move from %d,%d to %d,%d.", username, rowFrom, colFrom, rowTo, colTo);
+            NotificationMessage moveNotification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, moveMessage);
+            connections.broadcast(username, moveNotification, gameID);
+
+            if (game.isInCheck(ChessGame.TeamColor.WHITE)) {
+                String checkMessage = "White is in check";
+                NotificationMessage checkNotification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, checkMessage);
+                connections.broadcast(null, checkNotification, gameID);
+            }
+            if (game.isInCheck(ChessGame.TeamColor.BLACK)) {
+                String checkMessage = "Black is in check";
+                NotificationMessage checkNotification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, checkMessage);
+                connections.broadcast(null, checkNotification, gameID);
+            }
+            if (game.isInStalemate(ChessGame.TeamColor.BLACK) && game.isInStalemate(ChessGame.TeamColor.WHITE)) {
+                String stalemateMessage = "Game ends in stalemate.";
+                NotificationMessage stalemateNotification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, stalemateMessage);
+                connections.broadcast(null, stalemateNotification, gameID);
+            }
+            if (game.isInCheckmate(ChessGame.TeamColor.WHITE)) {
+                String checkmateMessage = "White is in checkmate, Black wins!";
+                NotificationMessage checkmateNotification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, checkmateMessage);
+                connections.broadcast(null, checkmateNotification, gameID);
+            }
+            if (game.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+                String checkmateMessage = "Black is in checkmate, White wins!";
+                NotificationMessage checkmateNotification = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, checkmateMessage);
+                connections.broadcast(null, checkmateNotification, gameID);
             }
         }
         catch (Exception ex) {
