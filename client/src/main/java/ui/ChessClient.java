@@ -191,7 +191,7 @@ public class ChessClient {
         game.makeMove(move);
     }
 
-    private void getUpdatedBoard() throws ResponseException {
+    public void getUpdatedBoard() throws ResponseException {
         ListGamesResult gamesResult = server.list(authToken);
         ArrayList<GameData> games = gamesResult.games();
         for (GameData data : games) {

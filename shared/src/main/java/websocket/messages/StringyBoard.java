@@ -2,7 +2,6 @@ package websocket.messages;
 import chess.*;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 import static model.EscapeSequences.*;
 
@@ -12,7 +11,7 @@ public class StringyBoard {
     private int pieceRow;
     private int pieceCol;
     private ChessBoard board;
-    private HashMap<Integer, Integer> validMoves = new HashMap<>();
+    private Collection<ChessMove> validMoves;
     boolean highlight;
 
     public StringyBoard(ChessBoard board, ChessGame.TeamColor color) {
@@ -32,13 +31,7 @@ public class StringyBoard {
     }
 
     private void setValidMoveArray(ChessGame game, ChessPosition position) {
-        Collection<ChessMove> validMovesCollection = game.validMoves(position);
-        for (ChessMove move : validMovesCollection) {
-            ChessPosition endPosition = move.getEndPosition();
-            int row = endPosition.getRow();
-            int col = endPosition.getColumn();
-            validMoves.put(row, col);
-        }
+        this.validMoves = game.validMoves(position);
     }
 
     public String getBoard() {
@@ -147,11 +140,19 @@ public class StringyBoard {
 
     private String getValidMovesSquare(ChessBoard board, int i, int j, String oddCol, String evenCol) {
         String row = "";
+        boolean isValidSquare = false;
+        for (ChessMove move : validMoves) {
+            int moveRow = move.getEndPosition().getRow();
+            int moveCol = move.getEndPosition().getColumn();
+            if (moveRow == i && moveCol == j) {
+                isValidSquare = true;
+            }
+        }
         if (j % 2 != 0) {
             if (i == pieceRow && j == pieceCol) {
                 row += SET_BG_COLOR_YELLOW;
             }
-            else if (validMoves.containsKey(i) && validMoves.get(i) == j) {
+            else if (isValidSquare) {
                 if (oddCol == SET_BG_COLOR_BLACK) {
                     row += SET_BG_COLOR_DARK_GREEN;
                 }
@@ -172,7 +173,7 @@ public class StringyBoard {
             if (i == pieceRow && j == pieceCol) {
                 row += SET_BG_COLOR_YELLOW;
             }
-            else if (validMoves.containsKey(i) && validMoves.get(i) == j) {
+            else if (isValidSquare) {
                 if (evenCol == SET_BG_COLOR_BLACK) {
                     row += SET_BG_COLOR_DARK_GREEN;
                 }

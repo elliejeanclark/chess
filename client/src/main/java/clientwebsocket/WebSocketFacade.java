@@ -73,7 +73,6 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    //calls make move websocket
     public void makeMove(String authToken, int gameID, ChessMove move) throws ResponseException {
         try {
             var command = new MakeMoveCommand(CommandType.MAKE_MOVE, authToken, gameID, move);

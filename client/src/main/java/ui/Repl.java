@@ -1,6 +1,7 @@
 package ui;
 
 import clientwebsocket.NotificationHandler;
+import exception.ResponseException;
 import websocket.messages.*;
 
 import java.util.Scanner;
@@ -66,6 +67,9 @@ public class Repl implements NotificationHandler {
 
     public void notifyLoadGame(LoadGameMessage message) {
         System.out.println(SET_TEXT_COLOR_RED + message.getGame());
+        try {
+            client.getUpdatedBoard();
+        } catch (ResponseException ignored) {}
         printPrompt();
     }
 }
