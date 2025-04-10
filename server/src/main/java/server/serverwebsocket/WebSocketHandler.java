@@ -173,23 +173,47 @@ public class WebSocketHandler {
             }
             if (whiteInCheckmate) {
                 g.setGameOver();
-                String checkmateMessage = "White is in checkmate, Black wins!";
+                String checkmateMessage;
+                if (color == ChessGame.TeamColor.BLACK) {
+                    checkmateMessage = String.format("%s is in checkmate, %s wins!", ou, u);
+                }
+                else {
+                    checkmateMessage = String.format("%s is in checkmate, %s wins!", u, ou);
+                }
                 NotificationMessage notif = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, checkmateMessage);
                 connections.broadcast(null, notif, id);
             }
             if (blackInCheckmate) {
                 g.setGameOver();
-                String checkmateMessage = "Black is in checkmate, White wins!";
+                String checkmateMessage;
+                if (color == ChessGame.TeamColor.WHITE) {
+                    checkmateMessage = String.format("%s is in checkmate, %s wins!", ou, u);
+                }
+                else {
+                    checkmateMessage = String.format("%s is in checkmate, %s wins!", u, ou);
+                }
                 NotificationMessage notif = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, checkmateMessage);
                 connections.broadcast(null, notif, id);
             }
             if (g.isInCheck(ChessGame.TeamColor.WHITE) && !whiteInCheckmate && !blackInCheckmate) {
-                String checkMessage = "White is in check";
+                String checkMessage;
+                if (color == ChessGame.TeamColor.WHITE) {
+                    checkMessage = String.format("%s is in check.", u);
+                }
+                else {
+                    checkMessage = String.format("%s is in check.", ou);
+                }
                 NotificationMessage notif = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, checkMessage);
                 connections.broadcast(null, notif, id);
             }
             if (g.isInCheck(ChessGame.TeamColor.BLACK) && !blackInCheckmate && !whiteInCheckmate) {
-                String checkMessage = "Black is in check";
+                String checkMessage;
+                if (color == ChessGame.TeamColor.BLACK) {
+                    checkMessage = String.format("%s is in check.", u);
+                }
+                else {
+                    checkMessage = String.format("%s is in check.", ou);
+                }
                 NotificationMessage notif = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, checkMessage);
                 connections.broadcast(null, notif, id);
             }

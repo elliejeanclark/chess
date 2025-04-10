@@ -81,39 +81,39 @@ public class ChessClient {
 
     public String highlightLegalMoves(String... params) throws ResponseException {
         assertSignedIn();
-        if (state != State.PLAYINGGAME) {
-            return "You can only highlight legal moves if you are playing.";
-        }
-        else if (params.length == 2) {
-            int row;
-            int col;
-            try {
-                row = Integer.parseInt(params[0]);
-            }
-            catch (NumberFormatException e) {
-                throw new ResponseException(400, "Please enter a valid number for the row.");
-            }
-            col = getNumFromLetter(params[1]);
-            if (row < 1 || row > 8) {
-                throw new ResponseException(400, "Out of bounds row.");
-            }
-            if (col == 0) {
-                throw new ResponseException(400, "Please enter a valid letter for the column");
-            }
-            ChessPosition position = new ChessPosition(row, col);
-            ChessPiece piece = currBoard.getPiece(position);
-            if (piece == null) {
-                return "There is no piece there.";
-            }
-            else if (piece.getTeamColor() != teamColor) {
-                return "That is not one of your pieces.";
+        getUpdatedBoard();
+        if (state == State.PLAYINGGAME || state == State.WATCHINGGAME) {
+            if (params.length == 2) {
+                int row;
+                int col;
+                try {
+                    row = Integer.parseInt(params[0]);
+                }
+                catch (NumberFormatException e) {
+                    throw new ResponseException(400, "Please enter a valid number for the row.");
+                }
+                col = getNumFromLetter(params[1]);
+                if (row < 1 || row > 8) {
+                    throw new ResponseException(400, "Out of bounds row.");
+                }
+                if (col == 0) {
+                    throw new ResponseException(400, "Please enter a valid letter for the column");
+                }
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = currBoard.getPiece(position);
+                if (piece == null) {
+                    return "There is no piece there.";
+                }
+                else {
+                    return new StringyBoard(currGame, teamColor, position).getBoard();
+                }
             }
             else {
-                return new StringyBoard(currGame, teamColor, position).getBoard();
+                return "Invalid number of arguments.";
             }
         }
         else {
-            return "Invalid number of arguments.";
+            return "You must be playing or watching to see legal moves.";
         }
     }
 
